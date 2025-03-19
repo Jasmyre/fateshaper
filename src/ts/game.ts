@@ -1,7 +1,7 @@
 // ===== Balancing Constants =====
 const ROUND_DELAY = 1400; // ms for round animations
 const OUTCOME_DISPLAY_DURATION = 3000; // ms to show outcome messages
-const TOTAL_ROUND_DELAY = ROUND_DELAY + OUTCOME_DISPLAY_DURATION;
+// const TOTAL_ROUND_DELAY = ROUND_DELAY + OUTCOME_DISPLAY_DURATION;
 
 // Health and Damage Constants
 const BASE_HEALTH = 100;
@@ -228,19 +228,19 @@ function checkWin(): void {
 }
 
 // finishRound: Called at the end of a round to update state and re-enable buttons.
-function finishRound(roundOutcome: "player" | "robot" | "tie"): void {
-	playerUpgradePoints++;
-	robotUpgradePoints++;
-	robotAutoUpgrade();
-	updateStatsAfterRound(roundOutcome);
-	checkWin();
-	roundNum++;
-	updateRound();
-	// Re-enable buttons after outcome display duration
-	setTimeout(() => {
-		disableButtons(false);
-	}, OUTCOME_DISPLAY_DURATION);
-}
+// function finishRound(roundOutcome: "player" | "robot" | "tie"): void {
+// 	playerUpgradePoints++;
+// 	robotUpgradePoints++;
+// 	robotAutoUpgrade();
+// 	updateStatsAfterRound(roundOutcome);
+// 	checkWin();
+// 	roundNum++;
+// 	updateRound();
+// 	// Re-enable buttons after outcome display duration
+// 	setTimeout(() => {
+// 		disableButtons(false);
+// 	}, OUTCOME_DISPLAY_DURATION);
+// }
 
 // logStats: For debugging purposes.
 function logStats(): void {
