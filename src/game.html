@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>Play Fateshaper - Epic RPS Game</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link
+			rel="stylesheet"
+			href="/utils.css"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							primary: "#6d28d9",
+							secondary: "#10b981",
+							accent: "#f59e0b",
+							dark: "#0f172a",
+							light: "#f8fafc",
+						},
+						fontFamily: {
+							sans: ["Rajdhani", "sans-serif"],
+							display: ["Orbitron", "sans-serif"],
+						},
+					},
+				},
+			};
+		</script>
+		<script
+			src="./ts/game.ts"
+			defer
+		></script>
+		<style>
+			body {
+				background-color: #0f172a;
+				background-image: radial-gradient(
+						circle at 25% 25%,
+						rgba(109, 40, 217, 0.1) 0%,
+						transparent 50%
+					),
+					radial-gradient(
+						circle at 75% 75%,
+						rgba(16, 185, 129, 0.1) 0%,
+						transparent 50%
+					);
+			}
+		</style>
+	</head>
+	<body class="text-light min-h-screen flex flex-col">
+		<header
+			class="bg-dark/80 backdrop-blur-sm sticky top-0 z-50 border-b border-primary/20"
+		>
+			<div class="container mx-auto px-4">
+				<nav class="container mx-auto px-4 max-w-screen-xl py-4 flex justify-between items-center">
+					<a
+						href="/"
+						class="flex items-center gap-2"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-8 w-8 text-primary"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<polygon
+								points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+							></polygon>
+						</svg>
+						<span class="text-2xl font-display font-bold text-white"
+							>Fateshaper</span
+						>
+					</a>
+
+					<button
+						id="menu-toggle"
+						class="md:hidden text-white focus:outline-none"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-6 w-6"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M4 6h16M4 12h16M4 18h16"
+							/>
+						</svg>
+					</button>
+
+					<ul class="hidden md:flex space-x-8 font-medium">
+						<li>
+							<a
+								href="/"
+								class="text-white hover:text-primary transition-colors"
+								>Home</a
+							>
+						</li>
+						<li>
+							<a
+								href="information.html"
+								class="text-white hover:text-primary transition-colors"
+								>Information</a
+							>
+						</li>
+						<li>
+							<a
+								href="game.html"
+								class="text-primary border-b-2 border-primary py-1"
+								>Game</a
+							>
+						</li>
+						<li>
+							<a
+								href="gallery.html"
+								class="text-white hover:text-primary transition-colors"
+								>Gallery</a
+							>
+						</li>
+						<li>
+							<a
+								href="contact.html"
+								class="text-white hover:text-primary transition-colors"
+								>Contact</a
+							>
+						</li>
+					</ul>
+				</nav>
+			</div>
+
+			<div
+				id="mobile-menu"
+				class="hidden md:hidden bg-dark/95 backdrop-blur-md"
+			>
+				<ul
+					class="flex flex-col items-center py-4 space-y-4 font-medium"
+				>
+					<li>
+						<a
+							href="/"
+							class="text-white hover:text-primary transition-colors"
+							>Home</a
+						>
+					</li>
+					<li>
+						<a
+							href="information.html"
+							class="text-white hover:text-primary transition-colors"
+							>Information</a
+						>
+					</li>
+					<li>
+						<a
+							href="game.html"
+							class="text-primary"
+							>Game</a
+						>
+					</li>
+					<li>
+						<a
+							href="gallery.html"
+							class="text-white hover:text-primary transition-colors"
+							>Gallery</a
+						>
+					</li>
+					<li>
+						<a
+							href="contact.html"
+							class="text-white hover:text-primary transition-colors"
+							>Contact</a
+						>
+					</li>
+				</ul>
+			</div>
+		</header>
+
+		<section class="py-8 md:py-12 flex-grow">
+			<div class="container mx-auto px-4">
+				<div class="max-w-6xl mx-auto">
+					<div
+						class="bg-dark/80 backdrop-blur-sm rounded-xl border border-primary/20 overflow-hidden"
+					>
+						<div
+							class="p-4 md:p-6 border-b border-primary/20 flex flex-col md:flex-row justify-between items-center gap-4"
+						>
+							<h1
+								class="text-2xl md:text-3xl font-display font-bold"
+							>
+								<span
+									class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary"
+									>Fateshaper</span
+								>
+							</h1>
+
+							<div class="flex items-center gap-4">
+								<button
+									class="bg-dark/50 hover:bg-dark/70 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<circle
+											cx="12"
+											cy="12"
+											r="3"
+										></circle>
+										<path
+											d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+										></path>
+									</svg>
+									Settings
+								</button>
+							</div>
+						</div>
+
+						<div class="aspect-video bg-white bg-dark/50 relative">
+							<!-- <img src="https://loremflickr.com/200/200?random=3" alt="Fateshaper Game" class="w-full h-full object-cover" /> -->
+
+							<div
+								class="w-full h-full flex flex-row overflow-hidden bg-[#77cdff]"
+							>
+								<div
+									class="flex-1 h-full flex justify-center items-center relative"
+								>
+									<div
+										class="w-[90%] h-min absolute top-[5%] flex flex-col items-start"
+									>
+										<span
+											class="text-red-600 font-semibold text-2xl"
+											>PLAYER 1</span
+										>
+										<div
+											class="w-full border-red-600 border rounded bg-emerald-100 flex justify-end relative"
+										>
+											<span
+												id="player-hp-number"
+												class="p-1 text-red-500 font-semibold absolute top-[50%] translate-y-[-50%] left-[4%]"
+												>90</span
+											>
+											<div
+												id="player-hp-display"
+												class="transition-all flex justify-start items-center rounded w-[calc(100%)] h-[20px] bg-emerald-500"
+											></div>
+										</div>
+									</div>
+
+									<div
+										class="w-[90%] h-min absolute bottom-[5%] flex gap-2 flex-col items-start"
+									>
+										<div class="w-full">
+											<span
+												class="text-red-600 font-semibold text-2xl"
+												>Momentum</span
+											>
+											<div
+												class="w-full border-red-600 border rounded bg-transparent flex justify-start relative"
+											>
+												<span
+													id="player-momentum-number"
+													class="p-1 text-gray-200 font-semibold absolute top-[50%] translate-y-[-50%] left-[4%]"
+													>0</span
+												>
+												<div
+													id="player-momentum-display"
+													class="transition-all flex justify-start items-center rounded w-[calc(0%)] h-[20px] bg-blue-500"
+												></div>
+											</div>
+										</div>
+										<div class="w-full">
+											<span
+												class="text-red-600 font-semibold text-2xl"
+												>Fatigue</span
+											>
+											<div
+												class="w-full border-red-600 border rounded bg-transparent flex justify-start relative"
+											>
+												<span
+													id="player-fatigue-number"
+													class="p-1 text-gray-200 font-semibold absolute top-[50%] translate-y-[-50%] left-[4%]"
+													>0</span
+												>
+												<div
+													id="player-fatigue-display"
+													class="transition-all flex justify-start items-center rounded w-[calc(0%)] h-[20px] bg-red-500"
+												></div>
+											</div>
+										</div>
+									</div>
+
+									<h3 class="text-xl outcome" id="player-outcome"></h3>
+
+									<img
+										src="/v1rock.svg"
+										alt=""
+										class="w-[200px] h-[200px] drop-shadow-[]"
+										id="player-hand"
+									/>
+								</div>
+								<div
+									class="flex-1 h-full flex flex-col justify-end items-center relative"
+								>
+									<h1
+										id="round"
+										class="font-bold text-primary text-2xl"
+									>
+										ROUND: 1
+									</h1>
+									<br />
+									<img
+										src="/vs.svg"
+										alt=""
+										class="w-[100px] absolute top-[50%] translate-y-[-50%] translate-x-[-50%] left-[50%] h-[100px]"
+									/>
+									<div
+										class="w-full flex justify-center gap-4 mb-4 choicess-container"
+									>
+										<input
+											type="button"
+											class="button hover:bg-[var(--secondary)] cursor-pointer button flex-1 bg-[var(--primary)] text-[var(--light)] border-[var(--dark)] transition-all duration-[0.25s] ease-[ease] px-6 py-3 rounded-lg"
+											id="rock"
+											onclick=""
+											value="Rock"
+										/>
+										<input
+											type="button"
+											class="button hover:bg-[var(--secondary)] cursor-pointer button flex-1 bg-[var(--primary)] text-[var(--light)] border-[var(--dark)] transition-all duration-[0.25s] ease-[ease] px-6 py-3 rounded-lg"
+											id="paper"
+											onclick=""
+											value="Paper"
+										/>
+										<input
+											type="button"
+											class="button hover:bg-[var(--secondary)] cursor-pointer button flex-1 bg-[var(--primary)] text-[var(--light)] border-[var(--dark)] transition-all duration-[0.25s] ease-[ease] px-6 py-3 rounded-lg"
+											id="scissors"
+											onclick=""
+											value="Scissors"
+										/>
+										<input
+											type="button"
+											class="button hover:bg-[var(--secondary)] cursor-pointer button flex-1 bg-transparent border text-[var(--primary)] hover:text-[var(--light)] border-[var(--primary)] transition-all duration-[0.25s] ease-[ease] px-6 py-3 rounded-lg"
+											id="skip"
+											onclick=""
+											value="Skip"
+										/>
+										<input
+											type="button"
+											class="button hover:bg-[var(--secondary)] cursor-pointer button flex-1 bg-transparent border text-[var(--primary)] hover:text-[var(--light)] border-[var(--primary)] transition-all duration-[0.25s] ease-[ease] px-6 py-3 rounded-lg"
+											id="heal"
+											onclick=""
+											value="Heal"
+										/>
+									</div>
+								</div>
+								<div
+									class="flex-1 h-full flex justify-center items-center relative"
+								>
+									<div
+										class="w-[90%] h-min absolute top-[5%] flex flex-col items-end"
+									>
+										<span
+											class="text-red-600 font-semibold text-2xl"
+											>PLAYER 2</span
+										>
+										<div
+											class="w-full border-red-600 border rounded bg-emerald-100 flex justify-start relative"
+										>
+											<span
+												id="robot-hp-number"
+												class="p-1 text-red-500 font-semibold absolute top-[50%] translate-y-[-50%] right-[4%]"
+												>90</span
+											>
+											<div
+												id="robot-hp-display"
+												class="transition-all flex justify-start items-center rounded w-[calc(100%)] h-[20px] bg-emerald-500"
+											></div>
+										</div>
+									</div>
+
+									<div
+										class="w-[90%] h-min absolute bottom-[5%] flex gap-2 flex-col items-start"
+									>
+										<div class="w-full text-right">
+											<span
+												class="text-red-600 font-semibold text-2xl"
+												>Momentum</span
+											>
+											<div
+												class="w-full border-red-600 border rounded bg-transparent flex justify-end relative"
+											>
+												<span
+													id="robot-momentum-number"
+													class="p-1 text-gray-200 font-semibold absolute top-[50%] translate-y-[-50%] right-[4%]"
+													>0</span
+												>
+												<div
+													id="robot-momentum-display"
+													class="transition-all flex justify-start items-center rounded w-[calc(0%)] h-[20px] bg-blue-500"
+												></div>
+											</div>
+										</div>
+										<div class="w-full text-right">
+											<span
+												class="text-red-600 font-semibold text-2xl"
+												>Fatigue</span
+											>
+											<div
+												class="w-full border-red-600 border rounded bg-transparent flex justify-end relative"
+											>
+												<span
+													id="robot-fatigue-number"
+													class="p-1 text-gray-200 font-semibold absolute top-[50%] translate-y-[-50%] right-[4%]"
+													>0</span
+												>
+												<div
+													id="robot-fatigue-display"
+													class="transition-all flex justify-start items-center rounded w-[calc(0%)] h-[20px] bg-red-500"
+												></div>
+											</div>
+										</div>
+									</div>
+
+									<h3 class="text-xl outcome" id="robot-outcome"></h3>
+
+									<img
+										src="/v1rock.svg"
+										alt=""
+										class="w-[200px] h-[200px] drop-shadow-[]"
+										id="robot-hand"
+									/>
+								</div>
+							</div>
+
+							<!-- <div class="absolute inset-0 flex flex-col items-center justify-center bg-dark/80 backdrop-blur-sm">
+                   </div> -->
+						</div>
+
+						<div class="p-4 md:p-6 border-t border-primary/20">
+							<p class="text-center">Round 1</p>
+						</div>
+
+						<div class="p-4 md:p-6 border-t border-primary/20">
+							<div class="grid grid-cols-2 md:grid-cols-1 gap-4">
+								<div
+									class="bg-dark/50 p-4 flex flex-col gap-4 rounded-lg"
+								>
+									<div id="player-upgrade-points">
+										Player 1 upgrade points: 0
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												id="upgrade-strength"
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Strength
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="player-upgrade-strength-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												id="upgrade-precision"
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Precision
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="player-upgrade-precision-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												id="upgrade-crit"
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Crit
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="player-upgrade-crit-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												id="upgrade-speed"
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Speed
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="player-upgrade-speed-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												id="upgrade-defense"
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												defense
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="player-upgrade-defense-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												id="upgrade-healing"
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Healing
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="player-upgrade-healing-display"
+												></div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div
+									class="bg-dark/50 p-4 flex flex-col gap-4 rounded-lg"
+								>
+									<div id="robot-upgrade-points">
+										Player 2 upgrade points: 0
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="opacity-0 border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												disabled
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Strength
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="robot-upgrade-strength-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="opacity-0 border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												disabled
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Precision
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="robot-upgrade-precision-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="opacity-0 border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												disabled
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Crit
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="robot-upgrade-crit-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="opacity-0 border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												disabled
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Speed
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="robot-upgrade-speed-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="opacity-0 border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												disabled
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												defense
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="robot-upgrade-defense-display"
+												></div>
+											</div>
+										</div>
+									</div>
+									<div class="flex gap-8">
+										<div
+											class="flex justify-center items-center gap-4"
+										>
+											<button
+												class="opacity-0 border-gray-300 hover:border-red-400 border px-4 py-1 rounded-md text-gray-300 hover:text-red-400"
+												disabled
+											>
+												Upgrade
+											</button>
+											<span
+												class="min-w-[75px] text-left"
+											>
+												Healing
+											</span>
+										</div>
+										<div
+											class="flex flex-1 justify-center items-center"
+										>
+											<div
+												class="bg-gray-300 w-full h-min rounded border-gray-100"
+											>
+												<div
+													class="p-2 bg-blue-500 w-[50%] rounded"
+													id="robot-upgrade-healing-display"
+												></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<footer class="flex justify-center items-center min-h-[100px]">
+			<p class="text-center">
+				&copy; Fateshaper 2024. All Rights Reserved.
+			</p>
+		</footer>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const menuToggle = document.getElementById("menu-toggle");
+				const mobileMenu = document.getElementById("mobile-menu");
+
+				menuToggle.addEventListener("click", function () {
+					mobileMenu.classList.toggle("hidden");
+				});
+			});
+		</script>
+	</body>
+</html>

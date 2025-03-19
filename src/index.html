@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fateshaper - Advanced Rock-Paper-Scissors Combat Game</title>
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Rajdhani', 'sans-serif'],
+            display: ['Orbitron', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      background-color: #0f172a;
+      background-image:
+        radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    }
+  </style>
+</head>
+
+<body class="text-white">
+  <header class="fixed top-0 w-full z-50 bg-[#0f172a]/80 backdrop-blur-lg border-b border-violet-500/20">
+    <nav class="container mx-auto px-4 max-w-screen-xl py-4 flex justify-between items-center">
+      <a href="#" class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-violet-500" width="24" height="24"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+        <span class="text-2xl font-display font-bold">Fateshaper</span>
+      </a>
+      <div class="hidden md:flex gap-8 font-medium">
+        <a href="#" class="text-violet-500 border-b-2 border-violet-500">Home</a>
+        <a href="/src/information/information.html" class="hover:text-violet-500 transition-colors">Information</a>
+        <a href="/src/game/game.html" class="hover:text-violet-500 transition-colors">Game</a>
+        <a href="/src/gallery/gallery.html" class="hover:text-violet-500 transition-colors">Gallery</a>
+        <a href="/src/contact/contact.html" class="hover:text-violet-500 transition-colors">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container mx-auto px-4 max-w-screen-xl pt-24 pb-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <div class="bg-gradient-to-br from-violet-500/10 to-emerald-500/10 rounded-3xl p-8 flex flex-col justify-center">
+        <h1 class="text-4xl md:text-6xl font-display font-bold mb-6">
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-emerald-500">
+            Fateshaper:
+          </span>
+          <br />
+          Advanced RPS Combat
+        </h1>
+        <p class="text-gray-400 text-lg mb-8">
+          Re-imagining rock, paper, scissors with strategic RPG elements for an epic gaming experience.
+        </p>
+        <div class="flex gap-4">
+          <button
+            class="bg-violet-500 hover:bg-violet-600 px-8 py-3 rounded-xl font-bold transition-all transform hover:scale-105">
+            Play Now
+          </button>
+          <button
+            class="border-2 border-violet-500/50 hover:border-violet-500 px-8 py-3 rounded-xl font-bold transition-all transform hover:scale-105">
+            Learn More
+          </button>
+        </div>
+      </div>
+      <div class="relative rounded-3xl overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=800&q=80"
+          alt="Fantasy game scene" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent"></div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="bg-violet-500/10 rounded-3xl p-6 hover:bg-violet-500/20 transition-colors group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-violet-500 mb-4" width="24" height="24"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="m18.5 5.5-12 12" />
+          <path d="m5.5 5.5 12 12" />
+        </svg>
+        <h3 class="text-xl font-bold mb-2">Tactical Combat</h3>
+        <p class="text-gray-400">Master strategic turn-based battles with unique combat mechanics beyond simple
+          rock-paper-scissors.</p>
+      </div>
+      <div class="bg-emerald-500/10 rounded-3xl p-6 hover:bg-emerald-500/20 transition-colors group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-emerald-500 mb-4" width="24" height="24"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" />
+        </svg>
+        <h3 class="text-xl font-bold mb-2">Dynamic Stats</h3>
+        <p class="text-gray-400">Manage strength, precision, crit, speed, fatigue, and momentum to gain the upper hand
+          in battle.</p>
+      </div>
+      <div class="bg-amber-500/10 rounded-3xl p-6 hover:bg-amber-500/20 transition-colors group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-amber-500 mb-4" width="24" height="24"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+        <h3 class="text-xl font-bold mb-2">Strategic Choices</h3>
+        <p class="text-gray-400">Decide when to attack, when to skip turns, and how to manage your fatigue and momentum.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-12">
+      <!-- <div class="bg-gradient-to-br from-violet-500/10 to-transparent rounded-3xl p-8">
+        <div class="flex items-center gap-4 mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-violet-500" width="24" height="24"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path
+              d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+            <path d="M5 3v4" />
+            <path d="M19 17v4" />
+            <path d="M3 5h4" />
+            <path d="M17 19h4" />
+          </svg>
+          <h2 class="text-2xl font-bold">Game Statistics</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-4 bg-white/5 rounded-xl">
+            <p class="text-gray-400">Active Players</p>
+            <p class="text-2xl font-bold">10,000+</p>
+          </div>
+          <div class="p-4 bg-white/5 rounded-xl">
+            <p class="text-gray-400">Battles Fought</p>
+            <p class="text-2xl font-bold">1M+</p>
+          </div>
+          <div class="p-4 bg-white/5 rounded-xl">
+            <p class="text-gray-400">Win Rate</p>
+            <p class="text-2xl font-bold">48%</p>
+          </div>
+          <div class="p-4 bg-white/5 rounded-xl">
+            <p class="text-gray-400">Avg. Rounds</p>
+            <p class="text-2xl font-bold">12</p>
+          </div>
+        </div>
+      </div> -->
+      <div class="bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl p-8 flex flex-col justify-between">
+        <div class="flex items-center gap-4 mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-emerald-500" width="24" height="24"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="2" y="6" width="20" height="12" rx="2" />
+            <path d="M12 12h.01" />
+            <path d="M7 12h.01" />
+            <path d="M17 12h.01" />
+          </svg>
+          <h2 class="text-2xl font-bold">Ready to Play?</h2>
+        </div>
+        <div>
+          <p class="text-gray-400 mb-6">Join thousands of players in this epic adventure. Your journey begins now!</p>
+          <button
+            class="bg-emerald-500 hover:bg-emerald-600 px-8 py-3 rounded-xl font-bold transition-all transform hover:scale-105">
+            Start Playing
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-violet-500/20 py-8">
+    <div class="container mx-auto px-4 max-w-screen-xl text-center text-gray-400">
+      <p>&copy; 2024 Fateshaper. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+:root {
+	--max-w-xl: 1280px;
+	--max-w-lg: 1024px;
+	--max-w-sm: 720px;
+
+	--primary: #c62e2e;
+	--secondary: #f95454;
+	--tertiary: #77cdff;
+	--light: #feeeef;
+	--dark: #0f0f0f;
+
+	--vh-primary: 92.5vh;
+	--vh-secondary: 7.5vh;
+}
+
+.toss {
+	animation: toss 1.5s ease;
+}
+
+@keyframes toss {
+	0% {
+		transform: translateY(0px) scale(1);
+	}
+
+	33.33% {
+		transform: translateY(-20px) scale(0.75);
+	}
+
+	50% {
+		transform: translateY(0px) scale(0.80);
+	}
+
+	66.66% {
+		transform: translateY(-20px) scale(0.75);
+	}
+
+	100% {
+		transform: translateY(0px) scale(0.95);
+	}
+}
+
+.outcome {
+	position: absolute;
+	font-weight: bold;
+	top: 25%;
+	transform: translateY(-50%);
+	height: min-content;
+	width: 100%;
+	text-align: center;
+	opacity: 1;
+	/* text-shadow: black 1px 1px 10px; */
+
+	animation: outcome-float 2s ease  ;
+}
+
+.outcome-damage {
+  color: #e74c3c;
+  font-weight: bold;
+}
+.outcome-heal {
+  color: #27ae60;
+  font-weight: bold;
+}
+.outcome-miss {
+  color: #95a5a6;
+  font-style: italic;
+}
+.outcome-skip {
+  color: #3498db;
+  font-style: italic;
+}
+.outcome-crit {
+  color: #d35400;
+  font-weight: bold;
+}
+
+@keyframes outcome-float {
+	0% {
+		top: 50%;
+		opacity: 0;
+	}100% {
+		top: 25%;
+		opacity: 1;
+	}
+}
+
