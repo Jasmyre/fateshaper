@@ -1,7 +1,17 @@
+const paramsString = window.location.search;
+const searchParams = new URLSearchParams(paramsString);
+const urlClass = searchParams.get("class") as
+	| "Warrior"
+	| "Mage"
+	| "Rogue"
+	| "Guardian"
+	| "Assassin";
+
+
+
 // ===== Balancing Constants =====
 const ROUND_DELAY = 1400; // ms for round animations
 const OUTCOME_DISPLAY_DURATION = 3000; // ms to show outcome messages
-// const TOTAL_ROUND_DELAY = ROUND_DELAY + OUTCOME_DISPLAY_DURATION;
 
 // Health and Damage Constants
 const BASE_HEALTH = 100;
@@ -17,8 +27,106 @@ const TIE_FATIGUE_INCREASE = 1;
 const MOMENTUM_INCREASE = 10;
 
 // Healing Constants (nerfed)
-const HEAL_BASE = 1.5; // base heal value
-const HEAL_MULTIPLIER = 2; // healing stat multiplier
+const HEAL_BASE = 2;
+const HEAL_MULTIPLIER = 1.5;
+
+const MAX_UPGRADE = 10; // maximum upgrade above base
+
+// ===== Class Modifiers & Base Stat Constants =====
+const BASE_STRENGTH = 5;
+const BASE_PRECISION = 1;
+const BASE_CRIT = 1;
+const BASE_SPEED = 5;
+const BASE_DEFENSE = 5;
+const BASE_HEALING = 2;
+
+// Classes with modifiers
+const classes: {
+	[key: string]: {
+		health: number;
+		damage: number;
+		defense: number;
+		speed: number;
+		healing: number;
+	};
+} = {
+	Warrior: {
+		health: 1.3,
+		damage: 1.0,
+		defense: 1.5,
+		speed: 0.8,
+		healing: 0.7,
+	},
+	Mage: { health: 0.8, damage: 1.5, defense: 0.7, speed: 1.0, healing: 1.4 },
+	Rogue: { health: 1.0, damage: 1.3, defense: 0.8, speed: 1.6, healing: 0.8 },
+	Guardian: {
+		health: 1.5,
+		damage: 0.8,
+		defense: 1.7,
+		speed: 0.7,
+		healing: 1.0,
+	},
+	Assassin: {
+		health: 0.7,
+		damage: 1.6,
+		defense: 0.6,
+		speed: 1.8,
+		healing: 0.7,
+	},
+};
+
+const playerClass: "Warrior" | "Mage" | "Rogue" | "Guardian" | "Assassin" =
+	urlClass ?? "Assassin";
+const classNames = Object.keys(classes);
+const robotClass = classNames[Math.floor(Math.random() * classNames.length)];
+
+// Compute modded base stats
+const playerMaxHealth = BASE_HEALTH * classes[playerClass].health;
+const robotMaxHealth = BASE_HEALTH * classes[robotClass].health;
+
+const playerBaseStrength = BASE_STRENGTH * classes[playerClass].damage;
+const robotBaseStrength = BASE_STRENGTH * classes[robotClass].damage;
+
+const playerBaseDefense = BASE_DEFENSE * classes[playerClass].defense;
+const robotBaseDefense = BASE_DEFENSE * classes[robotClass].defense;
+
+const playerBaseSpeed = BASE_SPEED * classes[playerClass].speed;
+const robotBaseSpeed = BASE_SPEED * classes[robotClass].speed;
+
+const playerBaseHealing = BASE_HEALING * classes[playerClass].healing;
+const robotBaseHealing = BASE_HEALING * classes[robotClass].healing;
+
+// ===== Initial Game State =====
+let roundNum = 1;
+let playerHealth = playerMaxHealth,
+	robotHealth = robotMaxHealth;
+let playerHPLoss = 0,
+	robotHPLoss = 0;
+
+let playerStrength = playerBaseStrength,
+	robotStrength = robotBaseStrength;
+let playerDefense = playerBaseDefense,
+	robotDefense = robotBaseDefense;
+let playerSpeed = playerBaseSpeed,
+	robotSpeed = robotBaseSpeed;
+let playerHealing = playerBaseHealing,
+	robotHealing = robotBaseHealing;
+
+let playerPrecision = BASE_PRECISION,
+	robotPrecision = BASE_PRECISION;
+let playerCrit = BASE_CRIT,
+	robotCrit = BASE_CRIT;
+
+let playerFatigue = 0,
+	robotFatigue = 0;
+let playerMomentum = 0,
+	robotMomentum = 0;
+let playerUpgradePoints = 0,
+	robotUpgradePoints = 0;
+
+console.log("Player Class:", playerClass, classes[playerClass]);
+console.log("Robot Class:", robotClass, classes[robotClass]);
+console.log("Player Health:", playerHealth, "Robot Health:", robotHealth);
 
 // ===== Element Selectors =====
 const buttons = document.querySelectorAll(
@@ -59,7 +167,6 @@ const playerHPNumberDisplay = document.getElementById(
 const robotHPNumberDisplay = document.getElementById(
 	"robot-hp-number"
 ) as HTMLElement;
-
 const playerHPDisplay = document.getElementById(
 	"player-hp-display"
 ) as HTMLElement;
@@ -74,7 +181,6 @@ const playerMomentumNumberDisplay = document.getElementById(
 const robotMomentumNumberDisplay = document.getElementById(
 	"robot-momentum-number"
 ) as HTMLElement;
-
 const playerMomentumDisplay = document.getElementById(
 	"player-momentum-display"
 ) as HTMLElement;
@@ -88,7 +194,6 @@ const playerFatigueNumberDisplay = document.getElementById(
 const robotFatigueNumberDisplay = document.getElementById(
 	"robot-fatigue-number"
 ) as HTMLElement;
-
 const playerFatigueDisplay = document.getElementById(
 	"player-fatigue-display"
 ) as HTMLElement;
@@ -141,7 +246,6 @@ const robotUpgradeHealingDisplay = document.getElementById(
 	"robot-upgrade-healing-display"
 ) as HTMLElement;
 
-// Outcome containers (should be in your HTML)
 const playerOutcomeDisplay = document.getElementById(
 	"player-outcome"
 ) as HTMLElement;
@@ -149,42 +253,16 @@ const robotOutcomeDisplay = document.getElementById(
 	"robot-outcome"
 ) as HTMLElement;
 
-// ===== Global Game State Variables =====
-let roundNum = 1;
-let playerHealth = BASE_HEALTH,
-	robotHealth = BASE_HEALTH;
-let playerHPLoss = 0,
-	robotHPLoss = 0;
-let playerStrength = 1,
-	robotStrength = 1;
-let playerPrecision = 0,
-	robotPrecision = 0;
-let playerCrit = 0,
-	robotCrit = 0;
-let playerSpeed = 0,
-	robotSpeed = 0;
-let playerDefense = 0,
-	robotDefense = 0;
-let playerHealing = 0,
-	robotHealing = 0;
-let playerFatigue = 0,
-	robotFatigue = 0;
-let playerMomentum = 0,
-	robotMomentum = 0;
-let playerUpgradePoints = 0,
-	robotUpgradePoints = 0;
-
 // ===== Helper Functions =====
 
-// showOutcomeDirect: Sets outcome message on the given container using outcomeType for styling,
-// and then clears it after OUTCOME_DISPLAY_DURATION.
+// showOutcomeDirect: Displays outcome text directly in the given container and clears it after OUTCOME_DISPLAY_DURATION.
 function showOutcomeDirect(
 	container: HTMLElement,
 	text: string,
 	outcomeType: string
 ): void {
 	container.textContent = text;
-	container.className = ""; // Clear previous classes
+	container.className = ""; // Clear existing classes
 	container.classList.add("text-xl", "outcome", "block");
 	switch (outcomeType) {
 		case "damage":
@@ -211,12 +289,10 @@ function showOutcomeDirect(
 	}, OUTCOME_DISPLAY_DURATION);
 }
 
-// disableButtons: Disable or enable all action and upgrade buttons.
 function disableButtons(disable: boolean): void {
 	buttons.forEach((button) => (button.disabled = disable));
 }
 
-// checkWin: Checks if either player has reached 0 HP.
 function checkWin(): void {
 	if (robotHealth <= 0) {
 		window.location.href =
@@ -227,120 +303,89 @@ function checkWin(): void {
 	}
 }
 
-// finishRound: Called at the end of a round to update state and re-enable buttons.
-// function finishRound(roundOutcome: "player" | "robot" | "tie"): void {
-// 	playerUpgradePoints++;
-// 	robotUpgradePoints++;
-// 	robotAutoUpgrade();
-// 	updateStatsAfterRound(roundOutcome);
-// 	checkWin();
-// 	roundNum++;
-// 	updateRound();
-// 	// Re-enable buttons after outcome display duration
-// 	setTimeout(() => {
-// 		disableButtons(false);
-// 	}, OUTCOME_DISPLAY_DURATION);
-// }
-
-// logStats: For debugging purposes.
 function logStats(): void {
-	console.log(
-		"Player HP:",
-		playerHealth,
-		"Strength:",
-		playerStrength,
-		"Precision:",
-		playerPrecision,
-		"Crit:",
-		playerCrit,
-		"Speed:",
-		playerSpeed,
-		"Defense:",
-		playerDefense,
-		"Fatigue:",
-		playerFatigue,
-		"Momentum:",
-		playerMomentum,
-		"Healing:",
-		playerHealing,
-		"Upgrade Points:",
-		playerUpgradePoints
-	);
-	console.log(
-		"Robot HP:",
-		robotHealth,
-		"Strength:",
-		robotStrength,
-		"Precision:",
-		robotPrecision,
-		"Crit:",
-		robotCrit,
-		"Speed:",
-		robotSpeed,
-		"Defense:",
-		robotDefense,
-		"Fatigue:",
-		robotFatigue,
-		"Momentum:",
-		robotMomentum,
-		"Healing:",
-		robotHealing,
-		"Upgrade Points:",
-		robotUpgradePoints
-	);
+	console.log("Player Stats:", {
+		Health: playerHealth,
+		Strength: playerStrength,
+		Precision: playerPrecision,
+		Crit: playerCrit,
+		Speed: playerSpeed,
+		Defense: playerDefense,
+		Healing: playerHealing,
+		Fatigue: playerFatigue,
+		Momentum: playerMomentum,
+		Class: playerClass,
+	});
+	console.log("Robot Stats:", {
+		Health: robotHealth,
+		Strength: robotStrength,
+		Precision: robotPrecision,
+		Crit: robotCrit,
+		Speed: robotSpeed,
+		Defense: robotDefense,
+		Healing: robotHealing,
+		Fatigue: robotFatigue,
+		Momentum: robotMomentum,
+		Class: robotClass,
+	});
 }
 
-// updateRound: Updates UI elements to reflect the current game state.
 function updateRound(): void {
 	roundDisplay.textContent = `ROUND: ${roundNum}`;
-
-	playerHPNumberDisplay.textContent = String(playerHealth);
-	playerHPDisplay.style.width = `calc(${playerHealth}%)`;
+	playerHPNumberDisplay.textContent = String(playerHealth.toFixed(0));
+	playerHPDisplay.style.width = `${(playerHealth / playerMaxHealth) * 100}%`;
 	playerMomentumNumberDisplay.textContent = String(playerMomentum);
-	playerMomentumDisplay.style.width = `calc(${playerMomentum}%)`;
+	playerMomentumDisplay.style.width = `${playerMomentum}%`;
 	playerFatigueNumberDisplay.textContent = String(playerFatigue);
-	playerFatigueDisplay.style.width = `calc(${playerFatigue}%)`;
+	playerFatigueDisplay.style.width = `${playerFatigue}%`;
 
-	robotHPNumberDisplay.textContent = String(robotHealth);
-	robotHPDisplay.style.width = `calc(${robotHealth}%)`;
+	robotHPNumberDisplay.textContent = String(robotHealth.toFixed(0));
+	robotHPDisplay.style.width = `${(robotHealth / robotMaxHealth) * 100}%`;
 	robotMomentumNumberDisplay.textContent = String(robotMomentum);
-	robotMomentumDisplay.style.width = `calc(${robotMomentum}%)`;
+	robotMomentumDisplay.style.width = `${robotMomentum}%`;
 	robotFatigueNumberDisplay.textContent = String(robotFatigue);
-	robotFatigueDisplay.style.width = `calc(${robotFatigue}%)`;
+	robotFatigueDisplay.style.width = `${robotFatigue}%`;
 
 	playerUpgradePointsDisplay.textContent = `Player 1 upgrade points: ${playerUpgradePoints}`;
 	robotUpgradePointsDisplay.textContent = `Player 2 upgrade points: ${robotUpgradePoints}`;
 
-	playerUpgradeStrengthDisplay.style.width = `calc(0% + ${
-		playerStrength * 10
-	}%)`;
-	playerUpgradePrecisionDisplay.style.width = `calc(0% + ${
-		playerPrecision * 10
-	}%)`;
-	playerUpgradeCritDisplay.style.width = `calc(0% + ${playerCrit * 10}%)`;
-	playerUpgradeSpeedDisplay.style.width = `calc(0% + ${playerSpeed * 10}%)`;
-	playerUpgradeDefenseDisplay.style.width = `calc(0% + ${
-		playerDefense * 10
-	}%)`;
-	playerUpgradeHealingDisplay.style.width = `calc(0% + ${
-		playerHealing * 10
-	}%)`;
+	playerUpgradeStrengthDisplay.style.width = `${
+		(playerStrength - playerBaseStrength) * 10
+	}%`;
+	playerUpgradePrecisionDisplay.style.width = `${
+		(playerPrecision - BASE_PRECISION) * 10
+	}%`;
+	playerUpgradeCritDisplay.style.width = `${(playerCrit - BASE_CRIT) * 10}%`;
+	playerUpgradeSpeedDisplay.style.width = `${
+		(playerSpeed - playerBaseSpeed) * 10
+	}%`;
+	playerUpgradeDefenseDisplay.style.width = `${
+		(playerDefense - playerBaseDefense) * 10
+	}%`;
+	playerUpgradeHealingDisplay.style.width = `${
+		(playerHealing - playerBaseHealing) * 10
+	}%`;
 
-	robotUpgradeStrengthDisplay.style.width = `calc(0% + ${
-		robotStrength * 10
-	}%)`;
-	robotUpgradePrecisionDisplay.style.width = `calc(0% + ${
-		robotPrecision * 10
-	}%)`;
-	robotUpgradeCritDisplay.style.width = `calc(0% + ${robotCrit * 10}%)`;
-	robotUpgradeSpeedDisplay.style.width = `calc(0% + ${robotSpeed * 10}%)`;
-	robotUpgradeDefenseDisplay.style.width = `calc(0% + ${robotDefense * 10}%)`;
-	robotUpgradeHealingDisplay.style.width = `calc(0% + ${robotHealing * 10}%)`;
+	robotUpgradeStrengthDisplay.style.width = `${
+		(robotStrength - robotBaseStrength) * 10
+	}%`;
+	robotUpgradePrecisionDisplay.style.width = `${
+		(robotPrecision - BASE_PRECISION) * 10
+	}%`;
+	robotUpgradeCritDisplay.style.width = `${(robotCrit - BASE_CRIT) * 10}%`;
+	robotUpgradeSpeedDisplay.style.width = `${
+		(robotSpeed - robotBaseSpeed) * 10
+	}%`;
+	robotUpgradeDefenseDisplay.style.width = `${
+		(robotDefense - robotBaseDefense) * 10
+	}%`;
+	robotUpgradeHealingDisplay.style.width = `${
+		(robotHealing - robotBaseHealing) * 10
+	}%`;
 
 	logStats();
 }
 
-// updateStatsAfterRound: Adjusts fatigue and momentum based on the round outcome.
 function updateStatsAfterRound(result: "player" | "robot" | "tie"): void {
 	if (result === "player") {
 		playerMomentum += MOMENTUM_INCREASE;
@@ -362,7 +407,6 @@ function updateStatsAfterRound(result: "player" | "robot" | "tie"): void {
 	robotMomentum = Math.min(Math.max(robotMomentum, 0), 100);
 }
 
-// logDamageCalculation: Logs the detailed damage calculation for debugging.
 function logDamageCalculation(
 	effectiveStrength: number,
 	baseDamage: number,
@@ -393,7 +437,7 @@ function logDamageCalculation(
 	console.log("=====================================");
 }
 
-// calculateDamage: Computes damage and returns an object with damage and outcome.
+// Modified calculateDamage to include defenderFatigue so that the higher a player's fatigue, the less effective their defense.
 function calculateDamage(
 	attackerStrength: number,
 	attackerPrecision: number,
@@ -401,7 +445,8 @@ function calculateDamage(
 	defenderSpeed: number,
 	defenderDefense: number,
 	attackerFatigue: number,
-	attackerMomentum: number
+	attackerMomentum: number,
+	defenderFatigue: number
 ): { damage: number; outcome: string } {
 	const effectiveStrength =
 		attackerStrength *
@@ -448,8 +493,12 @@ function calculateDamage(
 
 	const speedReduction = defenderSpeed * SPEED_REDUCTION_PER_POINT;
 	const damageAfterSpeed = baseDamage * critMultiplier * (1 - speedReduction);
+
+	// Adjust defender's effective defense based on their fatigue (the higher the fatigue, the lower the effective defense)
+	const effectiveDefense = defenderDefense * (1 - defenderFatigue / 100);
 	const defenseReductionFactor =
-		1 - defenderDefense * DEFENSE_REDUCTION_PER_POINT;
+		1 - effectiveDefense * DEFENSE_REDUCTION_PER_POINT;
+
 	const damageAfterReduction = damageAfterSpeed * defenseReductionFactor;
 	const finalDamage = Math.max(Math.floor(damageAfterReduction), 0);
 
@@ -465,9 +514,8 @@ function calculateDamage(
 	return { damage: finalDamage, outcome: outcomeText };
 }
 
-// calculateHeal: Computes the heal amount based on a base value and the healing stat.
 function calculateHeal(base: number, healingStat: number): number {
-	return base + healingStat * HEAL_MULTIPLIER;
+	return Math.round(base + healingStat * HEAL_MULTIPLIER);
 }
 
 // ===== Upgrade Functions =====
@@ -479,42 +527,42 @@ function upgradePlayerStat(stat: string): void {
 	}
 	switch (stat) {
 		case "strength":
-			if (playerStrength === 10) {
+			if (playerStrength - playerBaseStrength >= MAX_UPGRADE) {
 				alert("Player strength is max");
 				return;
 			}
 			playerStrength++;
 			break;
 		case "precision":
-			if (playerPrecision === 10) {
+			if (playerPrecision - BASE_PRECISION >= MAX_UPGRADE) {
 				alert("Player precision is max");
 				return;
 			}
 			playerPrecision++;
 			break;
 		case "crit":
-			if (playerCrit === 10) {
+			if (playerCrit - BASE_CRIT >= MAX_UPGRADE) {
 				alert("Player crit is max");
 				return;
 			}
 			playerCrit++;
 			break;
 		case "speed":
-			if (playerSpeed === 10) {
+			if (playerSpeed - playerBaseSpeed >= MAX_UPGRADE) {
 				alert("Player speed is max");
 				return;
 			}
 			playerSpeed++;
 			break;
 		case "defense":
-			if (playerDefense === 10) {
+			if (playerDefense - playerBaseDefense >= MAX_UPGRADE) {
 				alert("Player defense is max");
 				return;
 			}
 			playerDefense++;
 			break;
 		case "healing":
-			if (playerHealing === 10) {
+			if (playerHealing - playerBaseHealing >= MAX_UPGRADE) {
 				alert("Player healing is max");
 				return;
 			}
@@ -531,27 +579,27 @@ function upgradePlayerStat(stat: string): void {
 function upgradeRobotStat(stat: string): void {
 	switch (stat) {
 		case "strength":
-			if (robotStrength === 10) return;
+			if (robotStrength - robotBaseStrength >= MAX_UPGRADE) return;
 			robotStrength++;
 			break;
 		case "precision":
-			if (robotPrecision === 10) return;
+			if (robotPrecision - BASE_PRECISION >= MAX_UPGRADE) return;
 			robotPrecision++;
 			break;
 		case "crit":
-			if (robotCrit === 10) return;
+			if (robotCrit - BASE_CRIT >= MAX_UPGRADE) return;
 			robotCrit++;
 			break;
 		case "speed":
-			if (robotSpeed === 10) return;
+			if (robotSpeed - robotBaseSpeed >= MAX_UPGRADE) return;
 			robotSpeed++;
 			break;
 		case "defense":
-			if (robotDefense === 10) return;
+			if (robotDefense - robotBaseDefense >= MAX_UPGRADE) return;
 			robotDefense++;
 			break;
 		case "healing":
-			if (robotHealing === 10) return;
+			if (robotHealing - robotBaseHealing >= MAX_UPGRADE) return;
 			robotHealing++;
 			break;
 		default:
@@ -570,7 +618,26 @@ function robotAutoUpgrade(): void {
 		"healing",
 	];
 	while (robotUpgradePoints > 0) {
-		const stat = stats[Math.floor(Math.random() * stats.length)];
+		const availableStats = stats.filter((stat) => {
+			const currentValue = eval(
+				"robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
+			);
+			let baseValue;
+			if (stat === "strength") baseValue = robotBaseStrength;
+			else if (stat === "defense") baseValue = robotBaseDefense;
+			else if (stat === "speed") baseValue = robotBaseSpeed;
+			else if (stat === "healing") baseValue = robotBaseHealing;
+			else if (stat === "precision" || stat === "crit")
+				baseValue = stat === "precision" ? BASE_PRECISION : BASE_CRIT;
+			if (baseValue === undefined) return (baseValue = 0);
+			return currentValue - baseValue < MAX_UPGRADE;
+		});
+		if (availableStats.length === 0) {
+			robotUpgradePoints = 0;
+			break;
+		}
+		const stat =
+			availableStats[Math.floor(Math.random() * availableStats.length)];
 		upgradeRobotStat(stat);
 		console.log(
 			`Robot upgraded ${stat} to ${eval(
@@ -622,7 +689,7 @@ function processRound(playerAction: Action): void {
 		`Player Action: ${playerAction} | Robot Action: ${robotAction}`
 	);
 	disableButtons(true);
-	// Start with default images and toss animation
+	// Set default images and start toss animation
 	playerHand.src = "/v1rock.svg";
 	robotHand.src = "/v1rock.svg";
 	playerHand.classList.add("toss");
@@ -636,7 +703,6 @@ function processRound(playerAction: Action): void {
 		playerHand.classList.remove("toss");
 		robotHand.classList.remove("toss");
 
-		// Process branches based on actions
 		if (
 			playerAction.startsWith("attack") &&
 			robotAction.startsWith("attack")
@@ -661,12 +727,13 @@ function processRound(playerAction: Action): void {
 					robotSpeed,
 					robotDefense,
 					playerFatigue,
-					playerMomentum
+					playerMomentum,
+					robotFatigue
 				);
 				damage = result.damage;
 				console.log("Damage dealt to robot:", damage);
 				robotHPLoss += damage;
-				robotHealth = Math.max(BASE_HEALTH - robotHPLoss, 0);
+				robotHealth = Math.max(robotMaxHealth - robotHPLoss, 0);
 				roundOutcome = "player";
 				if (result.outcome === "crit")
 					showOutcomeDirect(
@@ -691,12 +758,13 @@ function processRound(playerAction: Action): void {
 					playerSpeed,
 					playerDefense,
 					robotFatigue,
-					robotMomentum
+					robotMomentum,
+					playerFatigue
 				);
 				damage = result.damage;
 				console.log("Damage dealt to player:", damage);
 				playerHPLoss += damage;
-				playerHealth = Math.max(BASE_HEALTH - playerHPLoss, 0);
+				playerHealth = Math.max(playerMaxHealth - playerHPLoss, 0);
 				roundOutcome = "robot";
 				if (result.outcome === "crit")
 					showOutcomeDirect(
@@ -730,12 +798,13 @@ function processRound(playerAction: Action): void {
 				robotSpeed,
 				robotDefense,
 				playerFatigue,
-				playerMomentum
+				playerMomentum,
+				robotFatigue
 			);
 			damage = result.damage;
 			console.log("Damage dealt to robot:", damage);
 			robotHPLoss += damage;
-			robotHealth = Math.max(BASE_HEALTH - robotHPLoss, 0);
+			robotHealth = Math.max(robotMaxHealth - robotHPLoss, 0);
 			roundOutcome = "player";
 			let outcomeMsg = "skipped, ";
 			if (result.outcome === "crit")
@@ -753,7 +822,7 @@ function processRound(playerAction: Action): void {
 			console.log("Robot heals!");
 			healAmount = calculateHeal(HEAL_BASE, robotHealing);
 			robotHPLoss = Math.max(robotHPLoss - healAmount, 0);
-			robotHealth = Math.min(robotHealth + healAmount, BASE_HEALTH);
+			robotHealth = Math.min(robotHealth + healAmount, robotMaxHealth);
 			console.log(`Robot healed for ${healAmount} HP.`);
 			const result = calculateDamage(
 				playerStrength,
@@ -762,12 +831,13 @@ function processRound(playerAction: Action): void {
 				robotSpeed,
 				robotDefense,
 				playerFatigue,
-				playerMomentum
+				playerMomentum,
+				robotFatigue
 			);
 			damage = result.damage;
 			console.log("Damage dealt to robot:", damage);
 			robotHPLoss += damage;
-			robotHealth = Math.max(BASE_HEALTH - robotHPLoss, 0);
+			robotHealth = Math.max(robotMaxHealth - robotHPLoss, 0);
 			roundOutcome = "player";
 			showOutcomeDirect(
 				robotOutcomeDisplay,
@@ -796,12 +866,13 @@ function processRound(playerAction: Action): void {
 				playerSpeed,
 				playerDefense,
 				robotFatigue,
-				robotMomentum
+				robotMomentum,
+				playerFatigue
 			);
 			damage = result.damage;
 			console.log("Damage dealt to player:", damage);
 			playerHPLoss += damage;
-			playerHealth = Math.max(BASE_HEALTH - playerHPLoss, 0);
+			playerHealth = Math.max(playerMaxHealth - playerHPLoss, 0);
 			roundOutcome = "robot";
 			let outcomeMsg = "skipped, ";
 			if (result.outcome === "crit")
@@ -819,7 +890,7 @@ function processRound(playerAction: Action): void {
 			console.log("Player heals!");
 			healAmount = calculateHeal(HEAL_BASE, playerHealing);
 			playerHPLoss = Math.max(playerHPLoss - healAmount, 0);
-			playerHealth = Math.min(playerHealth + healAmount, BASE_HEALTH);
+			playerHealth = Math.min(playerHealth + healAmount, playerMaxHealth);
 			console.log(`Player healed for ${healAmount} HP.`);
 			playerMomentum = Math.max(playerMomentum - 5, 0);
 			playerFatigue += 5;
@@ -830,12 +901,13 @@ function processRound(playerAction: Action): void {
 				playerSpeed,
 				playerDefense,
 				robotFatigue,
-				robotMomentum
+				robotMomentum,
+				playerFatigue
 			);
 			damage = result.damage;
 			console.log("Damage dealt to player:", damage);
 			playerHPLoss += damage;
-			playerHealth = Math.max(BASE_HEALTH - playerHPLoss, 0);
+			playerHealth = Math.max(playerMaxHealth - playerHPLoss, 0);
 			roundOutcome = "robot";
 			showOutcomeDirect(
 				playerOutcomeDisplay,
@@ -863,12 +935,15 @@ function processRound(playerAction: Action): void {
 			const healAmountPlayer = calculateHeal(HEAL_BASE, playerHealing);
 			playerHealth = Math.min(
 				playerHealth + healAmountPlayer,
-				BASE_HEALTH
+				playerMaxHealth
 			);
 			playerMomentum = Math.max(playerMomentum - 5, 0);
 			playerFatigue += 5;
 			const healAmountRobot = calculateHeal(HEAL_BASE, robotHealing);
-			robotHealth = Math.min(robotHealth + healAmountRobot, BASE_HEALTH);
+			robotHealth = Math.min(
+				robotHealth + healAmountRobot,
+				robotMaxHealth
+			);
 			robotMomentum = Math.max(robotMomentum - 5, 0);
 			robotFatigue += 5;
 			console.log(
@@ -898,7 +973,7 @@ function processRound(playerAction: Action): void {
 				const healAmountRobot = calculateHeal(HEAL_BASE, robotHealing);
 				robotHealth = Math.min(
 					robotHealth + healAmountRobot,
-					BASE_HEALTH
+					robotMaxHealth
 				);
 				robotMomentum = Math.max(robotMomentum - 5, 0);
 				robotFatigue += 5;
@@ -921,7 +996,7 @@ function processRound(playerAction: Action): void {
 				);
 				playerHealth = Math.min(
 					playerHealth + healAmountPlayer,
-					BASE_HEALTH
+					playerMaxHealth
 				);
 				playerMomentum = Math.max(playerMomentum - 5, 0);
 				playerFatigue += 5;
@@ -942,13 +1017,12 @@ function processRound(playerAction: Action): void {
 		playerUpgradePoints++;
 		robotUpgradePoints++;
 		robotAutoUpgrade();
-
 		updateStatsAfterRound(roundOutcome);
 		checkWin();
 		roundNum++;
 		updateRound();
 
-		// Re-enable buttons only after outcome display duration
+		// Re-enable buttons after outcome display duration
 		setTimeout(() => {
 			disableButtons(false);
 		}, OUTCOME_DISPLAY_DURATION);
