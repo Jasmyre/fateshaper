@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Class Selection - Fateshaper</title>
+  <link rel="stylesheet" href="/utils.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script>
@@ -19,14 +20,17 @@
             secondary: "#10b981",
             dark: "#0f172a",
             light: "#f8fafc",
-            assassin: "#8b5cf6",
-            defender: "#10b981",
-            healer: "#3b82f6",
+            warrior: "#dc2626",
+            mage: "#8b5cf6",
+            rogue: "#f59e0b",
+            guardian: "#10b981",
+            assassin: "#3b82f6",
           }
         },
       },
     };
   </script>
+  <script src="./ts/utils.ts" defer></script>
   <style>
     body {
       background-color: #0f172a;
@@ -41,27 +45,56 @@
       100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
     }
     
-    .pulse-border-assassin {
+    .pulse-border-warrior {
       animation: pulse-border 2s infinite;
+      animation-name: pulse-border-warrior;
     }
     
-    .pulse-border-defender {
-      animation: pulse-border 2s infinite;
-      animation-name: pulse-border-defender;
+    @keyframes pulse-border-warrior {
+      0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
     }
     
-    @keyframes pulse-border-defender {
+    .pulse-border-mage {
+      animation: pulse-border 2s infinite;
+      animation-name: pulse-border-mage;
+    }
+    
+    @keyframes pulse-border-mage {
+      0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+    }
+    
+    .pulse-border-rogue {
+      animation: pulse-border 2s infinite;
+      animation-name: pulse-border-rogue;
+    }
+    
+    @keyframes pulse-border-rogue {
+      0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+    
+    .pulse-border-guardian {
+      animation: pulse-border 2s infinite;
+      animation-name: pulse-border-guardian;
+    }
+    
+    @keyframes pulse-border-guardian {
       0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
       70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
       100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
     
-    .pulse-border-healer {
+    .pulse-border-assassin {
       animation: pulse-border 2s infinite;
-      animation-name: pulse-border-healer;
+      animation-name: pulse-border-assassin;
     }
     
-    @keyframes pulse-border-healer {
+    @keyframes pulse-border-assassin {
       0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
       70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
       100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
@@ -69,6 +102,7 @@
     
     .class-card {
       transition: all 0.3s ease;
+      height: 100%;
     }
     
     .class-card:hover {
@@ -78,10 +112,66 @@
     .class-card.selected {
       transform: translateY(-10px);
     }
+
+    .stat-tooltip {
+      position: relative;
+      cursor: help;
+    }
+
+    .stat-tooltip .tooltip-text {
+      visibility: hidden;
+      width: 200px;
+      background-color: rgba(15, 23, 42, 0.95);
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.875rem;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .stat-tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .special-ability {
+      position: relative;
+      overflow: hidden;
+      border-radius: 0.5rem;
+    }
+
+    .special-ability::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+      transform: translateX(-100%);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      20% { transform: translateX(100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .class-icon {
+      filter: drop-shadow(0 0 8px currentColor);
+    }
   </style>
 </head>
 <body class="text-white min-h-screen flex flex-col">
-  <!-- Header/Navigation -->
   <header class="bg-dark/80 backdrop-blur-sm sticky top-0 z-50 border-b border-primary/20">
     <div class="container mx-auto px-4 max-w-screen-xl">
       <nav class="flex justify-between items-center py-4">
@@ -92,16 +182,14 @@
           <span class="text-2xl font-display font-bold text-white">Fateshaper</span>
         </a>
         
-        <!-- Desktop Navigation -->
         <ul class="hidden md:flex space-x-8 font-medium">
-          <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
-          <li><a href="information.html" class="text-white hover:text-primary transition-colors">Information</a></li>
-          <li><a href="game.html" class="text-white hover:text-primary transition-colors">Game</a></li>
-          <li><a href="gallery.html" class="text-white hover:text-primary transition-colors">Gallery</a></li>
-          <li><a href="contact.html" class="text-white hover:text-primary transition-colors">Contact</a></li>
+          <li><a href="/index" class="text-white hover:text-primary transition-colors">Home</a></li>
+          <li><a href="/information" class="text-white hover:text-primary transition-colors">Information</a></li>
+          <li><a href="/class-selection" class="text-violet-500 border-b-2 border-violet-500">Game</a></li>
+          <li><a href="/gallery" class="text-white hover:text-primary transition-colors">Gallery</a></li>
+          <li><a href="/contact" class="text-white hover:text-primary transition-colors">Contact</a></li>
         </ul>
         
-        <!-- Mobile menu button -->
         <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -110,7 +198,6 @@
       </nav>
     </div>
 
-    <!-- Mobile Navigation -->
     <div id="mobile-menu" class="hidden md:hidden bg-dark/95 backdrop-blur-md">
       <ul class="flex flex-col items-center py-4 space-y-4 font-medium">
         <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
@@ -122,65 +209,295 @@
     </div>
   </header>
 
-  <!-- Main Content -->
   <main class="flex-grow py-16">
     <div class="container mx-auto px-4 max-w-screen-xl">
-      <!-- Page Header -->
       <div class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
             Choose Your Class
           </span>
         </h1>
-        <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto mb-6">
           Select a class that matches your playstyle. Each class has unique strengths and abilities that affect your gameplay strategy.
         </p>
       </div>
       
-      <!-- Class Selection Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <!-- Assassin Class -->
-        <div id="assassin-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-assassin/30 overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div id="warrior-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-warrior/30 overflow-hidden">
+          <div class="h-48 bg-gradient-to-b from-warrior/20 to-transparent relative">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-warrior/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="p-6">
+            <h2 class="text-2xl font-display font-bold text-warrior mb-2">Warrior</h2>
+            <p class="text-gray-300 mb-4">Powerful frontline fighters with high health and defense. Warriors excel at absorbing damage while dealing consistent attacks.</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Health</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-warrior h-2 rounded-full" style="width: 90%"></div>
+                </div>
+                <span class="tooltip-text">Warriors have 30% more health than average, allowing them to withstand heavy damage.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Damage</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-warrior h-2 rounded-full" style="width: 70%"></div>
+                </div>
+                <span class="tooltip-text">Warriors deal average damage, focusing more on survival than burst damage.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Speed</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-warrior h-2 rounded-full" style="width: 50%"></div>
+                </div>
+                <span class="tooltip-text">Warriors are slower than average, with 20% reduced speed.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Defense</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-warrior h-2 rounded-full" style="width: 95%"></div>
+                </div>
+                <span class="tooltip-text">Warriors have 50% higher defense, reducing incoming damage significantly.</span>
+              </div>
+            </div>
+            
+            <div class="special-ability bg-warrior/10 p-3 rounded-lg mb-6">
+              <h3 class="text-warrior font-bold text-sm mb-1">SPECIAL ABILITY</h3>
+              <p class="text-gray-300 text-sm">Berserker Rage: Gain increased damage when health drops below 30%.</p>
+            </div>
+            
+            <button class="select-class w-full bg-warrior/20 hover:bg-warrior text-warrior hover:text-white border border-warrior py-2 rounded-lg transition-colors" data-class="warrior">
+              Select Warrior
+            </button>
+          </div>
+        </div>
+        
+        <div id="mage-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-mage/30 overflow-hidden">
+          <div class="h-48 bg-gradient-to-b from-mage/20 to-transparent relative">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-mage/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.64 3.64a1.35 1.35 0 0 0-1.19-.38L8.51 5.65A5 5 0 0 0 5.65 8.51L3.27 20.44c-.19.74.34 1.46 1.08 1.46.18 0 .36-.05.51-.14L16.4 15.9a5.004 5.004 0 0 0 2.86-2.86l5.86-11.54c.19-.37.19-.82 0-1.19a1.14 1.14 0 0 0-3.48 3.28z"></path>
+                <path d="M7.7 15.3A4.52 4.52 0 0 1 5.5 13.1C5.5 11.4 6.9 10 8.6 10c1.7 0 3.1 1.4 3.1 3.1 0 .8-.3 1.6-.9 2.2"></path>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="p-6">
+            <h2 class="text-2xl font-display font-bold text-mage mb-2">Mage</h2>
+            <p class="text-gray-300 mb-4">Masters of arcane power with high damage and healing abilities. Mages are fragile but can devastate opponents with powerful attacks.</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Health</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-mage h-2 rounded-full" style="width: 50%"></div>
+                </div>
+                <span class="tooltip-text">Mages have 20% less health than average, making them vulnerable to attacks.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Damage</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-mage h-2 rounded-full" style="width: 95%"></div>
+                </div>
+                <span class="tooltip-text">Mages deal 50% more damage than average, making them powerful attackers.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Healing</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-mage h-2 rounded-full" style="width: 90%"></div>
+                </div>
+                <span class="tooltip-text">Mages have 40% increased healing power, allowing them to recover health effectively.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Defense</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-mage h-2 rounded-full" style="width: 45%"></div>
+                </div>
+                <span class="tooltip-text">Mages have 30% less defense than average, taking more damage from attacks.</span>
+              </div>
+            </div>
+            
+            <div class="special-ability bg-mage/10 p-3 rounded-lg mb-6">
+              <h3 class="text-mage font-bold text-sm mb-1">SPECIAL ABILITY</h3>
+              <p class="text-gray-300 text-sm">Arcane Surge: Every third attack deals double damage but costs additional fatigue.</p>
+            </div>
+            
+            <button class="select-class w-full bg-mage/20 hover:bg-mage text-mage hover:text-white border border-mage py-2 rounded-lg transition-colors" data-class="mage">
+              Select Mage
+            </button>
+          </div>
+        </div>
+        
+        <div id="rogue-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-rogue/30 overflow-hidden">
+          <div class="h-48 bg-gradient-to-b from-rogue/20 to-transparent relative">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-rogue/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 15l-6 6-6-6"></path>
+                <path d="M19 9l-6 6-6-6"></path>
+                <path d="M19 3l-6 6-6-6"></path>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="p-6">
+            <h2 class="text-2xl font-display font-bold text-rogue mb-2">Rogue</h2>
+            <p class="text-gray-300 mb-4">Swift and cunning fighters with balanced stats. Rogues excel at speed and damage, making them versatile in combat situations.</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Health</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-rogue h-2 rounded-full" style="width: 70%"></div>
+                </div>
+                <span class="tooltip-text">Rogues have average health, providing balanced survivability.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Damage</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-rogue h-2 rounded-full" style="width: 85%"></div>
+                </div>
+                <span class="tooltip-text">Rogues deal 30% more damage than average, making them effective attackers.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Speed</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-rogue h-2 rounded-full" style="width: 95%"></div>
+                </div>
+                <span class="tooltip-text">Rogues are 60% faster than average, allowing them to dodge attacks more effectively.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Defense</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-rogue h-2 rounded-full" style="width: 50%"></div>
+                </div>
+                <span class="tooltip-text">Rogues have 20% less defense than average, relying more on speed than durability.</span>
+              </div>
+            </div>
+            
+            <div class="special-ability bg-rogue/10 p-3 rounded-lg mb-6">
+              <h3 class="text-rogue font-bold text-sm mb-1">SPECIAL ABILITY</h3>
+              <p class="text-gray-300 text-sm">Evasion: 20% chance to completely avoid damage from an attack.</p>
+            </div>
+            
+            <button class="select-class w-full bg-rogue/20 hover:bg-rogue text-rogue hover:text-white border border-rogue py-2 rounded-lg transition-colors" data-class="rogue">
+              Select Rogue
+            </button>
+          </div>
+        </div>
+        
+        <div id="guardian-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-guardian/30 overflow-hidden md:col-span-1">
+          <div class="h-48 bg-gradient-to-b from-guardian/20 to-transparent relative">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-guardian/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="p-6">
+            <h2 class="text-2xl font-display font-bold text-guardian mb-2">Guardian</h2>
+            <p class="text-gray-300 mb-4">Stalwart protectors with exceptional health and defense. Guardians can withstand massive damage and excel in prolonged battles.</p>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Health</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-guardian h-2 rounded-full" style="width: 95%"></div>
+                </div>
+                <span class="tooltip-text">Guardians have 50% more health than average, making them extremely durable.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Damage</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-guardian h-2 rounded-full" style="width: 50%"></div>
+                </div>
+                <span class="tooltip-text">Guardians deal 20% less damage than average, focusing more on protection than offense.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Healing</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-guardian h-2 rounded-full" style="width: 70%"></div>
+                </div>
+                <span class="tooltip-text">Guardians have average healing capabilities, allowing for moderate self-recovery.</span>
+              </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Defense</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-guardian h-2 rounded-full" style="width: 95%"></div>
+                </div>
+                <span class="tooltip-text">Guardians have 70% higher defense, significantly reducing incoming damage.</span>
+              </div>
+            </div>
+            
+            <div class="special-ability bg-guardian/10 p-3 rounded-lg mb-6">
+              <h3 class="text-guardian font-bold text-sm mb-1">SPECIAL ABILITY</h3>
+              <p class="text-gray-300 text-sm">Fortify: After taking damage, gain increased defense for the next two rounds.</p>
+            </div>
+            
+            <button class="select-class w-full bg-guardian/20 hover:bg-guardian text-guardian hover:text-white border border-guardian py-2 rounded-lg transition-colors" data-class="guardian">
+              Select Guardian
+            </button>
+          </div>
+        </div>
+        
+        <div id="assassin-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-assassin/30 overflow-hidden md:col-span-1">
           <div class="h-48 bg-gradient-to-b from-assassin/20 to-transparent relative">
             <div class="absolute inset-0 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-assassin/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <path d="M12 18v-6"></path>
-                <path d="m9 15 3 3 3-3"></path>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-assassin/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 3h6v11h-6z"></path>
+                <path d="M9 14h6"></path>
+                <path d="M19 9V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v4"></path>
+                <path d="M5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"></path>
+                <path d="M10 17v-3"></path>
+                <path d="M14 17v-3"></path>
               </svg>
             </div>
           </div>
           
           <div class="p-6">
             <h2 class="text-2xl font-display font-bold text-assassin mb-2">Assassin</h2>
-            <p class="text-gray-300 mb-4">Masters of precision and critical strikes. Assassins excel at dealing massive damage but are vulnerable to sustained combat.</p>
+            <p class="text-gray-300 mb-4">Masters of precision and speed. Assassins deal devastating damage but are extremely fragile, requiring careful positioning.</p>
             
             <div class="grid grid-cols-2 gap-4 mb-6">
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Strength</p>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Health</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-assassin h-2 rounded-full" style="width: 80%"></div>
+                  <div class="bg-assassin h-2 rounded-full" style="width: 40%"></div>
                 </div>
+                <span class="tooltip-text">Assassins have 30% less health than average, making them extremely vulnerable.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Precision</p>
-                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-assassin h-2 rounded-full" style="width: 90%"></div>
-                </div>
-              </div>
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Crit</p>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Damage</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-assassin h-2 rounded-full" style="width: 95%"></div>
                 </div>
+                <span class="tooltip-text">Assassins deal 60% more damage than average, making them lethal attackers.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
                 <p class="text-gray-400 text-sm">Speed</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-assassin h-2 rounded-full" style="width: 85%"></div>
+                  <div class="bg-assassin h-2 rounded-full" style="width: 95%"></div>
                 </div>
+                <span class="tooltip-text">Assassins are 80% faster than average, allowing them to strike first and evade attacks.</span>
               </div>
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+                <p class="text-gray-400 text-sm">Defense</p>
+                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
+                  <div class="bg-assassin h-2 rounded-full" style="width: 35%"></div>
+                </div>
+                <span class="tooltip-text">Assassins have 40% less defense than average, taking significantly more damage from attacks.</span>
+              </div>
+            </div>
+            
+            <div class="special-ability bg-assassin/10 p-3 rounded-lg mb-6">
+              <h3 class="text-assassin font-bold text-sm mb-1">SPECIAL ABILITY</h3>
+              <p class="text-gray-300 text-sm">Critical Strike: 25% increased chance to land critical hits, dealing 50% more damage.</p>
             </div>
             
             <button class="select-class w-full bg-assassin/20 hover:bg-assassin text-assassin hover:text-white border border-assassin py-2 rounded-lg transition-colors" data-class="assassin">
@@ -188,116 +505,89 @@
             </button>
           </div>
         </div>
-        
-        <!-- Defender Class -->
-        <div id="defender-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-defender/30 overflow-hidden">
-          <div class="h-48 bg-gradient-to-b from-defender/20 to-transparent relative">
-            <div class="absolute inset-0 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-defender/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </div>
-          </div>
-          
-          <div class="p-6">
-            <h2 class="text-2xl font-display font-bold text-defender mb-2">Defender</h2>
-            <p class="text-gray-300 mb-4">Stalwart protectors with exceptional durability. Defenders can withstand heavy damage and excel in prolonged battles.</p>
-            
-            <div class="grid grid-cols-2 gap-4 mb-6">
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Strength</p>
-                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-defender h-2 rounded-full" style="width: 70%"></div>
-                </div>
-              </div>
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Defense</p>
-                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-defender h-2 rounded-full" style="width: 95%"></div>
-                </div>
-              </div>
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Fatigue Resist</p>
-                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-defender h-2 rounded-full" style="width: 90%"></div>
-                </div>
-              </div>
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Healing</p>
-                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-defender h-2 rounded-full" style="width: 60%"></div>
-                </div>
-              </div>
-            </div>
-            
-            <button class="select-class w-full bg-defender/20 hover:bg-defender text-defender hover:text-white border border-defender py-2 rounded-lg transition-colors" data-class="defender">
-              Select Defender
-            </button>
-          </div>
+      </div>
+      
+      <div class="bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-primary/20 overflow-hidden mb-12">
+        <div class="p-4 border-b border-primary/20">
+          <h2 class="text-xl font-display font-bold">Class Comparison</h2>
         </div>
-        
-        <!-- Healer Class -->
-        <div id="healer-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-healer/30 overflow-hidden">
-          <div class="h-48 bg-gradient-to-b from-healer/20 to-transparent relative">
-            <div class="absolute inset-0 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-healer/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-              </svg>
-            </div>
-          </div>
-          
-          <div class="p-6">
-            <h2 class="text-2xl font-display font-bold text-healer mb-2">Healer</h2>
-            <p class="text-gray-300 mb-4">Masters of recovery and endurance. Healers can restore health and reduce fatigue, making them excellent for long battles.</p>
-            
-            <div class="grid grid-cols-2 gap-4 mb-6">
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Strength</p>
-                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-healer h-2 rounded-full" style="width: 60%"></div>
-                </div>
-              </div>
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Healing</p>
-                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-healer h-2 rounded-full" style="width: 95%"></div>
-                </div>
-              </div>
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Fatigue Resist</p>
-                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-healer h-2 rounded-full" style="width: 85%"></div>
-                </div>
-              </div>
-              <div class="bg-dark/30 p-3 rounded-lg">
-                <p class="text-gray-400 text-sm">Momentum</p>
-                <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
-                  <div class="bg-healer h-2 rounded-full" style="width: 75%"></div>
-                </div>
-              </div>
-            </div>
-            
-            <button class="select-class w-full bg-healer/20 hover:bg-healer text-healer hover:text-white border border-healer py-2 rounded-lg transition-colors" data-class="healer">
-              Select Healer
-            </button>
-          </div>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-primary/10 text-left">
+                <th class="p-3 font-bold">Class</th>
+                <th class="p-3 font-bold">Health</th>
+                <th class="p-3 font-bold">Damage</th>
+                <th class="p-3 font-bold">Defense</th>
+                <th class="p-3 font-bold">Speed</th>
+                <th class="p-3 font-bold">Healing</th>
+                <th class="p-3 font-bold">Best Against</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-t border-primary/10">
+                <td class="p-3 text-warrior font-bold">Warrior</td>
+                <td class="p-3">+30%</td>
+                <td class="p-3">Average</td>
+                <td class="p-3">+50%</td>
+                <td class="p-3">-20%</td>
+                <td class="p-3">-30%</td>
+                <td class="p-3">Assassin</td>
+              </tr>
+              <tr class="border-t border-primary/10">
+                <td class="p-3 text-mage font-bold">Mage</td>
+                <td class="p-3">-20%</td>
+                <td class="p-3">+50%</td>
+                <td class="p-3">-30%</td>
+                <td class="p-3">Average</td>
+                <td class="p-3">+40%</td>
+                <td class="p-3">Guardian</td>
+              </tr>
+              <tr class="border-t border-primary/10">
+                <td class="p-3 text-rogue font-bold">Rogue</td>
+                <td class="p-3">Average</td>
+                <td class="p-3">+30%</td>
+                <td class="p-3">-20%</td>
+                <td class="p-3">+60%</td>
+                <td class="p-3">-20%</td>
+                <td class="p-3">Mage</td>
+              </tr>
+              <tr class="border-t border-primary/10">
+                <td class="p-3 text-guardian font-bold">Guardian</td>
+                <td class="p-3">+50%</td>
+                <td class="p-3">-20%</td>
+                <td class="p-3">+70%</td>
+                <td class="p-3">-30%</td>
+                <td class="p-3">Average</td>
+                <td class="p-3">Warrior</td>
+              </tr>
+              <tr class="border-t border-primary/10">
+                <td class="p-3 text-assassin font-bold">Assassin</td>
+                <td class="p-3">-30%</td>
+                <td class="p-3">+60%</td>
+                <td class="p-3">-40%</td>
+                <td class="p-3">+80%</td>
+                <td class="p-3">-30%</td>
+                <td class="p-3">Rogue</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       
-      <!-- Selected Class Info -->
       <div id="selected-class-info" class="hidden bg-dark/50 backdrop-blur-sm p-8 rounded-xl border-2 border-primary/30 mb-12">
         <h2 class="text-2xl font-display font-bold mb-4">
           <span id="selected-class-title" class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
-            Assassin
+            Warrior
           </span>
         </h2>
         
         <p id="selected-class-description" class="text-gray-300 mb-6">
-          You've selected the Assassin class. Assassins excel at dealing critical damage but must manage their fatigue carefully. Use your high precision and critical hit chance to end battles quickly before fatigue becomes an issue.
+          You've selected the Warrior class. Warriors excel at absorbing damage with their high health and defense. Use your durability to outlast opponents in battle.
         </p>
         
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a id="start-game-btn" href="game.html?class=assassin" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
+          <a id="start-game-btn" href="game.html?class=Warrior" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
@@ -314,7 +604,6 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="border-t border-violet-500/20 py-8 mt-auto">
     <div class="container mx-auto px-4 max-w-screen-xl text-center text-gray-400">
       <p>&copy; 2024 Fateshaper. All rights reserved.</p>
@@ -323,7 +612,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Mobile menu toggle
       const menuToggle = document.getElementById('menu-toggle');
       const mobileMenu = document.getElementById('mobile-menu');
 
@@ -333,7 +621,6 @@
         });
       }
       
-      // Class selection functionality
       const selectButtons = document.querySelectorAll('.select-class');
       const selectedClassInfo = document.getElementById('selected-class-info');
       const selectedClassTitle = document.getElementById('selected-class-title');
@@ -341,63 +628,55 @@
       const startGameBtn = document.getElementById('start-game-btn');
       const changeClassBtn = document.getElementById('change-class-btn');
       
-      // Class descriptions
       const classDescriptions = {
-        assassin: "You've selected the Assassin class. Assassins excel at dealing critical damage but must manage their fatigue carefully. Use your high precision and critical hit chance to end battles quickly before fatigue becomes an issue.",
-        defender: "You've selected the Defender class. Defenders are masters of endurance and can withstand significant damage. Your high defense and fatigue resistance make you ideal for longer battles where outlasting your opponent is key.",
-        healer: "You've selected the Healer class. Healers specialize in recovery and sustainability. Your healing abilities allow you to restore health during battle, and your fatigue management skills help maintain effectiveness over extended fights."
+        warrior: "You've selected the Warrior class. Warriors excel at absorbing damage with their high health and defense. Use your durability to outlast opponents in battle and your Berserker Rage ability to turn the tide when your health gets low.",
+        mage: "You've selected the Mage class. Mages are powerful spellcasters with high damage output but low health. Use your devastating Arcane Surge ability to end battles quickly before you take too much damage, and leverage your healing abilities to recover when needed.",
+        rogue: "You've selected the Rogue class. Rogues are versatile fighters with balanced stats and exceptional speed. Use your agility to maintain momentum and control the pace of battle, and rely on your Evasion ability to avoid critical hits.",
+        guardian: "You've selected the Guardian class. Guardians are the ultimate defenders with the highest health and defense. Your exceptional durability makes you perfect for long, drawn-out battles, and your Fortify ability provides even more protection when you need it most.",
+        assassin: "You've selected the Assassin class. Assassins deal the highest damage and move the fastest, but have very low health and defense. Strike quickly and decisively to eliminate opponents before they can retaliate, and use your Critical Strike ability to maximize damage output."
       };
       
-      // Add event listeners to class selection buttons
       selectButtons.forEach(button => {
         button.addEventListener('click', function() {
           const selectedClass = this.getAttribute('data-class');
           
-          // Remove selected class from all cards
           document.querySelectorAll('.class-card').forEach(card => {
             card.classList.remove('selected');
-            card.classList.remove('pulse-border-assassin', 'pulse-border-defender', 'pulse-border-healer');
+            card.classList.remove('pulse-border-warrior', 'pulse-border-mage', 'pulse-border-rogue', 'pulse-border-guardian', 'pulse-border-assassin');
           });
-          
-          // Add selected class to the chosen card
+        
           const selectedCard = document.getElementById(`${selectedClass}-card`);
           selectedCard.classList.add('selected');
           selectedCard.classList.add(`pulse-border-${selectedClass}`);
           
-          // Update selected class info
-          selectedClassTitle.textContent = selectedClass.charAt(0).toUpperCase() + selectedClass.slice(1);
+          const capitalizedClass = selectedClass.charAt(0).toUpperCase() + selectedClass.slice(1);
+          
+          selectedClassTitle.textContent = capitalizedClass;
           selectedClassTitle.className = `text-transparent bg-clip-text bg-gradient-to-r from-${selectedClass} to-${selectedClass}/70`;
           selectedClassDescription.textContent = classDescriptions[selectedClass];
-          startGameBtn.href = `game.html?class=${selectedClass}`;
+          startGameBtn.href = `game.html?class=${capitalizedClass}`;
           
-          // Show selected class info
           selectedClassInfo.classList.remove('hidden');
           
-          // Scroll to selected class info
           selectedClassInfo.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
       });
       
-      // Change class button functionality
       changeClassBtn.addEventListener('click', function() {
         selectedClassInfo.classList.add('hidden');
         
-        // Remove selected class from all cards
         document.querySelectorAll('.class-card').forEach(card => {
           card.classList.remove('selected');
-          card.classList.remove('pulse-border-assassin', 'pulse-border-defender', 'pulse-border-healer');
+          card.classList.remove('pulse-border-warrior', 'pulse-border-mage', 'pulse-border-rogue', 'pulse-border-guardian', 'pulse-border-assassin');
         });
         
-        // Scroll to class selection
         document.querySelector('.class-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
       
-      // Check URL parameters for pre-selected class
       const urlParams = new URLSearchParams(window.location.search);
-      const preSelectedClass = urlParams.get('class');
+      const preSelectedClass = urlParams.get('class')?.toLowerCase();
       
-      if (preSelectedClass && ['assassin', 'defender', 'healer'].includes(preSelectedClass)) {
-        // Trigger click on the pre-selected class button
+      if (preSelectedClass && ['warrior', 'mage', 'rogue', 'guardian', 'assassin'].includes(preSelectedClass)) {
         document.querySelector(`.select-class[data-class="${preSelectedClass}"]`).click();
       }
     });

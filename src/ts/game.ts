@@ -1,86 +1,111 @@
-const paramsString = window.location.search;
-const searchParams = new URLSearchParams(paramsString);
-const urlClass = searchParams.get("class") as
+import { classes } from "./classes";
+import {
+	playerHand,
+	robotHand,
+	robotOutcomeDisplay,
+	playerOutcomeDisplay,
+	rockButton,
+	paperButton,
+	scissorsButton,
+	skipButton,
+	healButton,
+	upgradeStrengthButton,
+	upgradePrecisionButton,
+	upgradeCritButton,
+	upgradeSpeedButton,
+	upgradeDefenseButton,
+	upgradeHealingButton,
+	buttons,
+	roundDisplay,
+	playerHPNumberDisplay,
+	playerHPDisplay,
+	playerMomentumNumberDisplay,
+	playerMomentumDisplay,
+	playerFatigueNumberDisplay,
+	playerFatigueDisplay,
+	robotHPNumberDisplay,
+	robotHPDisplay,
+	robotMomentumNumberDisplay,
+	robotMomentumDisplay,
+	robotFatigueNumberDisplay,
+	robotFatigueDisplay,
+	playerUpgradePointsDisplay,
+	robotUpgradePointsDisplay,
+	playerUpgradeStrengthDisplay,
+	playerUpgradePrecisionDisplay,
+	playerUpgradeCritDisplay,
+	playerUpgradeSpeedDisplay,
+	playerUpgradeDefenseDisplay,
+	playerUpgradeHealingDisplay,
+	robotUpgradeStrengthDisplay,
+	robotUpgradePrecisionDisplay,
+	robotUpgradeCritDisplay,
+	robotUpgradeSpeedDisplay,
+	robotUpgradeDefenseDisplay,
+	robotUpgradeHealingDisplay,
+} from "./elements";
+import { backgroundMusicVolume, playSoundForOutcome } from "./sound";
+
+const backgroundMusic = document.getElementById("bg-music") as HTMLAudioElement;
+
+const player1Name = document.getElementById("player-1-name") as HTMLElement;
+const player2Name = document.getElementById("player-2-name") as HTMLElement;
+
+window.addEventListener("load", () => {
+	const audioContext = new AudioContext();
+	if (audioContext.state === "suspended") {
+		audioContext.resume().then(() => {
+			backgroundMusic.play().catch((error) => {
+				console.error("Error playing background music:", error);
+			});
+			backgroundMusic.volume = backgroundMusicVolume;
+		});
+	} else {
+		backgroundMusic.play().catch((error) => {
+			console.error("Error playing background music:", error);
+		});
+	}
+});
+
+const ROUND_DELAY = 1400;
+const OUTCOME_DISPLAY_DURATION = 3000;
+
+const FATIGUE_DAMAGE_FACTOR = 1;
+
+const BASE_HEALTH = 100;
+const DAMAGE_VARIATION_MIN = 0.8;
+const DAMAGE_VARIATION_MAX = 1.2;
+const CRIT_MULTIPLIER = 1.5;
+const SPEED_REDUCTION_PER_POINT = 0.05;
+const DEFENSE_REDUCTION_PER_POINT = 0.03;
+
+const FATIGUE_INCREASE = 3;
+const TIE_FATIGUE_INCREASE = 1;
+const FATIGUE_INCREASE_ON_HEAL = 5;
+const MOMENTUM_INCREASE = 10;
+
+const HEAL_BASE = 2;
+const HEAL_MULTIPLIER = 1.5;
+
+const MAX_UPGRADE = 10;
+
+const BASE_STRENGTH = 5;
+const BASE_PRECISION = 1;
+const BASE_CRIT = 1;
+const BASE_SPEED = 1;
+const BASE_DEFENSE = 1;
+const BASE_HEALING = 2;
+
+const urlClass = new URLSearchParams(window.location.search).get("class") as
 	| "Warrior"
 	| "Mage"
 	| "Rogue"
 	| "Guardian"
 	| "Assassin";
-
-
-
-// ===== Balancing Constants =====
-const ROUND_DELAY = 1400; // ms for round animations
-const OUTCOME_DISPLAY_DURATION = 3000; // ms to show outcome messages
-
-// Health and Damage Constants
-const BASE_HEALTH = 100;
-const DAMAGE_VARIATION_MIN = 0.8;
-const DAMAGE_VARIATION_MAX = 1.2; // computed as min + 0.4
-const CRIT_MULTIPLIER = 1.5;
-const SPEED_REDUCTION_PER_POINT = 0.05;
-const DEFENSE_REDUCTION_PER_POINT = 0.03;
-
-// Fatigue & Momentum Constants
-const FATIGUE_INCREASE = 3;
-const TIE_FATIGUE_INCREASE = 1;
-const MOMENTUM_INCREASE = 10;
-
-// Healing Constants (nerfed)
-const HEAL_BASE = 2;
-const HEAL_MULTIPLIER = 1.5;
-
-const MAX_UPGRADE = 10; // maximum upgrade above base
-
-// ===== Class Modifiers & Base Stat Constants =====
-const BASE_STRENGTH = 5;
-const BASE_PRECISION = 1;
-const BASE_CRIT = 1;
-const BASE_SPEED = 5;
-const BASE_DEFENSE = 5;
-const BASE_HEALING = 2;
-
-// Classes with modifiers
-const classes: {
-	[key: string]: {
-		health: number;
-		damage: number;
-		defense: number;
-		speed: number;
-		healing: number;
-	};
-} = {
-	Warrior: {
-		health: 1.3,
-		damage: 1.0,
-		defense: 1.5,
-		speed: 0.8,
-		healing: 0.7,
-	},
-	Mage: { health: 0.8, damage: 1.5, defense: 0.7, speed: 1.0, healing: 1.4 },
-	Rogue: { health: 1.0, damage: 1.3, defense: 0.8, speed: 1.6, healing: 0.8 },
-	Guardian: {
-		health: 1.5,
-		damage: 0.8,
-		defense: 1.7,
-		speed: 0.7,
-		healing: 1.0,
-	},
-	Assassin: {
-		health: 0.7,
-		damage: 1.6,
-		defense: 0.6,
-		speed: 1.8,
-		healing: 0.7,
-	},
-};
-
-const playerClass: "Warrior" | "Mage" | "Rogue" | "Guardian" | "Assassin" =
-	urlClass ?? "Assassin";
+const playerClass = urlClass ?? "Assassin";
 const classNames = Object.keys(classes);
 const robotClass = classNames[Math.floor(Math.random() * classNames.length)];
 
-// Compute modded base stats
 const playerMaxHealth = BASE_HEALTH * classes[playerClass].health;
 const robotMaxHealth = BASE_HEALTH * classes[robotClass].health;
 
@@ -96,13 +121,9 @@ const robotBaseSpeed = BASE_SPEED * classes[robotClass].speed;
 const playerBaseHealing = BASE_HEALING * classes[playerClass].healing;
 const robotBaseHealing = BASE_HEALING * classes[robotClass].healing;
 
-// ===== Initial Game State =====
 let roundNum = 1;
 let playerHealth = playerMaxHealth,
 	robotHealth = robotMaxHealth;
-let playerHPLoss = 0,
-	robotHPLoss = 0;
-
 let playerStrength = playerBaseStrength,
 	robotStrength = robotBaseStrength;
 let playerDefense = playerBaseDefense,
@@ -111,12 +132,10 @@ let playerSpeed = playerBaseSpeed,
 	robotSpeed = robotBaseSpeed;
 let playerHealing = playerBaseHealing,
 	robotHealing = robotBaseHealing;
-
 let playerPrecision = BASE_PRECISION,
 	robotPrecision = BASE_PRECISION;
 let playerCrit = BASE_CRIT,
 	robotCrit = BASE_CRIT;
-
 let playerFatigue = 0,
 	robotFatigue = 0;
 let playerMomentum = 0,
@@ -126,318 +145,62 @@ let playerUpgradePoints = 0,
 
 console.log("Player Class:", playerClass, classes[playerClass]);
 console.log("Robot Class:", robotClass, classes[robotClass]);
-console.log("Player Health:", playerHealth, "Robot Health:", robotHealth);
-
-// ===== Element Selectors =====
-const buttons = document.querySelectorAll(
-	".button"
-) as NodeListOf<HTMLButtonElement>;
-
-const playerHand = document.getElementById("player-hand") as HTMLImageElement;
-const robotHand = document.getElementById("robot-hand") as HTMLImageElement;
-
-const rockButton = document.getElementById("rock") as HTMLButtonElement;
-const paperButton = document.getElementById("paper") as HTMLButtonElement;
-const scissorsButton = document.getElementById("scissors") as HTMLButtonElement;
-const skipButton = document.getElementById("skip") as HTMLButtonElement;
-const healButton = document.getElementById("heal") as HTMLButtonElement;
-
-const upgradeStrengthButton = document.getElementById(
-	"upgrade-strength"
-) as HTMLButtonElement;
-const upgradePrecisionButton = document.getElementById(
-	"upgrade-precision"
-) as HTMLButtonElement;
-const upgradeCritButton = document.getElementById(
-	"upgrade-crit"
-) as HTMLButtonElement;
-const upgradeSpeedButton = document.getElementById(
-	"upgrade-speed"
-) as HTMLButtonElement;
-const upgradeDefenseButton = document.getElementById(
-	"upgrade-defense"
-) as HTMLButtonElement;
-const upgradeHealingButton = document.getElementById(
-	"upgrade-healing"
-) as HTMLButtonElement;
-
-const playerHPNumberDisplay = document.getElementById(
-	"player-hp-number"
-) as HTMLElement;
-const robotHPNumberDisplay = document.getElementById(
-	"robot-hp-number"
-) as HTMLElement;
-const playerHPDisplay = document.getElementById(
-	"player-hp-display"
-) as HTMLElement;
-const robotHPDisplay = document.getElementById(
-	"robot-hp-display"
-) as HTMLElement;
-const roundDisplay = document.getElementById("round") as HTMLElement;
-
-const playerMomentumNumberDisplay = document.getElementById(
-	"player-momentum-number"
-) as HTMLElement;
-const robotMomentumNumberDisplay = document.getElementById(
-	"robot-momentum-number"
-) as HTMLElement;
-const playerMomentumDisplay = document.getElementById(
-	"player-momentum-display"
-) as HTMLElement;
-const robotMomentumDisplay = document.getElementById(
-	"robot-momentum-display"
-) as HTMLElement;
-
-const playerFatigueNumberDisplay = document.getElementById(
-	"player-fatigue-number"
-) as HTMLElement;
-const robotFatigueNumberDisplay = document.getElementById(
-	"robot-fatigue-number"
-) as HTMLElement;
-const playerFatigueDisplay = document.getElementById(
-	"player-fatigue-display"
-) as HTMLElement;
-const robotFatigueDisplay = document.getElementById(
-	"robot-fatigue-display"
-) as HTMLElement;
-
-const playerUpgradePointsDisplay = document.getElementById(
-	"player-upgrade-points"
-) as HTMLElement;
-const robotUpgradePointsDisplay = document.getElementById(
-	"robot-upgrade-points"
-) as HTMLElement;
-
-const playerUpgradeStrengthDisplay = document.getElementById(
-	"player-upgrade-strength-display"
-) as HTMLElement;
-const playerUpgradePrecisionDisplay = document.getElementById(
-	"player-upgrade-precision-display"
-) as HTMLElement;
-const playerUpgradeCritDisplay = document.getElementById(
-	"player-upgrade-crit-display"
-) as HTMLElement;
-const playerUpgradeSpeedDisplay = document.getElementById(
-	"player-upgrade-speed-display"
-) as HTMLElement;
-const playerUpgradeDefenseDisplay = document.getElementById(
-	"player-upgrade-defense-display"
-) as HTMLElement;
-const playerUpgradeHealingDisplay = document.getElementById(
-	"player-upgrade-healing-display"
-) as HTMLElement;
-
-const robotUpgradeStrengthDisplay = document.getElementById(
-	"robot-upgrade-strength-display"
-) as HTMLElement;
-const robotUpgradePrecisionDisplay = document.getElementById(
-	"robot-upgrade-precision-display"
-) as HTMLElement;
-const robotUpgradeCritDisplay = document.getElementById(
-	"robot-upgrade-crit-display"
-) as HTMLElement;
-const robotUpgradeSpeedDisplay = document.getElementById(
-	"robot-upgrade-speed-display"
-) as HTMLElement;
-const robotUpgradeDefenseDisplay = document.getElementById(
-	"robot-upgrade-defense-display"
-) as HTMLElement;
-const robotUpgradeHealingDisplay = document.getElementById(
-	"robot-upgrade-healing-display"
-) as HTMLElement;
-
-const playerOutcomeDisplay = document.getElementById(
-	"player-outcome"
-) as HTMLElement;
-const robotOutcomeDisplay = document.getElementById(
-	"robot-outcome"
-) as HTMLElement;
-
-// ===== Helper Functions =====
-
-// showOutcomeDirect: Displays outcome text directly in the given container and clears it after OUTCOME_DISPLAY_DURATION.
-function showOutcomeDirect(
-	container: HTMLElement,
-	text: string,
-	outcomeType: string
-): void {
-	container.textContent = text;
-	container.className = ""; // Clear existing classes
-	container.classList.add("text-xl", "outcome", "block");
-	switch (outcomeType) {
-		case "damage":
-			container.classList.add("outcome-damage");
-			break;
-		case "heal":
-			container.classList.add("outcome-heal");
-			break;
-		case "miss":
-			container.classList.add("outcome-miss");
-			break;
-		case "skip":
-			container.classList.add("outcome-skip");
-			break;
-		case "crit":
-			container.classList.add("outcome-crit");
-			break;
-		default:
-			break;
-	}
-	setTimeout(() => {
-		container.textContent = "";
-		container.className = "hidden";
-	}, OUTCOME_DISPLAY_DURATION);
-}
-
-function disableButtons(disable: boolean): void {
-	buttons.forEach((button) => (button.disabled = disable));
-}
-
-function checkWin(): void {
-	if (robotHealth <= 0) {
-		window.location.href =
-			"/rock-paper-scissors/history/index.html?playerWon=true";
-	} else if (playerHealth <= 0) {
-		window.location.href =
-			"/rock-paper-scissors/history/index.html?playerWon=false";
-	}
-}
-
-function logStats(): void {
-	console.log("Player Stats:", {
-		Health: playerHealth,
-		Strength: playerStrength,
-		Precision: playerPrecision,
-		Crit: playerCrit,
-		Speed: playerSpeed,
-		Defense: playerDefense,
-		Healing: playerHealing,
-		Fatigue: playerFatigue,
-		Momentum: playerMomentum,
-		Class: playerClass,
-	});
-	console.log("Robot Stats:", {
-		Health: robotHealth,
-		Strength: robotStrength,
-		Precision: robotPrecision,
-		Crit: robotCrit,
-		Speed: robotSpeed,
-		Defense: robotDefense,
-		Healing: robotHealing,
-		Fatigue: robotFatigue,
-		Momentum: robotMomentum,
-		Class: robotClass,
-	});
-}
-
-function updateRound(): void {
-	roundDisplay.textContent = `ROUND: ${roundNum}`;
-	playerHPNumberDisplay.textContent = String(playerHealth.toFixed(0));
-	playerHPDisplay.style.width = `${(playerHealth / playerMaxHealth) * 100}%`;
-	playerMomentumNumberDisplay.textContent = String(playerMomentum);
-	playerMomentumDisplay.style.width = `${playerMomentum}%`;
-	playerFatigueNumberDisplay.textContent = String(playerFatigue);
-	playerFatigueDisplay.style.width = `${playerFatigue}%`;
-
-	robotHPNumberDisplay.textContent = String(robotHealth.toFixed(0));
-	robotHPDisplay.style.width = `${(robotHealth / robotMaxHealth) * 100}%`;
-	robotMomentumNumberDisplay.textContent = String(robotMomentum);
-	robotMomentumDisplay.style.width = `${robotMomentum}%`;
-	robotFatigueNumberDisplay.textContent = String(robotFatigue);
-	robotFatigueDisplay.style.width = `${robotFatigue}%`;
-
-	playerUpgradePointsDisplay.textContent = `Player 1 upgrade points: ${playerUpgradePoints}`;
-	robotUpgradePointsDisplay.textContent = `Player 2 upgrade points: ${robotUpgradePoints}`;
-
-	playerUpgradeStrengthDisplay.style.width = `${
-		(playerStrength - playerBaseStrength) * 10
-	}%`;
-	playerUpgradePrecisionDisplay.style.width = `${
-		(playerPrecision - BASE_PRECISION) * 10
-	}%`;
-	playerUpgradeCritDisplay.style.width = `${(playerCrit - BASE_CRIT) * 10}%`;
-	playerUpgradeSpeedDisplay.style.width = `${
-		(playerSpeed - playerBaseSpeed) * 10
-	}%`;
-	playerUpgradeDefenseDisplay.style.width = `${
-		(playerDefense - playerBaseDefense) * 10
-	}%`;
-	playerUpgradeHealingDisplay.style.width = `${
-		(playerHealing - playerBaseHealing) * 10
-	}%`;
-
-	robotUpgradeStrengthDisplay.style.width = `${
-		(robotStrength - robotBaseStrength) * 10
-	}%`;
-	robotUpgradePrecisionDisplay.style.width = `${
-		(robotPrecision - BASE_PRECISION) * 10
-	}%`;
-	robotUpgradeCritDisplay.style.width = `${(robotCrit - BASE_CRIT) * 10}%`;
-	robotUpgradeSpeedDisplay.style.width = `${
-		(robotSpeed - robotBaseSpeed) * 10
-	}%`;
-	robotUpgradeDefenseDisplay.style.width = `${
-		(robotDefense - robotBaseDefense) * 10
-	}%`;
-	robotUpgradeHealingDisplay.style.width = `${
-		(robotHealing - robotBaseHealing) * 10
-	}%`;
-
-	logStats();
-}
-
-function updateStatsAfterRound(result: "player" | "robot" | "tie"): void {
-	if (result === "player") {
-		playerMomentum += MOMENTUM_INCREASE;
-		playerFatigue += FATIGUE_INCREASE;
-		robotMomentum = 0;
-		robotFatigue += FATIGUE_INCREASE;
-	} else if (result === "robot") {
-		robotMomentum += MOMENTUM_INCREASE;
-		robotFatigue += FATIGUE_INCREASE;
-		playerMomentum = 0;
-		playerFatigue += FATIGUE_INCREASE;
-	} else {
-		playerFatigue += TIE_FATIGUE_INCREASE;
-		robotFatigue += TIE_FATIGUE_INCREASE;
-	}
-	playerFatigue = Math.min(Math.max(playerFatigue, 0), 100);
-	robotFatigue = Math.min(Math.max(robotFatigue, 0), 100);
-	playerMomentum = Math.min(Math.max(playerMomentum, 0), 100);
-	robotMomentum = Math.min(Math.max(robotMomentum, 0), 100);
-}
 
 function logDamageCalculation(
 	effectiveStrength: number,
 	baseDamage: number,
 	critMultiplier: number,
 	speedReduction: number,
-	defenseReduction: number,
+	defenseReductionFactor: number,
 	damageAfterReduction: number,
+	fatigueDamageMultiplier: number,
 	finalDamage: number
 ): void {
 	console.log("=== Damage Calculation Breakdown ===");
-	console.log(`Effective Strength: ${effectiveStrength.toFixed(2)}`);
 	console.log(
-		`Base Damage: ${baseDamage} (effectiveStrength * variation factor)`
+		"Step 1: Effective Strength (ES) = Attacker Strength × (1 + Attacker Momentum/100) × (1 - Attacker Fatigue/100)"
 	);
-	console.log(`Crit Multiplier: ${critMultiplier}`);
+	console.log(`  ES = ${effectiveStrength.toFixed(2)}`);
+	console.log("Step 2: Base Damage (BD) = ES × Variation Factor");
 	console.log(
-		`Speed Reduction: ${speedReduction.toFixed(
-			2
-		)} (defenderSpeed * ${SPEED_REDUCTION_PER_POINT})`
+		`  BD = ${baseDamage}  [Variation Factor used between ${DAMAGE_VARIATION_MIN} and ${DAMAGE_VARIATION_MAX}]`
+	);
+	console.log("Step 3: Crit Multiplier (CM) = " + critMultiplier);
+	console.log(
+		"Step 4: Speed Reduction = Defender Speed × " +
+			SPEED_REDUCTION_PER_POINT.toFixed(2)
+	);
+	console.log(`  Speed Reduction = ${speedReduction.toFixed(2)}`);
+	console.log("Step 5: Damage after Speed = BD × CM × (1 - Speed Reduction)");
+	console.log(
+		`  Damage after Speed = ${(
+			baseDamage *
+			critMultiplier *
+			(1 - speedReduction)
+		).toFixed(2)}`
 	);
 	console.log(
-		`Defense Reduction Factor: ${defenseReduction.toFixed(
-			2
-		)} (1 - defenderDefense * ${DEFENSE_REDUCTION_PER_POINT})`
+		"Step 6: Effective Defense (ED) = Defender Defense × (1 - Defender Fatigue/100)"
 	);
-	console.log(`Damage After Reductions: ${damageAfterReduction.toFixed(2)}`);
-	console.log(`Final Damage (rounded): ${finalDamage}`);
+	console.log(
+		"Step 7: Defense Reduction Factor (DRF) = 1 - (ED × " +
+			DEFENSE_REDUCTION_PER_POINT.toFixed(2) +
+			")"
+	);
+	console.log(`  DRF = ${defenseReductionFactor.toFixed(2)}`);
+	console.log("Step 8: Damage after Reduction = Damage after Speed × DRF");
+	console.log(
+		`  Damage after Reduction = ${damageAfterReduction.toFixed(2)}`
+	);
+	console.log(
+		"Step 9: Fatigue Damage Multiplier (FDM) = 1 + (Defender Fatigue/100 × FATIGUE_DAMAGE_FACTOR)"
+	);
+	console.log(`  FDM = ${fatigueDamageMultiplier.toFixed(2)}`);
+	console.log("Step 10: Final Damage = Floor(Damage after Reduction × FDM)");
+	console.log(`  Final Damage = ${finalDamage}`);
 	console.log("=====================================");
 }
 
-// Modified calculateDamage to include defenderFatigue so that the higher a player's fatigue, the less effective their defense.
 function calculateDamage(
 	attackerStrength: number,
 	attackerPrecision: number,
@@ -473,10 +236,9 @@ function calculateDamage(
 		return { damage: 0, outcome: "miss" };
 	}
 
-	const variation =
-		DAMAGE_VARIATION_MIN +
-		Math.random() * (DAMAGE_VARIATION_MAX - DAMAGE_VARIATION_MIN);
+	const variation = 1;
 	let baseDamage = Math.floor(effectiveStrength * variation);
+
 	const critRoll = Math.random();
 	let critMultiplier = 1;
 	let outcomeText = "";
@@ -494,13 +256,18 @@ function calculateDamage(
 	const speedReduction = defenderSpeed * SPEED_REDUCTION_PER_POINT;
 	const damageAfterSpeed = baseDamage * critMultiplier * (1 - speedReduction);
 
-	// Adjust defender's effective defense based on their fatigue (the higher the fatigue, the lower the effective defense)
 	const effectiveDefense = defenderDefense * (1 - defenderFatigue / 100);
 	const defenseReductionFactor =
 		1 - effectiveDefense * DEFENSE_REDUCTION_PER_POINT;
 
 	const damageAfterReduction = damageAfterSpeed * defenseReductionFactor;
-	const finalDamage = Math.max(Math.floor(damageAfterReduction), 0);
+
+	const fatigueDamageMultiplier =
+		1 + (defenderFatigue / 100) * FATIGUE_DAMAGE_FACTOR;
+	const finalDamage = Math.max(
+		Math.floor(damageAfterReduction * fatigueDamageMultiplier),
+		0
+	);
 
 	logDamageCalculation(
 		effectiveStrength,
@@ -509,16 +276,16 @@ function calculateDamage(
 		speedReduction,
 		defenseReductionFactor,
 		damageAfterReduction,
+		fatigueDamageMultiplier,
 		finalDamage
 	);
+
 	return { damage: finalDamage, outcome: outcomeText };
 }
 
 function calculateHeal(base: number, healingStat: number): number {
 	return Math.round(base + healingStat * HEAL_MULTIPLIER);
 }
-
-// ===== Upgrade Functions =====
 
 function upgradePlayerStat(stat: string): void {
 	if (playerUpgradePoints <= 0) {
@@ -622,14 +389,12 @@ function robotAutoUpgrade(): void {
 			const currentValue = eval(
 				"robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
 			);
-			let baseValue;
+			let baseValue: number;
 			if (stat === "strength") baseValue = robotBaseStrength;
 			else if (stat === "defense") baseValue = robotBaseDefense;
 			else if (stat === "speed") baseValue = robotBaseSpeed;
 			else if (stat === "healing") baseValue = robotBaseHealing;
-			else if (stat === "precision" || stat === "crit")
-				baseValue = stat === "precision" ? BASE_PRECISION : BASE_CRIT;
-			if (baseValue === undefined) return (baseValue = 0);
+			else baseValue = stat === "precision" ? BASE_PRECISION : BASE_CRIT;
 			return currentValue - baseValue < MAX_UPGRADE;
 		});
 		if (availableStats.length === 0) {
@@ -646,8 +411,6 @@ function robotAutoUpgrade(): void {
 		);
 	}
 }
-
-// ===== Action Helpers & Game Logic =====
 
 type Action =
 	| "attack-rock"
@@ -689,7 +452,6 @@ function processRound(playerAction: Action): void {
 		`Player Action: ${playerAction} | Robot Action: ${robotAction}`
 	);
 	disableButtons(true);
-	// Set default images and start toss animation
 	playerHand.src = "/v1rock.svg";
 	robotHand.src = "/v1rock.svg";
 	playerHand.classList.add("toss");
@@ -716,8 +478,8 @@ function processRound(playerAction: Action): void {
 			if (outcome === "tie") {
 				console.log("Both attacked and it's a tie! No damage dealt.");
 				roundOutcome = "tie";
-				showOutcomeDirect(robotOutcomeDisplay, "tie", "skip");
-				showOutcomeDirect(playerOutcomeDisplay, "tie", "skip");
+				showOutcomeDirect(robotOutcomeDisplay, "tie", "miss");
+				showOutcomeDirect(playerOutcomeDisplay, "tie", "miss");
 			} else if (outcome === "player") {
 				console.log("Player wins the attack!");
 				const result = calculateDamage(
@@ -732,8 +494,8 @@ function processRound(playerAction: Action): void {
 				);
 				damage = result.damage;
 				console.log("Damage dealt to robot:", damage);
-				robotHPLoss += damage;
-				robotHealth = Math.max(robotMaxHealth - robotHPLoss, 0);
+				// robotHPLoss += damage;
+				robotHealth = Math.max(robotHealth - damage, 0);
 				roundOutcome = "player";
 				if (result.outcome === "crit")
 					showOutcomeDirect(
@@ -763,8 +525,8 @@ function processRound(playerAction: Action): void {
 				);
 				damage = result.damage;
 				console.log("Damage dealt to player:", damage);
-				playerHPLoss += damage;
-				playerHealth = Math.max(playerMaxHealth - playerHPLoss, 0);
+				// playerHPLoss += damage;
+				playerHealth = Math.max(playerHealth - damage, 0);
 				roundOutcome = "robot";
 				if (result.outcome === "crit")
 					showOutcomeDirect(
@@ -803,15 +565,23 @@ function processRound(playerAction: Action): void {
 			);
 			damage = result.damage;
 			console.log("Damage dealt to robot:", damage);
-			robotHPLoss += damage;
-			robotHealth = Math.max(robotMaxHealth - robotHPLoss, 0);
+			// robotHPLoss += damage;
+			robotHealth = Math.max(robotHealth - damage, 0);
 			roundOutcome = "player";
 			let outcomeMsg = "skipped, ";
 			if (result.outcome === "crit")
 				outcomeMsg += `crit -${damage} damage`;
 			else if (result.outcome === "miss") outcomeMsg += "miss";
 			else outcomeMsg += `-${damage} damage`;
-			showOutcomeDirect(robotOutcomeDisplay, outcomeMsg, "skip");
+			showOutcomeDirect(
+				robotOutcomeDisplay,
+				outcomeMsg,
+				result.outcome === "crit"
+					? "crit"
+					: result.outcome === "miss"
+					? "miss"
+					: "damage"
+			);
 		} else if (
 			playerAction.startsWith("attack") &&
 			robotAction === "heal"
@@ -821,7 +591,7 @@ function processRound(playerAction: Action): void {
 			robotHand.src = "/heal.webp";
 			console.log("Robot heals!");
 			healAmount = calculateHeal(HEAL_BASE, robotHealing);
-			robotHPLoss = Math.max(robotHPLoss - healAmount, 0);
+			// robotHPLoss = Math.max(robotHPLoss - healAmount, 0);
 			robotHealth = Math.min(robotHealth + healAmount, robotMaxHealth);
 			console.log(`Robot healed for ${healAmount} HP.`);
 			const result = calculateDamage(
@@ -836,8 +606,8 @@ function processRound(playerAction: Action): void {
 			);
 			damage = result.damage;
 			console.log("Damage dealt to robot:", damage);
-			robotHPLoss += damage;
-			robotHealth = Math.max(robotMaxHealth - robotHPLoss, 0);
+			// robotHPLoss += damage;
+			robotHealth = Math.max(robotHealth - damage, 0);
 			roundOutcome = "player";
 			showOutcomeDirect(
 				robotOutcomeDisplay,
@@ -847,7 +617,11 @@ function processRound(playerAction: Action): void {
 						: result.outcome === "miss"
 						? "miss"
 						: `-${damage} damage`),
-				result.outcome === "crit" ? "crit" : "damage"
+				result.outcome === "crit"
+					? "crit"
+					: result.outcome === "miss"
+					? "heal"
+					: "damage"
 			);
 		} else if (
 			playerAction === "skip" &&
@@ -871,15 +645,23 @@ function processRound(playerAction: Action): void {
 			);
 			damage = result.damage;
 			console.log("Damage dealt to player:", damage);
-			playerHPLoss += damage;
-			playerHealth = Math.max(playerMaxHealth - playerHPLoss, 0);
+			// playerHPLoss += damage;
+			playerHealth = Math.max(playerHealth - damage, 0);
 			roundOutcome = "robot";
 			let outcomeMsg = "skipped, ";
 			if (result.outcome === "crit")
 				outcomeMsg += `crit -${damage} damage`;
 			else if (result.outcome === "miss") outcomeMsg += "miss";
 			else outcomeMsg += `-${damage} damage`;
-			showOutcomeDirect(playerOutcomeDisplay, outcomeMsg, "skip");
+			showOutcomeDirect(
+				playerOutcomeDisplay,
+				outcomeMsg,
+				result.outcome === "crit"
+					? "crit"
+					: result.outcome === "miss"
+					? "miss"
+					: "damage"
+			);
 		} else if (
 			playerAction === "heal" &&
 			robotAction.startsWith("attack")
@@ -888,12 +670,13 @@ function processRound(playerAction: Action): void {
 			const robotMove = robotAction.split("-")[1];
 			robotHand.src = `/v1${robotMove}.svg`;
 			console.log("Player heals!");
+
 			healAmount = calculateHeal(HEAL_BASE, playerHealing);
-			playerHPLoss = Math.max(playerHPLoss - healAmount, 0);
+			// playerHPLoss = Math.max(playerHPLoss - healAmount, 0);
 			playerHealth = Math.min(playerHealth + healAmount, playerMaxHealth);
 			console.log(`Player healed for ${healAmount} HP.`);
 			playerMomentum = Math.max(playerMomentum - 5, 0);
-			playerFatigue += 5;
+			playerFatigue += FATIGUE_INCREASE_ON_HEAL;
 			const result = calculateDamage(
 				robotStrength,
 				robotPrecision,
@@ -906,8 +689,8 @@ function processRound(playerAction: Action): void {
 			);
 			damage = result.damage;
 			console.log("Damage dealt to player:", damage);
-			playerHPLoss += damage;
-			playerHealth = Math.max(playerMaxHealth - playerHPLoss, 0);
+			// playerHPLoss += damage;
+			playerHealth = Math.max(playerHealth - damage, 0);
 			roundOutcome = "robot";
 			showOutcomeDirect(
 				playerOutcomeDisplay,
@@ -917,7 +700,11 @@ function processRound(playerAction: Action): void {
 						: result.outcome === "miss"
 						? "miss"
 						: `-${damage} damage`),
-				result.outcome === "crit" ? "crit" : "damage"
+				result.outcome === "crit"
+					? "crit"
+					: result.outcome === "miss"
+					? "heal"
+					: "damage"
 			);
 		} else if (playerAction === "skip" && robotAction === "skip") {
 			console.log(
@@ -938,14 +725,14 @@ function processRound(playerAction: Action): void {
 				playerMaxHealth
 			);
 			playerMomentum = Math.max(playerMomentum - 5, 0);
-			playerFatigue += 5;
+			playerFatigue += FATIGUE_INCREASE_ON_HEAL;
 			const healAmountRobot = calculateHeal(HEAL_BASE, robotHealing);
 			robotHealth = Math.min(
 				robotHealth + healAmountRobot,
 				robotMaxHealth
 			);
 			robotMomentum = Math.max(robotMomentum - 5, 0);
-			robotFatigue += 5;
+			robotFatigue += FATIGUE_INCREASE_ON_HEAL;
 			console.log(
 				`Player healed for ${healAmountPlayer} HP, Robot healed for ${healAmountRobot} HP.`
 			);
@@ -976,7 +763,7 @@ function processRound(playerAction: Action): void {
 					robotMaxHealth
 				);
 				robotMomentum = Math.max(robotMomentum - 5, 0);
-				robotFatigue += 5;
+				robotFatigue += FATIGUE_INCREASE_ON_HEAL;
 				console.log(
 					`Player skipped; Robot healed for ${healAmountRobot} HP.`
 				);
@@ -999,7 +786,7 @@ function processRound(playerAction: Action): void {
 					playerMaxHealth
 				);
 				playerMomentum = Math.max(playerMomentum - 5, 0);
-				playerFatigue += 5;
+				playerFatigue += FATIGUE_INCREASE_ON_HEAL;
 				console.log(
 					`Robot skipped; Player healed for ${healAmountPlayer} HP.`
 				);
@@ -1013,7 +800,6 @@ function processRound(playerAction: Action): void {
 			}
 		}
 
-		// Award upgrade points and auto-upgrade robot
 		playerUpgradePoints++;
 		robotUpgradePoints++;
 		robotAutoUpgrade();
@@ -1022,14 +808,12 @@ function processRound(playerAction: Action): void {
 		roundNum++;
 		updateRound();
 
-		// Re-enable buttons after outcome display duration
 		setTimeout(() => {
 			disableButtons(false);
 		}, OUTCOME_DISPLAY_DURATION);
 	}, ROUND_DELAY);
 }
 
-// ===== Event Listeners =====
 rockButton.addEventListener("click", () => processRound("attack-rock"));
 paperButton.addEventListener("click", () => processRound("attack-paper"));
 scissorsButton.addEventListener("click", () => processRound("attack-scissors"));
@@ -1052,3 +836,162 @@ upgradeHealingButton.addEventListener("click", () =>
 );
 
 updateRound();
+
+function showOutcomeDirect(
+	container: HTMLElement,
+	text: string,
+	outcomeType: string
+): void {
+	container.textContent = text;
+	container.className = "";
+	container.classList.add("text-xl", "outcome", "block");
+	switch (outcomeType) {
+		case "damage":
+			container.classList.add("outcome-damage");
+			break;
+		case "heal":
+			container.classList.add("outcome-heal");
+			break;
+		case "miss":
+			container.classList.add("outcome-miss");
+			break;
+		case "skip":
+			container.classList.add("outcome-skip");
+			break;
+		case "crit":
+			container.classList.add("outcome-crit");
+			break;
+		default:
+			break;
+	}
+	playSoundForOutcome(outcomeType);
+	setTimeout(() => {
+		container.textContent = "";
+		container.className = "hidden";
+	}, OUTCOME_DISPLAY_DURATION);
+}
+
+function checkWin(): void {
+	if (robotHealth <= 0) {
+		window.location.href = "/winning.html?playerWon=true";
+	} else if (playerHealth <= 0) {
+		window.location.href = "/winning.html?playerWon=false";
+	}
+}
+
+function disableButtons(disable: boolean): void {
+	buttons.forEach((button) => (button.disabled = disable));
+}
+
+function logStats(): void {
+	console.log("Player Stats:", {
+		Health: playerHealth,
+		Strength: playerStrength,
+		Precision: playerPrecision,
+		Crit: playerCrit,
+		Speed: playerSpeed,
+		Defense: playerDefense,
+		Healing: playerHealing,
+		Fatigue: playerFatigue,
+		Momentum: playerMomentum,
+		Class: playerClass,
+	});
+	console.log("Robot Stats:", {
+		Health: robotHealth,
+		Strength: robotStrength,
+		Precision: robotPrecision,
+		Crit: robotCrit,
+		Speed: robotSpeed,
+		Defense: robotDefense,
+		Healing: robotHealing,
+		Fatigue: robotFatigue,
+		Momentum: robotMomentum,
+		Class: robotClass,
+	});
+}
+
+function updateRound(): void {
+	player1Name.innerHTML = /*html*/ `
+		<div>Player 1</div>
+		(${playerClass})
+	`;
+	player2Name.innerHTML = /*html*/ `
+		<div>Player 2</div>
+		(${robotClass})
+	`;
+
+	roundDisplay.textContent = `ROUND: ${roundNum}`;
+	playerHPNumberDisplay.textContent = String(playerHealth.toFixed(0));
+	playerHPDisplay.style.width = `${(playerHealth / playerMaxHealth) * 100}%`;
+	playerMomentumNumberDisplay.textContent = String(playerMomentum);
+	playerMomentumDisplay.style.width = `${playerMomentum}%`;
+	playerFatigueNumberDisplay.textContent = String(playerFatigue);
+	playerFatigueDisplay.style.width = `${playerFatigue}%`;
+
+	robotHPNumberDisplay.textContent = String(robotHealth.toFixed(0));
+	robotHPDisplay.style.width = `${(robotHealth / robotMaxHealth) * 100}%`;
+	robotMomentumNumberDisplay.textContent = String(robotMomentum);
+	robotMomentumDisplay.style.width = `${robotMomentum}%`;
+	robotFatigueNumberDisplay.textContent = String(robotFatigue);
+	robotFatigueDisplay.style.width = `${robotFatigue}%`;
+
+	playerUpgradePointsDisplay.textContent = `Player 1 upgrade points: ${playerUpgradePoints}`;
+	robotUpgradePointsDisplay.textContent = `Player 2 upgrade points: ${robotUpgradePoints}`;
+
+	playerUpgradeStrengthDisplay.style.width = `${
+		(playerStrength - playerBaseStrength) * 10
+	}%`;
+	playerUpgradePrecisionDisplay.style.width = `${
+		(playerPrecision - BASE_PRECISION) * 10
+	}%`;
+	playerUpgradeCritDisplay.style.width = `${(playerCrit - BASE_CRIT) * 10}%`;
+	playerUpgradeSpeedDisplay.style.width = `${
+		(playerSpeed - playerBaseSpeed) * 10
+	}%`;
+	playerUpgradeDefenseDisplay.style.width = `${
+		(playerDefense - playerBaseDefense) * 10
+	}%`;
+	playerUpgradeHealingDisplay.style.width = `${
+		(playerHealing - playerBaseHealing) * 10
+	}%`;
+
+	robotUpgradeStrengthDisplay.style.width = `${
+		(robotStrength - robotBaseStrength) * 10
+	}%`;
+	robotUpgradePrecisionDisplay.style.width = `${
+		(robotPrecision - BASE_PRECISION) * 10
+	}%`;
+	robotUpgradeCritDisplay.style.width = `${(robotCrit - BASE_CRIT) * 10}%`;
+	robotUpgradeSpeedDisplay.style.width = `${
+		(robotSpeed - robotBaseSpeed) * 10
+	}%`;
+	robotUpgradeDefenseDisplay.style.width = `${
+		(robotDefense - robotBaseDefense) * 10
+	}%`;
+	robotUpgradeHealingDisplay.style.width = `${
+		(robotHealing - robotBaseHealing) * 10
+	}%`;
+
+	logStats();
+}
+
+function updateStatsAfterRound(result: "player" | "robot" | "tie"): void {
+	if (result === "player") {
+		playerMomentum += MOMENTUM_INCREASE;
+		playerFatigue += FATIGUE_INCREASE;
+		robotMomentum = 0;
+		robotFatigue += FATIGUE_INCREASE;
+	} else if (result === "robot") {
+		robotMomentum += MOMENTUM_INCREASE;
+		robotFatigue += FATIGUE_INCREASE;
+		playerMomentum = 0;
+		playerFatigue += FATIGUE_INCREASE;
+	} else {
+		playerFatigue += TIE_FATIGUE_INCREASE;
+		robotFatigue += TIE_FATIGUE_INCREASE;
+	}
+	playerFatigue = Math.min(Math.max(playerFatigue, 0), 100);
+	robotFatigue = Math.min(Math.max(robotFatigue, 0), 100);
+	playerMomentum = Math.min(Math.max(playerMomentum, 0), 100);
+	robotMomentum = Math.min(Math.max(robotMomentum, 0), 100);
+}

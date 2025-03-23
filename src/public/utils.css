@@ -1,3 +1,23 @@
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #555 #222;  
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #6d28d9;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #10b981;
+    border-radius: 10px;
+    border: 2px solid #222;
+  }
+
 :root {
 	--max-w-xl: 1280px;
 	--max-w-lg: 1024px;
@@ -48,7 +68,6 @@
 	width: 100%;
 	text-align: center;
 	opacity: 1;
-	/* text-shadow: black 1px 1px 10px; */
 
 	animation: outcome-float 2s ease  ;
 }

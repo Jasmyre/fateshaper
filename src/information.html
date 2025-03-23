@@ -1,469 +1,1359 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title>Game Information - Fateshaper</title>
+		<link rel="stylesheet" href="/utils.css">
+		<link
+			rel="stylesheet"
+			href="./information_style.css"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						fontFamily: {
+							sans: ["Rajdhani", "sans-serif"],
+							display: ["Orbitron", "sans-serif"],
+						},
+						colors: {
+							primary: "#6d28d9",
+							secondary: "#10b981",
+							dark: "#0f172a",
+							light: "#f8fafc",
+						},
+					},
+				},
+			};
+		</script>
+		<script src="./ts/utils.ts" defer></script>
+	</head>
+	<body class="text-white">
+		<header
+			class="fixed top-0 w-full z-50 bg-[#0f172a]/80 backdrop-blur-lg border-b border-violet-500/20"
+		>
+			<nav
+				class="container mx-auto px-4 max-w-screen-xl py-4 flex justify-between items-center"
+			>
+				<a
+					href="/#"
+					class="flex items-center gap-2"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-8 w-8 text-violet-500"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<polygon
+							points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+						/>
+					</svg>
+					<span class="text-2xl font-display font-bold"
+						>Fateshaper</span
+					>
+				</a>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game Information - Fateshaper</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Rajdhani', 'sans-serif'],
-            display: ['Orbitron', 'sans-serif'],
-          },
-          colors: {
-            primary: "#6d28d9",
-            secondary: "#10b981",
-          }
-        },
-      },
-    };
-  </script>
-  <style>
-    body {
-      background-color: #0f172a;
-      background-image:
-        radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
-    }
-  </style>
-</head>
+				<div class="hidden md:flex gap-8 font-medium">
+					<a
+						href="/index.html"
+						class="hover:text-violet-500 transition-colors"
+						>Home</a
+					>
+					<a
+						href="information.html"
+						class="text-violet-500 border-b-2 border-violet-500"
+						>Information</a
+					>
+					<a
+						href="/class-selection"
+						class="hover:text-violet-500 transition-colors"
+						>Game</a
+					>
+					<a
+						href="/gallery"
+						class="hover:text-violet-500 transition-colors"
+						>Gallery</a
+					>
+					<a
+						href="/contact"
+						class="hover:text-violet-500 transition-colors"
+						>Contact</a
+					>
+				</div>
 
-<body class="text-white">
-  <header class="fixed top-0 w-full z-50 bg-[#0f172a]/80 backdrop-blur-lg border-b border-violet-500/20">
-    <nav class="container mx-auto px-4 max-w-screen-xl py-4 flex justify-between items-center">
-      <a href="/index.html" class="flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-violet-500" width="24" height="24"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <polygon
-            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-        </svg>
-        <span class="text-2xl font-display font-bold">Fateshaper</span>
-      </a>
+				<button
+					id="menu-toggle"
+					class="md:hidden text-white focus:outline-none"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M4 6h16M4 12h16M4 18h16"
+						/>
+					</svg>
+				</button>
+			</nav>
 
-      <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
+			<div
+				id="mobile-menu"
+				class="hidden md:hidden bg-dark/95 backdrop-blur-md"
+			>
+				<ul
+					class="flex flex-col items-center py-4 space-y-4 font-medium"
+				>
+					<li>
+						<a
+							href="/index.html"
+							class="text-white hover:text-violet-500 transition-colors"
+							>Home</a
+						>
+					</li>
+					<li>
+						<a
+							href="information.html"
+							class="text-violet-500"
+							>Information</a
+						>
+					</li>
+					<li>
+						<a
+							href="game.html"
+							class="text-white hover:text-violet-500 transition-colors"
+							>Game</a
+						>
+					</li>
+					<li>
+						<a
+							href="gallery.html"
+							class="text-white hover:text-violet-500 transition-colors"
+							>Gallery</a
+						>
+					</li>
+					<li>
+						<a
+							href="contact.html"
+							class="text-white hover:text-violet-500 transition-colors"
+							>Contact</a
+						>
+					</li>
+				</ul>
+			</div>
+		</header>
 
-      <div class="hidden md:flex gap-8 font-medium">
-        <a href="/index.html" class="hover:text-violet-500 transition-colors">Home</a>
-        <a href="information.html" class="text-violet-500 border-b-2 border-violet-500">Information</a>
-        <a href="game.html" class="hover:text-violet-500 transition-colors">Game</a>
-        <a href="gallery.html" class="hover:text-violet-500 transition-colors">Gallery</a>
-        <a href="contact.html" class="hover:text-violet-500 transition-colors">Contact</a>
-      </div>
-    </nav>
-  </header>
+		<main class="container mx-auto px-4 max-w-screen-xl pt-24 pb-16">
+			<div
+				class="bg-gradient-to-br from-violet-500/10 to-emerald-500/10 rounded-3xl p-8 mb-12 text-center fade-in"
+			>
+				<h1 class="text-4xl md:text-6xl font-display font-bold mb-6">
+					<span
+						class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-emerald-500"
+					>
+						Advanced Rock-Paper-Scissors Combat
+					</span>
+				</h1>
+				<p class="text-gray-400 text-lg max-w-3xl mx-auto">
+					A comprehensive guide to Fateshaper's mechanics, stats, and
+					strategic depth.
+				</p>
+			</div>
 
-  <div id="mobile-menu" class="hidden md:hidden fixed top-[73px] left-0 w-full bg-[#0f172a]/95 backdrop-blur-md z-40">
-    <div class="flex flex-col items-center py-4 space-y-4 font-medium">
-      <a href="/index.html" class="hover:text-violet-500 transition-colors">Home</a>
-      <a href="information.html" class="text-violet-500">Information</a>
-      <a href="game.html" class="hover:text-violet-500 transition-colors">Game</a>
-      <a href="gallery.html" class="hover:text-violet-500 transition-colors">Gallery</a>
-      <a href="contact.html" class="hover:text-violet-500 transition-colors">Contact</a>
-    </div>
-  </div>
+			<div
+				class="bg-gradient-to-br from-violet-500/10 to-transparent rounded-3xl p-8 mb-12 fade-in"
+			>
+				<div class="flex items-center gap-4 mb-6">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="w-8 h-8 text-violet-500"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<circle
+							cx="12"
+							cy="12"
+							r="10"
+						></circle>
+						<line
+							x1="12"
+							y1="16"
+							x2="12"
+							y2="12"
+						></line>
+						<line
+							x1="12"
+							y1="8"
+							x2="12.01"
+							y2="8"
+						></line>
+					</svg>
+					<h2 class="text-2xl font-display font-bold">Overview</h2>
+				</div>
 
-  <main class="container mx-auto px-4 max-w-screen-xl pt-24 pb-16">
-    <div class="bg-gradient-to-br from-violet-500/10 to-emerald-500/10 rounded-3xl p-8 mb-12 text-center">
-      <h1 class="text-4xl md:text-6xl font-display font-bold mb-6">
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-emerald-500">
-          Game Information
-        </span>
-      </h1>
-      <p class="text-gray-400 text-lg max-w-3xl mx-auto">
-        Everything you need to know about Fateshaper - from gameplay mechanics to strategies and tutorials.
-      </p>
-    </div>
+				<p class="text-gray-300 mb-6">
+					This game is a next-level spin on the classic
+					rock-paper-scissors. It's not just about picking rock,
+					paper, or scissors—there's an entire RPG-style system
+					working behind the scenes. You'll need to manage stats like
+					strength, precision, crit, speed, fatigue, and momentum,
+					which all affect every move in combat. This makes each
+					battle more strategic, dynamic, and unpredictable.
+				</p>
 
-    <div class="bg-gradient-to-br from-violet-500/10 to-transparent rounded-3xl p-8 mb-12">
-      <div class="flex items-center gap-4 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-violet-500" width="24" height="24"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-        </svg>
-        <h2 class="text-2xl font-display font-bold">Game Overview</h2>
-      </div>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+					<div
+						class="bg-white/5 rounded-xl p-6 scale-in"
+						style="transition-delay: 0.1s"
+					>
+						<div class="flex items-center gap-3 mb-3">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-6 w-6 text-violet-500"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path
+									d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+								></path>
+								<polyline points="14 2 14 8 20 8"></polyline>
+								<path d="M16 13H8"></path>
+								<path d="M16 17H8"></path>
+								<path d="M10 9H8"></path>
+							</svg>
+							<h3 class="font-bold">Strategic Depth</h3>
+						</div>
+						<p class="text-gray-400">
+							Beyond simple RPS, every decision is influenced by
+							your stats, fatigue, and momentum.
+						</p>
+					</div>
 
-      <p class="text-gray-400 mb-6">
-        Fateshaper is an advanced twist on the classic rock-paper-scissors game. It adds RPG-style mechanics where
-        you'll manage stats like strength, precision, crit, speed, fatigue, and momentum. These stats affect every
-        attack, making battles more strategic and dynamic.
-      </p>
+					<div
+						class="bg-white/5 rounded-xl p-6 scale-in"
+						style="transition-delay: 0.2s"
+					>
+						<div class="flex items-center gap-3 mb-3">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-6 w-6 text-emerald-500"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path
+									d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"
+								></path>
+							</svg>
+							<h3 class="font-bold">RPG Elements</h3>
+						</div>
+						<p class="text-gray-400">
+							Manage and upgrade six core stats to customize your
+							combat style and strategy.
+						</p>
+					</div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div class="bg-white/5 rounded-xl p-6">
-          <h3 class="text-xl font-bold mb-4 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-violet-500" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-            Game Lore
-          </h3>
-          <p class="text-gray-400 italic mb-4">In a not-so-distant future, even the simplest choice can decide life or
-            death.</p>
-          <p class="text-gray-400">In this world, warriors battle using the timeless moves of rock, paper, and scissors.
-            But behind every move lies a complex system of fatigue and momentum. As you win, your momentum builds up and
-            your attacks become more powerful. As the fight goes on, fatigue sets in and your abilities start to
-            decline. Choose wisely when to push your luck or take a breather.</p>
-        </div>
+					<div
+						class="bg-white/5 rounded-xl p-6 scale-in"
+						style="transition-delay: 0.3s"
+					>
+						<div class="flex items-center gap-3 mb-3">
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								class="h-6 w-6 text-amber-500"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path
+									d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+								></path>
+							</svg>
+							<h3 class="font-bold">Class System</h3>
+						</div>
+						<p class="text-gray-400">
+							Choose from five unique classes, each with different
+							stat distributions and special abilities.
+						</p>
+					</div>
+				</div>
+			</div>
 
-        <div class="bg-white/5 rounded-xl p-6">
-          <h3 class="text-xl font-bold mb-4 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-violet-500" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
-              <path d="M9 9h.01"></path>
-              <path d="M15 9h.01"></path>
-              <path d="M8 13h8"></path>
-            </svg>
-            Gameplay
-          </h3>
-          <ul class="text-gray-400 list-disc pl-5 space-y-2">
-            <li>The game is played in rounds. Each round, you choose a move – rock, paper, or scissors – while the robot
-              opponent picks randomly.</li>
-            <li>The classic rules apply: rock beats scissors, scissors beats paper, and paper beats rock. Ties can
-              happen too.</li>
-            <li>When you win or lose a round, an attack happens. The damage is calculated using your stats along with
-              some randomness.</li>
-            <li>You can choose to skip your turn if you feel too fatigued. Skipping lets you recover some fatigue and
-              lose a bit of momentum, but the robot still gets a chance to attack.</li>
-          </ul>
-        </div>
-      </div>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+				<div
+					class="bg-gradient-to-br from-violet-500/10 to-transparent rounded-3xl p-8 fade-in-left"
+				>
+					<div class="flex items-center gap-4 mb-6">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="w-8 h-8 text-violet-500"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path
+								d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"
+							></path>
+						</svg>
+						<h2 class="text-2xl font-display font-bold">
+							Game Lore
+						</h2>
+					</div>
 
-      <div class="relative rounded-xl overflow-hidden mb-8">
-        <img src="/placeholder.svg?height=720&width=1280" alt="Fateshaper Gameplay"
-          class="w-full h-full object-cover" />
-        <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent"></div>
-      </div>
+					<div
+						class="italic text-gray-300 text-lg mb-6 border-l-4 border-violet-500/50 pl-4"
+					>
+						In a world where even the simplest gesture can change
+						the tide of battle...
+					</div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-        <div class="p-4 bg-white/5 rounded-xl">
-          <div class="text-3xl font-bold text-violet-500 mb-2">6</div>
-          <div class="text-gray-400">Core Stats</div>
-        </div>
-        <div class="p-4 bg-white/5 rounded-xl">
-          <div class="text-3xl font-bold text-violet-500 mb-2">3</div>
-          <div class="text-gray-400">Classic Moves</div>
-        </div>
-        <div class="p-4 bg-white/5 rounded-xl">
-          <div class="text-3xl font-bold text-violet-500 mb-2">∞</div>
-          <div class="text-gray-400">Strategic Depth</div>
-        </div>
-      </div>
-    </div>
+					<p class="text-gray-400 mb-6">
+						In this universe, champions from different classes (such
+						as Warrior, Mage, Rogue, Guardian, and Assassin) clash
+						using the timeless moves of rock, paper, and scissors.
+						Behind each move is a complex interplay of fatigue and
+						momentum—winning builds momentum and makes your strikes
+						more lethal, while overexertion raises fatigue and
+						diminishes your defenses. Choose your moves carefully to
+						outlast your opponent.
+					</p>
 
-    <div class="mb-12">
-      <div class="flex items-center gap-4 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-emerald-500" width="24" height="24"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-        </svg>
-        <h2 class="text-2xl font-display font-bold">Game Mechanics and Stats</h2>
-      </div>
+					<div class="relative rounded-xl overflow-hidden">
+						<img
+							src="./public/card.jpeg"
+							alt="Fantasy battle scene"
+							class="w-full h-full object-cover"
+						/>
+						<div
+							class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-transparent to-transparent"
+						></div>
+					</div>
+				</div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-violet-500/10 rounded-3xl overflow-hidden group hover:bg-violet-500/20 transition-colors">
-          <div class="p-6">
-            <h3 class="text-xl font-bold mb-4">Strength</h3>
-            <p class="text-gray-400 mb-4">Determines the raw power of your attack. Higher strength means you can
-              potentially do more damage.</p>
-            <div class="grid grid-cols-3 gap-2 text-sm">
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-violet-500 font-bold">Base</span>
-                <span class="text-gray-400">Damage</span>
-              </div>
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-violet-500 font-bold">↑</span>
-                <span class="text-gray-400">Momentum</span>
-              </div>
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-violet-500 font-bold">↓</span>
-                <span class="text-gray-400">Fatigue</span>
-              </div>
-            </div>
-          </div>
-        </div>
+				<div
+					class="bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl p-8 fade-in-right"
+				>
+					<div class="flex items-center gap-4 mb-6">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="w-8 h-8 text-emerald-500"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path
+								d="m18 7 4 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9l4-2"
+							></path>
+							<path d="M14 22v-4a2 2 0 0 0-4 0v4"></path>
+							<path d="M18 22V5l-6-3-6 3v17"></path>
+							<path d="M12 7v5"></path>
+							<path d="M10 9h4"></path>
+						</svg>
+						<h2 class="text-2xl font-display font-bold">
+							The Five Classes
+						</h2>
+					</div>
 
-        <div class="bg-emerald-500/10 rounded-3xl overflow-hidden group hover:bg-emerald-500/20 transition-colors">
-          <div class="p-6">
-            <h3 class="text-xl font-bold mb-4">Precision</h3>
-            <p class="text-gray-400 mb-4">Dictates your chance to hit the opponent. With a higher precision, your attack
-              is more likely to land.</p>
-            <div class="grid grid-cols-3 gap-2 text-sm">
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-emerald-500 font-bold">Hit</span>
-                <span class="text-gray-400">Chance</span>
-              </div>
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-emerald-500 font-bold">↑</span>
-                <span class="text-gray-400">Momentum</span>
-              </div>
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-emerald-500 font-bold">↓</span>
-                <span class="text-gray-400">Fatigue</span>
-              </div>
-            </div>
-          </div>
-        </div>
+					<div class="space-y-4">
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3
+								class="text-red-500 font-bold flex items-center gap-2"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-5 w-5"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path
+										d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
+									></path>
+								</svg>
+								Warrior
+							</h3>
+							<p class="text-gray-400 text-sm">
+								Powerful frontline fighters with high health and
+								defense. Warriors excel at absorbing damage
+								while dealing consistent attacks.
+							</p>
+						</div>
 
-        <div class="bg-amber-500/10 rounded-3xl overflow-hidden group hover:bg-amber-500/20 transition-colors">
-          <div class="p-6">
-            <h3 class="text-xl font-bold mb-4">Crit</h3>
-            <p class="text-gray-400 mb-4">Your chance to score a critical hit. If you crit, your attack does 50% extra
-              damage.</p>
-            <div class="grid grid-cols-3 gap-2 text-sm">
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-amber-500 font-bold">+50%</span>
-                <span class="text-gray-400">Damage</span>
-              </div>
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-amber-500 font-bold">↑</span>
-                <span class="text-gray-400">Momentum</span>
-              </div>
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-amber-500 font-bold">↓</span>
-                <span class="text-gray-400">Fatigue</span>
-              </div>
-            </div>
-          </div>
-        </div>
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3
+								class="text-violet-500 font-bold flex items-center gap-2"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-5 w-5"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path
+										d="M21.64 3.64a1.35 1.35 0 0 0-1.19-.38L8.51 5.65A5 5 0 0 0 5.65 8.51L3.27 20.44c-.19.74.34 1.46 1.08 1.46.18 0 .36-.05.51-.14L16.4 15.9a5.004 5.004 0 0 0 2.86-2.86l5.86-11.54c.19-.37.19-.82 0-1.19a1.14 1.14 0 0 0-3.48 3.28z"
+									></path>
+									<path
+										d="M7.7 15.3A4.52 4.52 0 0 1 5.5 13.1C5.5 11.4 6.9 10 8.6 10c1.7 0 3.1 1.4 3.1 3.1 0 .8-.3 1.6-.9 2.2"
+									></path>
+								</svg>
+								Mage
+							</h3>
+							<p class="text-gray-400 text-sm">
+								Masters of arcane power with high damage and
+								healing abilities. Mages are fragile but can
+								devastate opponents with powerful attacks.
+							</p>
+						</div>
 
-        <div class="bg-blue-500/10 rounded-3xl overflow-hidden group hover:bg-blue-500/20 transition-colors">
-          <div class="p-6">
-            <h3 class="text-xl font-bold mb-4">Speed</h3>
-            <p class="text-gray-400 mb-4">Helps reduce the damage you take. Each point in speed cuts incoming damage by
-              5%.</p>
-            <div class="grid grid-cols-2 gap-2 text-sm">
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-blue-500 font-bold">-5%</span>
-                <span class="text-gray-400">Per Point</span>
-              </div>
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-blue-500 font-bold">Defense</span>
-                <span class="text-gray-400">Damage Reduction</span>
-              </div>
-            </div>
-          </div>
-        </div>
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3
+								class="text-amber-500 font-bold flex items-center gap-2"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-5 w-5"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d="M19 15l-6 6-6-6"></path>
+									<path d="M19 9l-6 6-6-6"></path>
+									<path d="M19 3l-6 6-6-6"></path>
+								</svg>
+								Rogue
+							</h3>
+							<p class="text-gray-400 text-sm">
+								Swift and cunning fighters with balanced stats.
+								Rogues excel at speed and damage, making them
+								versatile in combat situations.
+							</p>
+						</div>
 
-        <div class="bg-red-500/10 rounded-3xl overflow-hidden group hover:bg-red-500/20 transition-colors">
-          <div class="p-6">
-            <h3 class="text-xl font-bold mb-4">Fatigue</h3>
-            <p class="text-gray-400 mb-4">Builds up as you fight. More fatigue means your effective strength, precision,
-              and crit drop – you get tired!</p>
-            <div class="grid grid-cols-2 gap-2 text-sm">
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-red-500 font-bold">↓</span>
-                <span class="text-gray-400">All Stats</span>
-              </div>
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-red-500 font-bold">Skip</span>
-                <span class="text-gray-400">To Recover</span>
-              </div>
-            </div>
-          </div>
-        </div>
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3
+								class="text-emerald-500 font-bold flex items-center gap-2"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-5 w-5"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path
+										d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+									></path>
+								</svg>
+								Guardian
+							</h3>
+							<p class="text-gray-400 text-sm">
+								Stalwart protectors with exceptional health and
+								defense. Guardians can withstand massive damage
+								and excel in prolonged battles.
+							</p>
+						</div>
 
-        <div class="bg-indigo-500/10 rounded-3xl overflow-hidden group hover:bg-indigo-500/20 transition-colors">
-          <div class="p-6">
-            <h3 class="text-xl font-bold mb-4">Momentum</h3>
-            <p class="text-gray-400 mb-4">Boosts your stats when you win consecutive rounds. It makes you hit harder and
-              more accurately, rewarding your winning streaks.</p>
-            <div class="grid grid-cols-2 gap-2 text-sm">
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-indigo-500 font-bold">↑</span>
-                <span class="text-gray-400">All Stats</span>
-              </div>
-              <div class="bg-white/5 p-2 rounded text-center">
-                <span class="block text-indigo-500 font-bold">Win</span>
-                <span class="text-gray-400">To Build</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3
+								class="text-blue-500 font-bold flex items-center gap-2"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-5 w-5"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<path d="M9 3h6v11h-6z"></path>
+									<path d="M9 14h6"></path>
+									<path
+										d="M19 9V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v4"
+									></path>
+									<path
+										d="M5 9v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"
+									></path>
+									<path d="M10 17v-3"></path>
+									<path d="M14 17v-3"></path>
+								</svg>
+								Assassin
+							</h3>
+							<p class="text-gray-400 text-sm">
+								Masters of precision and speed. Assassins deal
+								devastating damage but are extremely fragile,
+								requiring careful positioning.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-      <div class="bg-violet-500/10 rounded-3xl overflow-hidden hover:bg-violet-500/20 transition-colors">
-        <div class="aspect-video">
-          <img src="/placeholder.svg?height=720&width=1280" alt="Getting Started Guide"
-            class="w-full h-full object-cover" />
-        </div>
-        <div class="p-6">
-          <h3 class="text-xl font-bold mb-2">Beginner's Guide</h3>
-          <p class="text-gray-400 mb-4">Learn the basics of Fateshaper, from understanding the core mechanics to winning
-            your first battles.</p>
-          <a href="#" class="inline-flex items-center text-violet-500 hover:text-emerald-500 transition-colors">
-            Watch Tutorial
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m9 18 6-6-6-6"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
+			<div
+				class="bg-gradient-to-br from-violet-500/10 to-transparent rounded-3xl p-8 mb-12 fade-in"
+			>
+				<div class="flex items-center gap-4 mb-6">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="w-8 h-8 text-violet-500"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path
+							d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+						></path>
+						<polyline points="14 2 14 8 20 8"></polyline>
+						<path d="M16 13H8"></path>
+						<path d="M16 17H8"></path>
+						<path d="M10 9H8"></path>
+					</svg>
+					<h2 class="text-2xl font-display font-bold">Gameplay</h2>
+				</div>
 
-      <div class="bg-emerald-500/10 rounded-3xl overflow-hidden hover:bg-emerald-500/20 transition-colors">
-        <div class="aspect-video">
-          <img src="/placeholder.svg?height=720&width=1280" alt="Advanced Strategies"
-            class="w-full h-full object-cover" />
-        </div>
-        <div class="p-6">
-          <h3 class="text-xl font-bold mb-2">Advanced Strategies</h3>
-          <p class="text-gray-400 mb-4">Master the art of momentum and fatigue management to dominate your opponents in
-            high-level play.</p>
-          <a href="#" class="inline-flex items-center text-emerald-500 hover:text-violet-500 transition-colors">
-            Watch Tutorial
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m9 18 6-6-6-6"></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+					<div>
+						<h3 class="text-xl font-bold mb-4">Core Mechanics</h3>
 
-    <div class="bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl p-8 mb-12">
-      <div class="flex items-center gap-4 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-emerald-500" width="24" height="24"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-          <path d="M12 17h.01" />
-        </svg>
-        <h2 class="text-2xl font-display font-bold">Damage Calculation</h2>
-      </div>
+						<div class="space-y-4">
+							<div
+								class="bg-white/5 p-4 rounded-xl scale-in"
+								style="transition-delay: 0.1s"
+							>
+								<h4 class="font-bold flex items-center gap-2">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5 text-violet-500"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<rect
+											x="2"
+											y="6"
+											width="20"
+											height="12"
+											rx="2"
+										></rect>
+										<path d="M12 12h.01"></path>
+										<path d="M17 12h.01"></path>
+										<path d="M7 12h.01"></path>
+									</svg>
+									Rounds
+								</h4>
+								<p class="text-gray-400">
+									The game is divided into rounds. In each
+									round, you select an action (attack with
+									rock, paper, or scissors, skip your turn, or
+									heal), and your opponent (a robot) picks an
+									action at random.
+								</p>
+							</div>
 
-      <div class="space-y-6">
-        <div class="bg-white/5 p-6 rounded-xl">
-          <h3 class="text-xl font-bold mb-2">Effective Stats Calculation</h3>
-          <p class="text-gray-400 mb-4">These formulas modify your base stats by taking into account fatigue (which
-            hurts your performance) and momentum (which gives you a boost).</p>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-violet-500/10 p-4 rounded-lg">
-              <p class="text-center text-gray-300 font-mono">Effective Strength = Strength × (1 + Momentum/100) × (1 -
-                Fatigue/100)</p>
-            </div>
-            <div class="bg-emerald-500/10 p-4 rounded-lg">
-              <p class="text-center text-gray-300 font-mono">Effective Precision = Precision × (1 - Fatigue/100) × (1 +
-                Momentum/100)</p>
-            </div>
-            <div class="bg-amber-500/10 p-4 rounded-lg">
-              <p class="text-center text-gray-300 font-mono">Effective Crit = Crit × (1 + Momentum/100) × (1 -
-                Fatigue/100)</p>
-            </div>
-          </div>
-        </div>
+							<div
+								class="bg-white/5 p-4 rounded-xl scale-in"
+								style="transition-delay: 0.2s"
+							>
+								<h4 class="font-bold flex items-center gap-2">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5 text-violet-500"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path
+											d="m18 7 4 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9l4-2"
+										></path>
+										<path
+											d="M14 22v-4a2 2 0 0 0-4 0v4"
+										></path>
+										<path d="M18 22V5l-6-3-6 3v17"></path>
+										<path d="M12 7v5"></path>
+										<path d="M10 9h4"></path>
+									</svg>
+									Outcomes
+								</h4>
+								<p class="text-gray-400">
+									Traditional rock–paper–scissors rules apply:
+									rock beats scissors, scissors beats paper,
+									and paper beats rock. Ties occur when both
+									players choose the same move.
+								</p>
+							</div>
 
-        <div class="bg-white/5 p-6 rounded-xl">
-          <h3 class="text-xl font-bold mb-2">Hit Chance</h3>
-          <p class="text-gray-400">A random roll is generated. If the roll is less than the effective precision divided
-            by 10, your attack lands. Otherwise, it misses.</p>
-        </div>
+							<div
+								class="bg-white/5 p-4 rounded-xl scale-in"
+								style="transition-delay: 0.3s"
+							>
+								<h4 class="font-bold flex items-center gap-2">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5 text-violet-500"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path
+											d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+										></path>
+									</svg>
+									Attacks & Damage
+								</h4>
+								<p class="text-gray-400">
+									When one side wins a round, an attack is
+									triggered. The damage you deal is calculated
+									using your current stats combined with
+									situational modifiers like fatigue and
+									momentum.
+								</p>
+							</div>
+						</div>
+					</div>
 
-        <div class="bg-white/5 p-6 rounded-xl">
-          <h3 class="text-xl font-bold mb-2">Base Damage Calculation</h3>
-          <p class="text-gray-400">If your attack lands, the base damage is calculated by taking the effective strength
-            and multiplying it by a random factor between 0.8 and 1.2.</p>
-          <div class="bg-violet-500/10 p-4 rounded-lg mt-4">
-            <p class="text-center text-gray-300 font-mono">Base Damage = Effective Strength × (random variation between
-              0.8 and 1.2)</p>
-          </div>
-        </div>
+					<div>
+						<h3 class="text-xl font-bold mb-4">
+							Strategic Options
+						</h3>
 
-        <div class="bg-white/5 p-6 rounded-xl">
-          <h3 class="text-xl font-bold mb-2">Critical Hit</h3>
-          <p class="text-gray-400">Another random roll checks for a critical hit. If the roll is less than the effective
-            crit divided by 10, your attack is critical and you multiply the base damage by 1.5.</p>
-        </div>
+						<div class="space-y-4">
+							<div
+								class="bg-white/5 p-4 rounded-xl scale-in"
+								style="transition-delay: 0.4s"
+							>
+								<h4 class="font-bold flex items-center gap-2">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5 text-emerald-500"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path
+											d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.77.78-.77-.78a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"
+										></path>
+									</svg>
+									Skip
+								</h4>
+								<p class="text-gray-400">
+									Sometimes, you may choose to skip your turn.
+									This can be strategic when you're too
+									fatigued—skipping can help reduce fatigue
+									but may give your opponent a chance to
+									counterattack.
+								</p>
+							</div>
 
-        <div class="bg-white/5 p-6 rounded-xl">
-          <h3 class="text-xl font-bold mb-2">Damage Reduction by Speed</h3>
-          <p class="text-gray-400">The defender's speed reduces the damage. Each point in speed decreases the damage by
-            5%.</p>
-          <div class="bg-blue-500/10 p-4 rounded-lg mt-4">
-            <p class="text-center text-gray-300 font-mono">Damage After Reduction = Base Damage × Crit Multiplier × (1 -
-              Defender Speed × 0.05)</p>
-          </div>
-        </div>
-      </div>
-    </div>
+							<div
+								class="bg-white/5 p-4 rounded-xl scale-in"
+								style="transition-delay: 0.5s"
+							>
+								<h4 class="font-bold flex items-center gap-2">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5 text-emerald-500"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path
+											d="M18.48 18.34h-6v-3.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5"
+										></path>
+										<path
+											d="M18.48 14.84c0-.83.67-1.5 1.5-1.5.82 0 1.5.67 1.5 1.5v3.5h-3v-3.5z"
+										></path>
+										<path
+											d="M8.52 18.34h-6v-3.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5"
+										></path>
+										<path
+											d="M8.52 14.84c0-.83.67-1.5 1.5-1.5.82 0 1.5.67 1.5 1.5v3.5h-3v-3.5z"
+										></path>
+										<path
+											d="M12 9a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"
+										></path>
+										<path
+											d="M4 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"
+										></path>
+										<path
+											d="M20 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"
+										></path>
+									</svg>
+									Heal
+								</h4>
+								<p class="text-gray-400">
+									You can opt to heal instead of attacking.
+									Healing recovers some health, but it also
+									increases your fatigue, so it must be used
+									judiciously.
+								</p>
+							</div>
 
-    <div class="bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl p-8 mb-12">
-      <div class="flex items-center gap-4 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-emerald-500" width="24" height="24"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-          stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-          <path d="M12 17h.01" />
-        </svg>
-        <h2 class="text-2xl font-display font-bold">Frequently Asked Questions</h2>
-      </div>
+							<div
+								class="bg-white/5 p-4 rounded-xl scale-in"
+								style="transition-delay: 0.6s"
+							>
+								<h4 class="font-bold flex items-center gap-2">
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-5 w-5 text-emerald-500"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path d="m16 6 4 14"></path>
+										<path d="M12 6v14"></path>
+										<path d="M8 8v12"></path>
+										<path d="M4 4v16"></path>
+									</svg>
+									Upgrades
+								</h4>
+								<p class="text-gray-400">
+									After every round, both you and the robot
+									earn upgrade points. These points let you
+									boost your stats (strength, precision, crit,
+									speed, defense, healing) to improve your
+									combat performance.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <div class="space-y-6">
-        <div class="bg-white/5 p-6 rounded-xl">
-          <h3 class="text-xl font-bold mb-2">How do I increase my momentum?</h3>
-          <p class="text-gray-400">Momentum increases when you win rounds. Each consecutive win adds to your momentum,
-            boosting your effective stats. The key is to build a winning streak to maximize your momentum advantage.</p>
-        </div>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+				<div
+					class="bg-gradient-to-br from-violet-500/10 to-transparent rounded-3xl p-8 fade-in-left"
+				>
+					<div class="flex items-center gap-4 mb-6">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="w-8 h-8 text-violet-500"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path d="m16 6 4 14"></path>
+							<path d="M12 6v14"></path>
+							<path d="M8 8v12"></path>
+							<path d="M4 4v16"></path>
+						</svg>
+						<h2 class="text-2xl font-display font-bold">
+							Core Stats
+						</h2>
+					</div>
 
-        <div class="bg-white/5 p-6 rounded-xl">
-          <h3 class="text-xl font-bold mb-2">When should I skip a turn?</h3>
-          <p class="text-gray-400">Skip a turn when your fatigue is high (above 50%). While skipping gives your opponent
-            a free attack, it reduces your fatigue by 20-30%, which can be crucial for maintaining effective stats in
-            longer battles.</p>
-        </div>
+					<div class="space-y-4">
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-emerald-500">Strength</h3>
+							<p class="text-gray-400">
+								Determines the raw power behind your attacks.
+								Higher strength means more potential damage.
+							</p>
+						</div>
 
-        <div class="bg-white/5 p-6 rounded-xl">
-          <h3 class="text-xl font-bold mb-2">What's the best stat to upgrade first?</h3>
-          <p class="text-gray-400">For beginners, we recommend balancing Strength and Precision first. Strength
-            increases your damage potential, while Precision ensures your attacks land. As you advance, consider
-            investing in Crit for those game-changing critical hits.</p>
-        </div>
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-violet-500">Precision</h3>
+							<p class="text-gray-400">
+								Affects your chance to land an attack
+								successfully. Higher precision means fewer
+								misses.
+							</p>
+						</div>
 
-        <div class="bg-white/5 p-6 rounded-xl">
-          <h3 class="text-xl font-bold mb-2">How is damage calculated?</h3>
-          <p class="text-gray-400">Damage is calculated using your effective Strength (modified by momentum and
-            fatigue), multiplied by a random factor (0.8-1.2), then potentially increased by 50% for critical hits, and
-            finally reduced by the opponent's Speed stat.</p>
-        </div>
-      </div>
-    </div>
-  </main>
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-amber-500">Crit</h3>
+							<p class="text-gray-400">
+								Governs your likelihood of scoring a critical
+								hit, which multiplies your damage (typically by
+								1.5x).
+							</p>
+						</div>
 
-  <footer class="border-t border-violet-500/20 py-8">
-    <div class="container mx-auto px-4 max-w-screen-xl text-center text-gray-400">
-      <p>&copy; 2024 Fateshaper. All rights reserved.</p>
-    </div>
-  </footer>
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-blue-500">Speed</h3>
+							<p class="text-gray-400">
+								Helps reduce the damage you take by allowing you
+								to dodge or mitigate attacks. Each point reduces
+								damage by 5%.
+							</p>
+						</div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const menuToggle = document.getElementById('menu-toggle');
-      const mobileMenu = document.getElementById('mobile-menu');
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-indigo-500">Defense</h3>
+							<p class="text-gray-400">
+								Reduces the amount of damage you receive. Each
+								point in defense reduces damage by 3%.
+							</p>
+						</div>
 
-      menuToggle.addEventListener('click', function () {
-        mobileMenu.classList.toggle('hidden');
-      });
-    });
-  </script>
-</body>
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-rose-500">Healing</h3>
+							<p class="text-gray-400">
+								Determines how much health you regain when you
+								choose to heal. Higher healing means more health
+								recovered.
+							</p>
+						</div>
+					</div>
+				</div>
 
+				<div
+					class="bg-gradient-to-br from-emerald-500/10 to-transparent rounded-3xl p-8 fade-in-right"
+				>
+					<div class="flex items-center gap-4 mb-6">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="w-8 h-8 text-emerald-500"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path
+								d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+							></path>
+						</svg>
+						<h2 class="text-2xl font-display font-bold">
+							Dynamic Modifiers
+						</h2>
+					</div>
+
+					<div class="space-y-4">
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-red-500">Fatigue</h3>
+							<p class="text-gray-400">
+								Builds up as you fight. The higher your fatigue,
+								the less effective your stats become, and the
+								more damage you take. Fatigue reduces your
+								effective strength, precision, and crit.
+							</p>
+							<div class="math-formula mt-2">
+								Stat Reduction = Base Stat × (1 - Fatigue/100)
+							</div>
+						</div>
+
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-blue-500">Momentum</h3>
+							<p class="text-gray-400">
+								Grows when you win rounds consecutively,
+								boosting your overall attack performance.
+								Momentum increases your effective strength,
+								precision, and crit.
+							</p>
+							<div class="math-formula mt-2">
+								Stat Boost = Base Stat × (1 + Momentum/100)
+							</div>
+						</div>
+
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-amber-500">
+								Critical Hits
+							</h3>
+							<p class="text-gray-400">
+								When your attack lands a critical hit, it deals
+								50% more damage. Your crit stat determines the
+								chance of landing a critical hit.
+							</p>
+							<div class="math-formula mt-2">
+								Crit Chance = Effective Crit / 10
+							</div>
+						</div>
+
+						<div class="bg-white/5 p-4 rounded-xl scale-in">
+							<h3 class="font-bold text-emerald-500">
+								Effective Stats
+							</h3>
+							<p class="text-gray-400">
+								Your actual performance stats are calculated by
+								combining your base stats with fatigue and
+								momentum modifiers.
+							</p>
+							<div class="math-formula mt-2">
+								Effective Stat = Base Stat × (1 + Momentum/100)
+								× (1 - Fatigue/100)
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div
+				class="bg-gradient-to-br from-violet-500/10 to-transparent rounded-3xl p-8 mb-12 fade-in"
+			>
+				<div class="flex items-center gap-4 mb-6">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="w-8 h-8 text-violet-500"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M2 6h4"></path>
+						<path d="M2 10h4"></path>
+						<path d="M2 14h4"></path>
+						<path d="M2 18h4"></path>
+						<path d="M18 6h4"></path>
+						<path d="M18 10h4"></path>
+						<path d="M18 14h4"></path>
+						<path d="M18 18h4"></path>
+						<rect
+							width="12"
+							height="16"
+							x="6"
+							y="4"
+							rx="2"
+						></rect>
+						<path d="M10 10h4"></path>
+						<path d="M12 8v4"></path>
+					</svg>
+					<h2 class="text-2xl font-display font-bold">
+						Damage Calculation
+					</h2>
+				</div>
+
+				<p class="text-gray-300 mb-6">
+					The damage dealt in combat is determined through a series of
+					mathematical steps that follow the PEMDAS rule (Parentheses,
+					Exponents, Multiplication and Division, Addition and
+					Subtraction). Here's how it works:
+				</p>
+
+				<div class="space-y-6">
+					<div class="bg-white/5 p-6 rounded-xl formula-highlight scale-in">
+						<h3 class="text-xl font-bold mb-2">
+							1. Effective Strength (ES)
+						</h3>
+						<p class="text-gray-400 mb-4">
+							Adjusts the attacker's base strength by factoring in
+							momentum and fatigue.
+						</p>
+						<div class="math-formula">
+							ES = Strength × (1 + Momentum/100) × (1 -
+							Fatigue/100)
+						</div>
+					</div>
+
+					<div class="bg-white/5 p-6 rounded-xl formula-highlight scale-in">
+						<h3 class="text-xl font-bold mb-2">
+							2. Base Damage (BD)
+						</h3>
+						<p class="text-gray-400 mb-4">
+							Originally, BD was determined by multiplying ES with
+							a random variation factor between 0.8 and 1.2. In
+							the latest version, this variation has been removed
+							for consistency.
+						</p>
+						<div class="math-formula">BD = ES × 1</div>
+					</div>
+
+					<div class="bg-white/5 p-6 rounded-xl formula-highlight scale-in">
+						<h3 class="text-xl font-bold mb-2">
+							3. Critical Hit Check
+						</h3>
+						<p class="text-gray-400 mb-4">
+							A random roll determines whether a critical hit
+							occurs. If it does, the damage is multiplied by a
+							fixed factor (e.g., 1.5).
+						</p>
+						<div class="math-formula">
+							If Random(0-100) &lt; Effective Crit/10, then Crit
+							Multiplier = 1.5, else Crit Multiplier = 1
+						</div>
+					</div>
+
+					<div class="bg-white/5 p-6 rounded-xl formula-highlight scale-in">
+						<h3 class="text-xl font-bold mb-2">Speed Reduction</h3>
+						<p class="text-gray-400 mb-4">
+							The defender's speed reduces incoming damage. Each
+							point in speed cuts the damage by a certain
+							percentage.
+						</p>
+						<div class="math-formula">
+							Speed Reduction = Defender Speed × 0.05
+						</div>
+					</div>
+
+					<div class="bg-white/5 p-6 rounded-xl formula-highlight scale-in">
+						<h3 class="text-xl font-bold mb-2">
+							5. Damage after Speed
+						</h3>
+						<p class="text-gray-400 mb-4">
+							The damage after applying the speed reduction.
+						</p>
+						<div class="math-formula">
+							Damage after Speed = BD × Crit Multiplier × (1 -
+							Speed Reduction)
+						</div>
+					</div>
+
+					<div class="bg-white/5 p-6 rounded-xl formula-highlight scale-in">
+						<h3 class="text-xl font-bold mb-2">
+							6. Effective Defense
+						</h3>
+						<p class="text-gray-400 mb-4">
+							The defender's defense is reduced based on their
+							fatigue.
+						</p>
+						<div class="math-formula">
+							ED = Defender Defense × (1 - Defender Fatigue/100)
+						</div>
+					</div>
+
+					<div class="bg-white/5 p-6 rounded-xl formula-highlight scale-in">
+						<h3 class="text-xl font-bold mb-2">
+							7. Defense Reduction Factor (DRF)
+						</h3>
+						<p class="text-gray-400 mb-4">
+							Calculates the percentage of damage that isn't
+							blocked by the defender's effective defense.
+						</p>
+						<div class="math-formula">DRF = 1 - (ED × 0.03)</div>
+					</div>
+
+					<div class="bg-white/5 p-6 rounded-xl formula-highlight scale-in">
+						<h3 class="text-xl font-bold mb-2">
+							8. Damage after Reduction
+						</h3>
+						<p class="text-gray-400 mb-4">
+							The damage after applying the defense reduction.
+						</p>
+						<div class="math-formula">
+							Damage after Reduction = Damage after Speed × DRF
+						</div>
+					</div>
+
+					<div class="bg-white/5 p-6 rounded-xl formula-highlight scale-in">
+						<h3 class="text-xl font-bold mb-2">
+							9. Fatigue Damage Multiplier
+						</h3>
+						<p class="text-gray-400 mb-4">
+							The higher the defender's fatigue, the more damage
+							they take.
+						</p>
+						<div class="math-formula">
+							FDM = 1 + (Defender Fatigue/100 ×
+							FATIGUE_DAMAGE_FACTOR)
+						</div>
+					</div>
+
+					<div class="bg-white/5 p-6 rounded-xl formula-highligh scale-in">
+						<h3 class="text-xl font-bold mb-2">10. Final Damage</h3>
+						<p class="text-gray-400 mb-4">
+							The final damage is the damage after reduction
+							multiplied by the fatigue damage multiplier, rounded
+							down.
+						</p>
+						<div class="math-formula">
+							Final Damage = Floor(Damage after Reduction × FDM)
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+				<div
+					class="bg-violet-500/10 rounded-3xl p-6 hover:bg-violet-500/20 transition-colors fade-in scale-in"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="w-12 h-12 text-violet-500 mb-4"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path
+							d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"
+						></path>
+						<polyline points="14 2 14 8 20 8"></polyline>
+						<path d="M16 13H8"></path>
+						<path d="M16 17H8"></path>
+						<path d="M10 9H8"></path>
+					</svg>
+					<h3 class="text-xl font-bold mb-2">Dynamic Combat</h3>
+					<p class="text-gray-400">
+						Your attacks and defenses are influenced by various
+						stats that change as you battle, making every round
+						unique and unpredictable.
+					</p>
+				</div>
+
+				<div
+					class="bg-emerald-500/10 rounded-3xl p-6 hover:bg-emerald-500/20 transition-colors group fade-in scale-in"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="w-12 h-12 text-emerald-500 mb-4"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="m16 6 4 14"></path>
+						<path d="M12 6v14"></path>
+						<path d="M8 8v12"></path>
+						<path d="M4 4v16"></path>
+					</svg>
+					<h3 class="text-xl font-bold mb-2">Stat Management</h3>
+					<p class="text-gray-400">
+						Monitor and upgrade your stats (strength, precision,
+						crit, speed, defense, healing) to adapt your strategy as
+						the battle progresses.
+					</p>
+				</div>
+
+				<div
+					class="bg-amber-500/10 rounded-3xl p-6 hover:bg-amber-500/20 transition-colors group fade-in scale-in"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="w-12 h-12 text-amber-500 mb-4"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path
+							d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+						></path>
+					</svg>
+					<h3 class="text-xl font-bold mb-2">Tactical Choices</h3>
+					<p class="text-gray-400">
+						Decide when to attack, skip a turn to manage fatigue, or
+						heal to recover lost health. Each decision has strategic
+						trade-offs.
+					</p>
+				</div>
+			</div>
+
+			<div
+				class="bg-gradient-to-br from-violet-500/10 to-emerald-500/10 rounded-3xl p-8 text-center fade-in"
+			>
+				<h2 class="text-3xl font-display font-bold mb-6">
+					Ready to Test Your Strategy?
+				</h2>
+				<p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+					Jump into Fateshaper now and experience the depth of
+					tactical combat that transforms rock-paper-scissors into an
+					epic battle of wits and strategy.
+				</p>
+				<div class="flex flex-col sm:flex-row gap-4 justify-center">
+					<a
+						href="game.html"
+						class="inline-flex items-center bg-violet-500 hover:bg-violet-600 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 pulse"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5 mr-2"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<polygon points="5 3 19 12 5 21 5 3"></polygon>
+						</svg>
+						Play Now
+					</a>
+					<a
+						href="class-selection.html"
+						class="inline-flex items-center bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-5 w-5 mr-2"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<path
+								d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"
+							/>
+						</svg>
+						Choose Your Class
+					</a>
+				</div>
+			</div>
+		</main>
+
+		<footer class="border-t border-violet-500/20 py-8">
+			<div
+				class="container mx-auto px-4 max-w-screen-xl text-center text-gray-400"
+			>
+				<p>&copy; 2024 Fateshaper. All rights reserved.</p>
+			</div>
+		</footer>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				const menuToggle = document.getElementById("menu-toggle");
+				const mobileMenu = document.getElementById("mobile-menu");
+				if (menuToggle && mobileMenu) {
+					menuToggle.addEventListener("click", () =>
+						mobileMenu.classList.toggle("hidden")
+					);
+				}
+
+				const observerOptions = {
+					threshold: 0.2,
+					rootMargin: "0px",
+				};
+
+				const animationObserver = new IntersectionObserver(
+					(entries, observer) => {
+						entries.forEach((entry) => {
+							entry.target.classList.toggle(
+								"visible",
+								entry.isIntersecting
+							);
+
+							if (
+								entry.isIntersecting &&
+								entry.target.dataset.transitionDelay
+							) {
+								entry.target.style.transitionDelay =
+									entry.target.dataset.transitionDelay;
+							} else {
+								entry.target.style.transitionDelay = "0s";
+							}
+						});
+					},
+					observerOptions
+				);
+
+				const animatedElements = document.querySelectorAll(
+					".fade-in, .fade-in-left, .fade-in-right, .scale-in"
+				);
+
+				animatedElements.forEach((element) => {
+					animationObserver.observe(element);
+				});
+
+				document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+					anchor.addEventListener("click", function (e) {
+						e.preventDefault();
+						document
+							.querySelector(this.getAttribute("href"))
+							.scrollIntoView({
+								behavior: "smooth",
+							});
+					});
+				});
+			});
+		</script>
+	</body>
 </html>
