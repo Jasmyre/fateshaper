@@ -25,6 +25,7 @@
       },
     };
   </script>
+  <script src="./ts/utils.ts" type="module" defer></script>
   <style>
     body {
       background-color: #0f172a;
@@ -73,44 +74,45 @@
   </style>
 </head>
 <body class="text-white min-h-screen flex flex-col">
-  <header class="bg-dark/80 backdrop-blur-sm sticky top-0 z-50 border-b border-primary/20">
-    <div class="container mx-auto px-4 max-w-screen-xl">
-      <nav class="flex justify-between items-center py-4">
-        <a href="/index.html" class="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-          <span class="text-2xl font-display font-bold text-white">Fateshaper</span>
-        </a>
-        
-        <ul class="hidden md:flex space-x-8 font-medium">
-          <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
-          <li><a href="information.html" class="text-white hover:text-primary transition-colors">Information</a></li>
-          <li><a href="game.html" class="text-white hover:text-primary transition-colors">Game</a></li>
-          <li><a href="gallery.html" class="text-white hover:text-primary transition-colors">Gallery</a></li>
-          <li><a href="contact.html" class="text-white hover:text-primary transition-colors">Contact</a></li>
-        </ul>
-        
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </nav>
-    </div>
-
+  <header class="fixed top-0 w-full z-50 bg-[#0f172a]/80 backdrop-blur-lg border-b border-violet-500/20">
+    <nav class="container mx-auto px-4 max-w-screen-xl py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-violet-500" width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+        <span class="text-2xl font-display font-bold">Fateshaper</span>
+      </a>
+      <div class="hidden md:flex gap-8 font-medium">
+        <a href="/" class="hover:text-violet-500 transition-colors">Home</a>
+        <a href="/information.html" class="hover:text-violet-500 transition-colors">Information</a>
+        <a href="/class-selection.html" class="hover:text-violet-500 transition-colors">Game</a>
+        <a href="/gallery.html" class="hover:text-violet-500 transition-colors">Gallery</a>
+        <a href="/contact.html" class="hover:text-violet-500 transition-colors">Contact</a>
+        <a href="/history.html" class="text-violet-500 border-b-2 border-violet-500">History</a>
+      </div>
+  
+      <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+  
     <div id="mobile-menu" class="hidden md:hidden bg-dark/95 backdrop-blur-md">
       <ul class="flex flex-col items-center py-4 space-y-4 font-medium">
-        <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
-        <li><a href="information.html" class="text-white hover:text-primary transition-colors">Information</a></li>
-        <li><a href="game.html" class="text-white hover:text-primary transition-colors">Game</a></li>
-        <li><a href="gallery.html" class="text-white hover:text-primary transition-colors">Gallery</a></li>
-        <li><a href="contact.html" class="text-white hover:text-primary transition-colors">Contact</a></li>
+        <li><a href="/" class="text-violet-500">Home</a></li>
+        <li><a href="/information.html" class="text-white hover:text-violet-500 transition-colors">Information</a></li>
+        <li><a href="/class-selection.html" class="text-white hover:text-violet-500 transition-colors">Game</a></li>
+        <li><a href="/gallery.html" class="text-white hover:text-violet-500 transition-colors">Gallery</a></li>
+        <li><a href="/contact.html" class="text-white hover:text-violet-500 transition-colors">Contact</a></li>
+        <li><a href="/history.html" class="text-white hover:text-violet-500 transition-colors">History</a></li>
       </ul>
     </div>
   </header>
 
-  <main class="flex-grow py-16">
+  <main class="container mx-auto px-4 max-w-screen-xl pt-24 pb-16 min-h-svh">
     <div class="container mx-auto px-4 max-w-screen-xl">
       <div class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">
@@ -195,7 +197,7 @@
                       <span>(Player 2)-</span>
                     <span id="robot-class" class="class-badge rogue-badge mr-2"></span>
                   </h3>
-                  <span id="robot-score" class="text-xl font-bold text-purple-400"></span>
+                  <span id="robot-score" class="text-xl font-bold text-primary"></span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 text-sm">
                   <div class="flex justify-between">
@@ -239,7 +241,6 @@
                 </tr>
               </thead>
               <tbody id="rounds-table-body">
-                <!-- Rounds will be inserted here -->
               </tbody>
             </table>
           </div>
@@ -281,7 +282,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Mobile menu toggle
       const menuToggle = document.getElementById('menu-toggle');
       const mobileMenu = document.getElementById('mobile-menu');
 
@@ -291,7 +291,6 @@
         });
       }
 
-      // Load match details
       const urlParams = new URLSearchParams(window.location.search);
       const gameId = urlParams.get('gameId');
       
@@ -304,7 +303,6 @@
     });
 
     function loadMatchDetails(gameId) {
-      // Try to find the match in localStorage
       const savedMatches = localStorage.getItem('gameHistory');
       const allMatches = savedMatches ? JSON.parse(savedMatches) : [];
       const match = allMatches.find(m => m.gameId === gameId);
@@ -318,21 +316,17 @@
     }
 
     function displayMatchDetails(match) {
-      // Hide loading, show details
       document.getElementById('match-loading').classList.add('hidden');
       document.getElementById('match-details').classList.remove('hidden');
 
-      // Format dates and duration
       const startDate = new Date(match.startTime);
       const endDate = match.endTime ? new Date(match.endTime) : null;
       const duration = endDate ? formatDuration(endDate - startDate) : 'N/A';
 
-      // Set match summary
       document.getElementById('match-date').textContent = startDate.toLocaleString();
       document.getElementById('match-duration').textContent = duration;
       document.getElementById('match-rounds').textContent = match.rounds?.length || '0';
       
-      // Set result and score
       const resultElement = document.getElementById('match-result');
       if (match.outcome === 'player') {
         resultElement.textContent = 'Victory';
@@ -348,7 +342,6 @@
       document.getElementById('match-score').textContent = 
         `${match.finalScores?.playerScore || '0'} - ${match.finalScores?.robotScore || '0'}`;
 
-      // Set participant details
       const lastRound = match.rounds?.[match.rounds.length - 1];
       const initialRound = match.rounds?.[0];
 
@@ -360,7 +353,6 @@
       document.getElementById('robot-class').className = `class-badge ${getClassBadgeStyle(match.robotClass)}`;
       document.getElementById('robot-score').textContent = match.finalScores?.robotScore || '0';
 
-      // Set initial/final stats
       if (lastRound) {
         document.getElementById('player-health').textContent = lastRound.playerStatsBefore.health.toFixed(1);
         document.getElementById('player-strength').textContent = lastRound.playerStatsBefore.strength.toFixed(1);
@@ -373,7 +365,6 @@
         document.getElementById('robot-speed').textContent = lastRound.robotStatsBefore.speed.toFixed(1);
       }
 
-      // Populate rounds table
       const roundsBody = document.getElementById('rounds-table-body');
       if (match.rounds && match.rounds.length > 0) {
         roundsBody.innerHTML = match.rounds.map((round, index) => {
@@ -421,7 +412,6 @@
       document.getElementById('match-not-found').classList.remove('hidden');
     }
 
-    // Helper functions
     function formatDuration(ms) {
       const seconds = Math.floor(ms / 1000);
       const minutes = Math.floor(seconds / 60);
@@ -441,33 +431,27 @@
         'Rogue': 'rogue-badge',
         'Warrior': 'warrior-badge'
       };
-      return styles[className] || 'bg-gray-500/20 text-gray-300';
+      return styles[className];
     }
 
     function formatAction(action, actor) {
       const actionMap = {
         'attack-rock': {
-        //   icon: `<img src="/v1rock.svg" class="action-icon" alt="Rock">`,
           text: 'Rock'
         },
         'attack-paper': {
-        //   icon: `<img src="/v1paper.svg" class="action-icon" alt="Paper">`,
           text: 'Paper'
         },
         'attack-scissors': {
-        //   icon: `<img src="/v1scissors.svg" class="action-icon" alt="Scissors">`,
           text: 'Scissors'
         },
         'heal': {
-        //   icon: `<img src="/heal.webp" class="action-icon" alt="Heal">`,
           text: 'Heal'
         },
         'skip': {
-        //   icon: `<img src="/skip.png" class="action-icon" alt="Skip">`,
           text: 'Skip'
         },
         'default': {
-        //   icon: `<img src="/unknown.png" class="action-icon" alt="Unknown">`,
           text: action || 'Unknown'
         }
       };

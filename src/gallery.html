@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gallery - Fateshaper</title>
   <link rel="stylesheet" href="/utils.css">
+  <link rel="stylesheet" href="./css/utils.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link
     href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap"
@@ -29,7 +30,8 @@
       },
     };
   </script>
-   <script src="./ts/utils.ts" type="module" defer></script>
+  <script src="./ts/utils.ts" type="module" defer></script>
+  <script type="module" src="./ts/scroll_animation.ts"></script>
   <style>
     body {
       background-color: #0f172a;
@@ -100,60 +102,40 @@
 </head>
 
 <body class="text-light min-h-screen flex flex-col">
-  <header class="bg-dark/80 backdrop-blur-sm sticky top-0 z-50 border-b border-primary/20">
-    <div class="container mx-auto px-4">
-      <nav class="container mx-auto px-4 max-w-screen-xl py-4 flex justify-between items-center">
-        <a href="/" class="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon
-              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-            </polygon>
-          </svg>
-          <span class="text-2xl font-display font-bold text-white">Fateshaper</span>
-        </a>
-
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-
-        <ul class="hidden md:flex space-x-8 font-medium">
-          <li>
-            <a href="/" class="text-white hover:text-primary transition-colors">Home</a>
-          </li>
-          <li>
-            <a href="/information.html" class="text-white hover:text-primary transition-colors">Information</a>
-          </li>
-          <li>
-            <a href="/class-selection.html" class="text-white hover:text-primary transition-colors">Game</a>
-          </li>
-          <li>
-            <a href="/gallery.html" class="text-primary border-b-2 border-primary py-1">Gallery</a>
-          </li>
-          <li>
-            <a href="/contact.html" class="text-white hover:text-primary transition-colors">Contact</a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-
+  <header class="fixed top-0 w-full z-50 bg-[#0f172a]/80 backdrop-blur-lg border-b border-violet-500/20">
+    <nav class="container mx-auto px-4 max-w-screen-xl py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-violet-500" width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+        <span class="text-2xl font-display font-bold">Fateshaper</span>
+      </a>
+      <div class="hidden md:flex gap-8 font-medium">
+        <a href="/" class="hover:text-violet-500 transition-colors">Home</a>
+        <a href="/information.html" class="hover:text-violet-500 transition-colors">Information</a>
+        <a href="/class-selection.html" class="hover:text-violet-500 transition-colors">Game</a>
+        <a href="/gallery.html" class="text-violet-500 border-b-2 border-violet-500">Gallery</a>
+        <a href="/contact.html" class="hover:text-violet-500 transition-colors">Contact</a>
+        <a href="/history.html" class="hover:text-violet-500 transition-colors">History</a>
+      </div>
+  
+      <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+  
     <div id="mobile-menu" class="hidden md:hidden bg-dark/95 backdrop-blur-md">
       <ul class="flex flex-col items-center py-4 space-y-4 font-medium">
-        <li>
-          <a href="/" class="text-white hover:text-primary transition-colors">Home</a>
-        </li>
-        <li>
-          <a href="information.html" class="text-white hover:text-primary transition-colors">Information</a>
-        </li>
-        <li>
-          <a href="game.html" class="text-white hover:text-primary transition-colors">Game</a>
-        </li>
-        <li><a href="gallery.html" class="text-primary">Gallery</a></li>
-        <li>
-          <a href="contact.html" class="text-white hover:text-primary transition-colors">Contact</a>
-        </li>
+        <li><a href="/" class="hover:text-violet-500 transition-colors">Home</a></li>
+        <li><a href="/information.html" class="text-white hover:text-violet-500 transition-colors">Information</a></li>
+        <li><a href="/class-selection.html" class="text-white hover:text-violet-500 transition-colors">Game</a></li>
+        <li><a href="/gallery.html" class="text-violet-500 border-b-2 border-violet-500">Gallery</a></li>
+        <li><a href="/contact.html" class="text-white hover:text-violet-500 transition-colors">Contact</a></li>
+        <li><a href="/history.html" class="text-white hover:text-violet-500 transition-colors">History</a></li>
       </ul>
     </div>
   </header>
@@ -170,9 +152,7 @@
             Gallery</span>
         </h1>
         <p class="text-xl md:text-2xl mb-8 text-gray-300">
-          Explore the stunning visuals and artwork from the world of
-          Fateshaper. From character designs to breathtaking landscapes,
-          immerse yourself in the visual journey of our game.
+          Explore the different visuals and artwork.
         </p>
       </div>
     </div>
@@ -186,11 +166,6 @@
           data-filter="all">
           All
         </button>
-        <button
-          class="filter-btn bg-dark/80 hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-lg transition-all"
-          data-filter="screenshots">
-          Screenshots
-        </button>
       </div>
     </div>
   </section>
@@ -198,7 +173,7 @@
   <section class="py-8">
     <div class="container mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="gallery-item rounded-xl overflow-hidden cursor-pointer border border-gray-700">
+        <div class="gallery-item rounded-xl overflow-hidden cursor-pointer border border-gray-700 fade-in">
           <div class="relative">
             <img src="/ss1.png"
               class="w-full h-80 object-cover transition-transform duration-500" />
@@ -212,7 +187,7 @@
           </div>
         </div>
 
-        <div class="gallery-item rounded-xl overflow-hidden cursor-pointer border border-gray-700">
+        <div class="gallery-item rounded-xl overflow-hidden cursor-pointer border border-gray-700 fade-in">
           <div class="relative">
             <img src="/ss2.png"
               class="w-full h-80 object-cover transition-transform duration-500" />
@@ -226,7 +201,7 @@
           </div>
         </div>
 
-        <div class="gallery-item rounded-xl overflow-hidden cursor-pointer border border-gray-700">
+        <div class="gallery-item rounded-xl overflow-hidden cursor-pointer border border-gray-700 fade-in">
           <div class="relative">
             <img src="/ss3.png"
               class="w-full h-80 object-cover transition-transform duration-500" />

@@ -142,7 +142,6 @@ let playerMomentum = 0,
 let playerUpgradePoints = 0,
 	robotUpgradePoints = 0;
 
-// Score tracking variables
 let playerTotalDamageDealt = 0;
 let playerTotalHealingDone = 0;
 let playerRoundsWon = 0;
@@ -209,7 +208,6 @@ interface Upgrade {
 	newValue: number;
 }
 
-// Add these helper functions for game history management
 function saveGameHistory(game: GameData): void {
 	const history = loadGameHistory();
 	history.push(game);
@@ -221,7 +219,6 @@ function loadGameHistory(): GameData[] {
 	return history ? JSON.parse(history) : [];
 }
 
-// Initialize current game at the start of the script
 let currentGame: GameData = {
 	gameId: Date.now().toString(),
 	startTime: new Date().toISOString(),
@@ -232,7 +229,6 @@ let currentGame: GameData = {
 
 
 function calculateFinalScores(): { playerScore: number; robotScore: number } {
-	// Player Score
 	const playerDamageScore =
 		playerTotalDamageDealt * (1 + playerCriticalHits * 0.1);
 	const playerHealingScore =
@@ -250,7 +246,6 @@ function calculateFinalScores(): { playerScore: number; robotScore: number } {
 			playerSurvivalBonus
 	);
 
-	// Robot Score
 	const robotDamageScore =
 		robotTotalDamageDealt * (1 + robotCriticalHits * 0.1);
 	const robotHealingScore =
@@ -399,7 +394,6 @@ function calculateDamage(
 		0
 	);
 
-	// Update damage dealt
 	if (attacker === "player") {
 		playerTotalDamageDealt += finalDamage;
 	} else {
@@ -448,7 +442,6 @@ function upgradePlayerStat(stat: string): void {
 				return;
 			}
 			newValue = ++playerStrength;
-			// playerStrength++;
 			break;
 		case "precision":
 			if (playerPrecision - BASE_PRECISION >= MAX_UPGRADE) {
@@ -456,7 +449,6 @@ function upgradePlayerStat(stat: string): void {
 				return;
 			}
 			newValue = ++playerPrecision;
-			// playerPrecision++;
 			break;
 		case "crit":
 			if (playerCrit - BASE_CRIT >= MAX_UPGRADE) {
@@ -464,7 +456,6 @@ function upgradePlayerStat(stat: string): void {
 				return;
 			}
 			newValue = ++playerCrit;
-			// playerCrit++;
 			break;
 		case "speed":
 			if (playerSpeed - playerBaseSpeed >= MAX_UPGRADE) {
@@ -472,7 +463,6 @@ function upgradePlayerStat(stat: string): void {
 				return;
 			}
 			newValue = ++playerSpeed;
-			// playerSpeed++;
 			break;
 		case "defense":
 			if (playerDefense - playerBaseDefense >= MAX_UPGRADE) {
@@ -480,7 +470,6 @@ function upgradePlayerStat(stat: string): void {
 				return;
 			}
 			newValue = ++playerDefense;
-			// playerDefense++;
 			break;
 		case "healing":
 			if (playerHealing - playerBaseHealing >= MAX_UPGRADE) {
@@ -488,7 +477,6 @@ function upgradePlayerStat(stat: string): void {
 				return;
 			}
 			newValue = ++playerHealing;
-			// playerHealing++;
 			break;
 		default:
 			console.log("Unknown stat");
@@ -656,7 +644,6 @@ function processRound(playerAction: Action): void {
 		upgradePoints: robotUpgradePoints,
 	};
 
-	// Track previous totals for delta calculation
 	const prevPlayerDamage = playerTotalDamageDealt;
 	const prevPlayerHealing = playerTotalHealingDone;
 	const prevRobotDamage = robotTotalDamageDealt;
@@ -1026,7 +1013,6 @@ function processRound(playerAction: Action): void {
 			}
 		}
 
-		// Update rounds won
 		if (roundOutcome === "player") {
 			playerRoundsWon++;
 		} else if (roundOutcome === "robot") {
@@ -1266,50 +1252,3 @@ function updateStatsAfterRound(result: "player" | "robot" | "tie"): void {
 	playerMomentum = Math.min(Math.max(playerMomentum, 0), 100);
 	robotMomentum = Math.min(Math.max(robotMomentum, 0), 100);
 }
-
-// Add this function to display history (to be called from a history page)
-// function displayGameHistory(): void {
-//   const history = loadGameHistory();
-//   const historyContainer = document.getElementById('history-container');
-  
-//   if (!historyContainer || history.length === 0) return;
-
-//   historyContainer.innerHTML = history.map(game => `
-//     <div class="game-history">
-//       <h3>Game ${new Date(game.startTime).toLocaleString()}</h3>
-//       <p>Player: ${game.playerClass} vs Robot: ${game.robotClass}</p>
-//       <p>Outcome: ${game.outcome === 'player' ? 'Player Won' : 'Robot Won'}</p>
-//       <p>Score: Player ${game.finalScores?.playerScore} - ${game.finalScores?.robotScore}</p>
-//       <div class="rounds">
-//         ${game.rounds.map(round => `
-//           <div class="round">
-//             <h4>Round ${round.roundNumber}</h4>
-//             <p>Player: ${round.playerAction} | Robot: ${round.robotAction}</p>
-//             <p>Outcome: ${round.roundOutcome}</p>
-//             <p>Damage: Player ${round.damageDealt.player} | Robot ${round.damageDealt.robot}</p>
-//             <p>Healing: Player ${round.healingDone.player} | Robot ${round.healingDone.robot}</p>
-//           </div>
-//         `).join('')}
-//       </div>
-//     </div>
-//   `).join('');
-// }
-
-// Add this to your winning.html page script to show the last game
-// function displayLastGame(): void {
-//   const history = loadGameHistory();
-//   if (history.length === 0) return;
-
-//   const lastGame = history[history.length - 1];
-//   const gameSummary = document.getElementById('game-summary');
-  
-//   if (gameSummary) {
-//     gameSummary.innerHTML = `
-//       <h2>Game Summary</h2>
-//       <p>Player: ${lastGame.playerClass} vs Robot: ${lastGame.robotClass}</p>
-//       <p>Rounds played: ${lastGame.rounds.length}</p>
-//       <p>Final score: Player ${lastGame.finalScores?.playerScore} - ${lastGame.finalScores?.robotScore}</p>
-//       <p>Outcome: ${lastGame.outcome === 'player' ? 'You Won!' : 'Robot Won'}</p>
-//     `;
-//   }
-// }

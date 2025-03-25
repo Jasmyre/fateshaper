@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/utils.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/utils.css">
   <script>
     tailwind.config = {
       theme: {
@@ -31,6 +32,7 @@
     };
   </script>
   <script src="./ts/utils.ts" type="module" defer></script>
+  <script type="module" src="./ts/scroll_animation.ts"></script>
   <style>
     body {
       background-color: #0f172a;
@@ -172,60 +174,61 @@
   </style>
 </head>
 <body class="text-white min-h-screen flex flex-col">
-  <header class="bg-dark/80 backdrop-blur-sm sticky top-0 z-50 border-b border-primary/20">
-    <div class="container mx-auto px-4 max-w-screen-xl">
-      <nav class="flex justify-between items-center py-4">
-        <a href="/index.html" class="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-          <span class="text-2xl font-display font-bold text-white">Fateshaper</span>
-        </a>
-        
-        <ul class="hidden md:flex space-x-8 font-medium">
-          <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
-          <li><a href="/information.html" class="text-white hover:text-primary transition-colors">Information</a></li>
-          <li><a href="/class-selection.html" class="text-violet-500 border-b-2 border-violet-500">Game</a></li>
-          <li><a href="/gallery.html" class="text-white hover:text-primary transition-colors">Gallery</a></li>
-          <li><a href="/contact.html" class="text-white hover:text-primary transition-colors">Contact</a></li>
-        </ul>
-        
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </nav>
-    </div>
-
+  <header class="fixed top-0 w-full z-50 bg-[#0f172a]/80 backdrop-blur-lg border-b border-violet-500/20">
+    <nav class="container mx-auto px-4 max-w-screen-xl py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-violet-500" width="24" height="24" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+        <span class="text-2xl font-display font-bold">Fateshaper</span>
+      </a>
+      <div class="hidden md:flex gap-8 font-medium">
+        <a href="/" class="hover:text-violet-500 transition-colors">Home</a>
+        <a href="/information.html" class="hover:text-violet-500 transition-colors">Information</a>
+        <a href="/class-selection.html" class="text-violet-500 border-b-2 border-violet-500">Game</a>
+        <a href="/gallery.html" class="hover:text-violet-500 transition-colors">Gallery</a>
+        <a href="/contact.html" class="hover:text-violet-500 transition-colors">Contact</a>
+        <a href="/history.html" class="hover:text-violet-500 transition-colors">History</a>
+      </div>
+  
+      <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
+  
     <div id="mobile-menu" class="hidden md:hidden bg-dark/95 backdrop-blur-md">
       <ul class="flex flex-col items-center py-4 space-y-4 font-medium">
-        <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
-        <li><a href="information.html" class="text-white hover:text-primary transition-colors">Information</a></li>
-        <li><a href="game.html" class="text-white hover:text-primary transition-colors">Game</a></li>
-        <li><a href="gallery.html" class="text-white hover:text-primary transition-colors">Gallery</a></li>
-        <li><a href="contact.html" class="text-white hover:text-primary transition-colors">Contact</a></li>
+        <li><a href="/" class="text-violet-500">Home</a></li>
+        <li><a href="/information.html" class="text-white hover:text-violet-500 transition-colors">Information</a></li>
+        <li><a href="/class-selection.html" class="text-white hover:text-violet-500 transition-colors">Game</a></li>
+        <li><a href="/gallery.html" class="text-white hover:text-violet-500 transition-colors">Gallery</a></li>
+        <li><a href="/contact.html" class="text-white hover:text-violet-500 transition-colors">Contact</a></li>
+        <li><a href="/history.html" class="text-white hover:text-violet-500 transition-colors">History</a></li>
       </ul>
     </div>
   </header>
 
-  <main class="flex-grow py-16">
+  <main class="container mx-auto px-4 max-w-screen-xl pt-24 pb-16">
     <div class="container mx-auto px-4 max-w-screen-xl">
       <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">
+        <h1 class="text-4xl md:text-5xl font-display font-bold mb-4 fade-in">
           <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
             Choose Your Class
           </span>
         </h1>
-        <p class="text-xl text-gray-300 max-w-3xl mx-auto mb-6">
+        <p class="text-xl text-gray-300 max-w-3xl mx-auto mb-6 fade-in">
           Select a class that matches your playstyle. Each class has unique strengths and abilities that affect your gameplay strategy.
         </p>
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        <div id="warrior-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-warrior/30 overflow-hidden">
+        <div id="warrior-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-warrior/30 overflow-hidden fade-in ">
           <div class="h-48 bg-gradient-to-b from-warrior/20 to-transparent relative">
-            <div class="absolute inset-0 flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center fade-in">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-warrior/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
               </svg>
@@ -233,32 +236,32 @@
           </div>
           
           <div class="p-6">
-            <h2 class="text-2xl font-display font-bold text-warrior mb-2">Warrior</h2>
-            <p class="text-gray-300 mb-4">Powerful frontline fighters with high health and defense. Warriors excel at absorbing damage while dealing consistent attacks.</p>
+            <h2 class="text-2xl font-display font-bold text-warrior mb-2 fade-in">Warrior</h2>
+            <p class="text-gray-300 mb-4 fade-in">Powerful frontline fighters with high health and defense. Warriors excel at absorbing damage while dealing consistent attacks.</p>
             
             <div class="grid grid-cols-2 gap-4 mb-6">
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Health</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-warrior h-2 rounded-full" style="width: 90%"></div>
                 </div>
                 <span class="tooltip-text">Warriors have 30% more health than average, allowing them to withstand heavy damage.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Damage</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-warrior h-2 rounded-full" style="width: 70%"></div>
                 </div>
                 <span class="tooltip-text">Warriors deal average damage, focusing more on survival than burst damage.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Speed</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-warrior h-2 rounded-full" style="width: 50%"></div>
                 </div>
                 <span class="tooltip-text">Warriors are slower than average, with 20% reduced speed.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Defense</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-warrior h-2 rounded-full" style="width: 95%"></div>
@@ -267,7 +270,7 @@
               </div>
             </div>
             
-            <div class="special-ability bg-warrior/10 p-3 rounded-lg mb-6">
+            <div class="special-ability bg-warrior/10 p-3 rounded-lg mb-6 fade-in">
               <h3 class="text-warrior font-bold text-sm mb-1">SPECIAL ABILITY</h3>
               <p class="text-gray-300 text-sm">Berserker Rage: Gain increased damage when health drops below 30%.</p>
             </div>
@@ -278,9 +281,9 @@
           </div>
         </div>
         
-        <div id="mage-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-mage/30 overflow-hidden">
+        <div id="mage-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-mage/30 overflow-hidden fade-in ">
           <div class="h-48 bg-gradient-to-b from-mage/20 to-transparent relative">
-            <div class="absolute inset-0 flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center fade-in">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-mage/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21.64 3.64a1.35 1.35 0 0 0-1.19-.38L8.51 5.65A5 5 0 0 0 5.65 8.51L3.27 20.44c-.19.74.34 1.46 1.08 1.46.18 0 .36-.05.51-.14L16.4 15.9a5.004 5.004 0 0 0 2.86-2.86l5.86-11.54c.19-.37.19-.82 0-1.19a1.14 1.14 0 0 0-3.48 3.28z"></path>
                 <path d="M7.7 15.3A4.52 4.52 0 0 1 5.5 13.1C5.5 11.4 6.9 10 8.6 10c1.7 0 3.1 1.4 3.1 3.1 0 .8-.3 1.6-.9 2.2"></path>
@@ -289,32 +292,32 @@
           </div>
           
           <div class="p-6">
-            <h2 class="text-2xl font-display font-bold text-mage mb-2">Mage</h2>
-            <p class="text-gray-300 mb-4">Masters of arcane power with high damage and healing abilities. Mages are fragile but can devastate opponents with powerful attacks.</p>
+            <h2 class="text-2xl font-display font-bold text-mage mb-2 fade-in">Mage</h2>
+            <p class="text-gray-300 mb-4 fade-in">Masters of arcane power with high damage and healing abilities. Mages are fragile but can devastate opponents with powerful attacks.</p>
             
             <div class="grid grid-cols-2 gap-4 mb-6">
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Health</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-mage h-2 rounded-full" style="width: 50%"></div>
                 </div>
                 <span class="tooltip-text">Mages have 20% less health than average, making them vulnerable to attacks.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Damage</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-mage h-2 rounded-full" style="width: 95%"></div>
                 </div>
                 <span class="tooltip-text">Mages deal 50% more damage than average, making them powerful attackers.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Healing</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-mage h-2 rounded-full" style="width: 90%"></div>
                 </div>
                 <span class="tooltip-text">Mages have 40% increased healing power, allowing them to recover health effectively.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Defense</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-mage h-2 rounded-full" style="width: 45%"></div>
@@ -323,7 +326,7 @@
               </div>
             </div>
             
-            <div class="special-ability bg-mage/10 p-3 rounded-lg mb-6">
+            <div class="special-ability bg-mage/10 p-3 rounded-lg mb-6 fade-in">
               <h3 class="text-mage font-bold text-sm mb-1">SPECIAL ABILITY</h3>
               <p class="text-gray-300 text-sm">Arcane Surge: Every third attack deals double damage but costs additional fatigue.</p>
             </div>
@@ -334,9 +337,9 @@
           </div>
         </div>
         
-        <div id="rogue-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-rogue/30 overflow-hidden">
+        <div id="rogue-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-rogue/30 overflow-hidden fade-in ">
           <div class="h-48 bg-gradient-to-b from-rogue/20 to-transparent relative">
-            <div class="absolute inset-0 flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center fade-in">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-rogue/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 15l-6 6-6-6"></path>
                 <path d="M19 9l-6 6-6-6"></path>
@@ -346,32 +349,32 @@
           </div>
           
           <div class="p-6">
-            <h2 class="text-2xl font-display font-bold text-rogue mb-2">Rogue</h2>
-            <p class="text-gray-300 mb-4">Swift and cunning fighters with balanced stats. Rogues excel at speed and damage, making them versatile in combat situations.</p>
+            <h2 class="text-2xl font-display font-bold text-rogue mb-2 fade-in">Rogue</h2>
+            <p class="text-gray-300 mb-4 fade-in">Swift and cunning fighters with balanced stats. Rogues excel at speed and damage, making them versatile in combat situations.</p>
             
             <div class="grid grid-cols-2 gap-4 mb-6">
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Health</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-rogue h-2 rounded-full" style="width: 70%"></div>
                 </div>
                 <span class="tooltip-text">Rogues have average health, providing balanced survivability.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Damage</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-rogue h-2 rounded-full" style="width: 85%"></div>
                 </div>
                 <span class="tooltip-text">Rogues deal 30% more damage than average, making them effective attackers.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Speed</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-rogue h-2 rounded-full" style="width: 95%"></div>
                 </div>
                 <span class="tooltip-text">Rogues are 60% faster than average, allowing them to dodge attacks more effectively.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Defense</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-rogue h-2 rounded-full" style="width: 50%"></div>
@@ -380,7 +383,7 @@
               </div>
             </div>
             
-            <div class="special-ability bg-rogue/10 p-3 rounded-lg mb-6">
+            <div class="special-ability bg-rogue/10 p-3 rounded-lg mb-6 fade-in">
               <h3 class="text-rogue font-bold text-sm mb-1">SPECIAL ABILITY</h3>
               <p class="text-gray-300 text-sm">Evasion: 20% chance to completely avoid damage from an attack.</p>
             </div>
@@ -391,9 +394,9 @@
           </div>
         </div>
         
-        <div id="guardian-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-guardian/30 overflow-hidden md:col-span-1">
+        <div id="guardian-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-guardian/30 overflow-hidden md:col-span-1 fade-in ">
           <div class="h-48 bg-gradient-to-b from-guardian/20 to-transparent relative">
-            <div class="absolute inset-0 flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center fade-in">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-guardian/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
               </svg>
@@ -401,32 +404,32 @@
           </div>
           
           <div class="p-6">
-            <h2 class="text-2xl font-display font-bold text-guardian mb-2">Guardian</h2>
-            <p class="text-gray-300 mb-4">Stalwart protectors with exceptional health and defense. Guardians can withstand massive damage and excel in prolonged battles.</p>
+            <h2 class="text-2xl font-display font-bold text-guardian mb-2 fade-in">Guardian</h2>
+            <p class="text-gray-300 mb-4 fade-in">Stalwart protectors with exceptional health and defense. Guardians can withstand massive damage and excel in prolonged battles.</p>
             
             <div class="grid grid-cols-2 gap-4 mb-6">
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Health</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-guardian h-2 rounded-full" style="width: 95%"></div>
                 </div>
                 <span class="tooltip-text">Guardians have 50% more health than average, making them extremely durable.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Damage</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-guardian h-2 rounded-full" style="width: 50%"></div>
                 </div>
                 <span class="tooltip-text">Guardians deal 20% less damage than average, focusing more on protection than offense.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Healing</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-guardian h-2 rounded-full" style="width: 70%"></div>
                 </div>
                 <span class="tooltip-text">Guardians have average healing capabilities, allowing for moderate self-recovery.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Defense</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-guardian h-2 rounded-full" style="width: 95%"></div>
@@ -435,7 +438,7 @@
               </div>
             </div>
             
-            <div class="special-ability bg-guardian/10 p-3 rounded-lg mb-6">
+            <div class="special-ability bg-guardian/10 p-3 rounded-lg mb-6 fade-in">
               <h3 class="text-guardian font-bold text-sm mb-1">SPECIAL ABILITY</h3>
               <p class="text-gray-300 text-sm">Fortify: After taking damage, gain increased defense for the next two rounds.</p>
             </div>
@@ -446,9 +449,9 @@
           </div>
         </div>
         
-        <div id="assassin-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-assassin/30 overflow-hidden md:col-span-1">
+        <div id="assassin-card" class="class-card bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-assassin/30 overflow-hidden md:col-span-1 fade-in ">
           <div class="h-48 bg-gradient-to-b from-assassin/20 to-transparent relative">
-            <div class="absolute inset-0 flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center fade-in">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-assassin/70 class-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M9 3h6v11h-6z"></path>
                 <path d="M9 14h6"></path>
@@ -461,32 +464,32 @@
           </div>
           
           <div class="p-6">
-            <h2 class="text-2xl font-display font-bold text-assassin mb-2">Assassin</h2>
-            <p class="text-gray-300 mb-4">Masters of precision and speed. Assassins deal devastating damage but are extremely fragile, requiring careful positioning.</p>
+            <h2 class="text-2xl font-display font-bold text-assassin mb-2 fade-in">Assassin</h2>
+            <p class="text-gray-300 mb-4 fade-in">Masters of precision and speed. Assassins deal devastating damage but are extremely fragile, requiring careful positioning.</p>
             
             <div class="grid grid-cols-2 gap-4 mb-6">
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Health</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-assassin h-2 rounded-full" style="width: 40%"></div>
                 </div>
                 <span class="tooltip-text">Assassins have 30% less health than average, making them extremely vulnerable.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Damage</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-assassin h-2 rounded-full" style="width: 95%"></div>
                 </div>
                 <span class="tooltip-text">Assassins deal 60% more damage than average, making them lethal attackers.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Speed</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-assassin h-2 rounded-full" style="width: 95%"></div>
                 </div>
                 <span class="tooltip-text">Assassins are 80% faster than average, allowing them to strike first and evade attacks.</span>
               </div>
-              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip">
+              <div class="bg-dark/30 p-3 rounded-lg stat-tooltip fade-in">
                 <p class="text-gray-400 text-sm">Defense</p>
                 <div class="w-full bg-gray-700 rounded-full h-2 mt-1">
                   <div class="bg-assassin h-2 rounded-full" style="width: 35%"></div>
@@ -495,7 +498,7 @@
               </div>
             </div>
             
-            <div class="special-ability bg-assassin/10 p-3 rounded-lg mb-6">
+            <div class="special-ability bg-assassin/10 p-3 rounded-lg mb-6 fade-in">
               <h3 class="text-assassin font-bold text-sm mb-1">SPECIAL ABILITY</h3>
               <p class="text-gray-300 text-sm">Critical Strike: 25% increased chance to land critical hits, dealing 50% more damage.</p>
             </div>
@@ -507,7 +510,7 @@
         </div>
       </div>
       
-      <div class="bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-primary/20 overflow-hidden mb-12">
+      <div class="bg-dark/50 backdrop-blur-sm rounded-xl border-2 border-primary/20 overflow-hidden mb-12 fade-in">
         <div class="p-4 border-b border-primary/20">
           <h2 class="text-xl font-display font-bold">Class Comparison</h2>
         </div>
@@ -575,7 +578,7 @@
         </div>
       </div>
       
-      <div id="selected-class-info" class="hidden bg-dark/50 backdrop-blur-sm p-8 rounded-xl border-2 border-primary/30 mb-12">
+      <div id="selected-class-info" class="hidden bg-dark/50 backdrop-blur-sm p-8 rounded-xl border-2 border-primary/30 mb-12 fade-in">
         <h2 class="text-2xl font-display font-bold mb-4">
           <span id="selected-class-title" class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
             Warrior

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
   <link rel="stylesheet" href="/utils.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="css/utils.css">
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
@@ -27,72 +30,82 @@
     };
   </script>
   <script src="ts/scroll_animation.ts" type="module"></script>
+  <script src="./ts/utils.ts" type="module" defer></script>
   <style>
     body {
       background-color: #0f172a;
-      background-image: 
+      background-image:
         radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
         radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
     }
+
     .class-badge {
       @apply px-2 py-1 rounded-full text-xs font-medium;
     }
+
     .assassin-badge {
       @apply bg-primary/20 text-primary;
     }
+
     .defender-badge {
       @apply bg-secondary/20 text-secondary;
     }
+
     .healer-badge {
       @apply bg-blue-500/20 text-blue-500;
     }
+
     .rogue-badge {
       @apply bg-purple-500/20 text-purple-400;
     }
+
     .warrior-badge {
       @apply bg-red-500/20 text-red-400;
     }
   </style>
 </head>
+
 <body class="text-white min-h-screen flex flex-col">
-  <header class="bg-dark/80 backdrop-blur-sm sticky top-0 z-50 border-b border-primary/20">
-    <div class="container mx-auto px-4 max-w-screen-xl">
-      <nav class="flex justify-between items-center py-4">
-        <a href="/index.html" class="flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-          <span class="text-2xl font-display font-bold text-white">Fateshaper</span>
-        </a>
-        
-        <ul class="hidden md:flex space-x-8 font-medium">
-          <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
-          <li><a href="information.html" class="text-white hover:text-primary transition-colors">Information</a></li>
-          <li><a href="game.html" class="text-white hover:text-primary transition-colors">Game</a></li>
-          <li><a href="gallery.html" class="text-white hover:text-primary transition-colors">Gallery</a></li>
-          <li><a href="contact.html" class="text-white hover:text-primary transition-colors">Contact</a></li>
-        </ul>
-        
-        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-      </nav>
-    </div>
+  <header class="fixed top-0 w-full z-50 bg-[#0f172a]/80 backdrop-blur-lg border-b border-violet-500/20">
+    <nav class="container mx-auto px-4 max-w-screen-xl py-4 flex justify-between items-center">
+      <a href="/" class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-violet-500" width="24" height="24"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+        <span class="text-2xl font-display font-bold">Fateshaper</span>
+      </a>
+      <div class="hidden md:flex gap-8 font-medium">
+        <a href="/" class="hover:text-violet-500 transition-colors">Home</a>
+        <a href="/information.html" class="hover:text-violet-500 transition-colors">Information</a>
+        <a href="/class-selection.html" class="hover:text-violet-500 transition-colors">Game</a>
+        <a href="/gallery.html" class="hover:text-violet-500 transition-colors">Gallery</a>
+        <a href="/contact.html" class="hover:text-violet-500 transition-colors">Contact</a>
+        <a href="/history.html" class="text-violet-500 border-b-2 border-violet-500">History</a>
+      </div>
+
+      <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </nav>
 
     <div id="mobile-menu" class="hidden md:hidden bg-dark/95 backdrop-blur-md">
       <ul class="flex flex-col items-center py-4 space-y-4 font-medium">
-        <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
-        <li><a href="information.html" class="text-white hover:text-primary transition-colors">Information</a></li>
-        <li><a href="game.html" class="text-white hover:text-primary transition-colors">Game</a></li>
-        <li><a href="gallery.html" class="text-white hover:text-primary transition-colors">Gallery</a></li>
-        <li><a href="contact.html" class="text-white hover:text-primary transition-colors">Contact</a></li>
+        <li><a href="/" class="text-violet-500">Home</a></li>
+        <li><a href="/information.html" class="text-white hover:text-violet-500 transition-colors">Information</a></li>
+        <li><a href="/class-selection.html" class="text-white hover:text-violet-500 transition-colors">Game</a></li>
+        <li><a href="/gallery.html" class="text-white hover:text-violet-500 transition-colors">Gallery</a></li>
+        <li><a href="/contact.html" class="text-white hover:text-violet-500 transition-colors">Contact</a></li>
+        <li><a href="/history.html" class="text-white hover:text-violet-500 transition-colors">History</a></li>
       </ul>
     </div>
   </header>
 
-  <main class="flex-grow py-16 min-h-svh">
+  <main class="container mx-auto px-4 max-w-screen-xl pt-24 pb-16 min-h-svh">
     <div class="container mx-auto px-4 max-w-screen-xl">
       <div class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">
@@ -104,11 +117,12 @@
           Review your past battles, analyze your performance, and track your progress over time.
         </p>
       </div>
-      
+
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in scale-in">
+        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in">
           <div class="flex items-center gap-3 mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
               <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
               <path d="M4 22h16"></path>
@@ -120,10 +134,11 @@
           </div>
           <p class="text-3xl font-bold text-primary" id="total-wins">0</p>
         </div>
-        
-        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in scale-in">
+
+        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in">
           <div class="flex items-center gap-3 mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
               <path d="M12 9v4"></path>
               <path d="M12 17h.01"></path>
@@ -132,20 +147,22 @@
           </div>
           <p class="text-3xl font-bold text-red-500" id="total-losses">0</p>
         </div>
-        
-        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 scale-in">
+
+        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in">
           <div class="flex items-center gap-3 mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-secondary" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
             <h2 class="text-xl font-bold">Win Rate</h2>
           </div>
           <p class="text-3xl font-bold text-secondary" id="win-rate">0%</p>
         </div>
-        
-        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in scale-in">
+
+        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in">
           <div class="flex items-center gap-3 mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-500" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2v20"></path>
               <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
@@ -154,20 +171,34 @@
           <p class="text-3xl font-bold text-amber-500" id="highest-score">0</p>
         </div>
       </div>
-      
+
       <div class="bg-dark/50 backdrop-blur-sm rounded-xl border border-primary/20 overflow-hidden mb-12 fade-in">
         <div class="p-6 border-b border-primary/20 flex justify-between items-center">
           <h2 class="text-2xl font-display font-bold">Recent Matches</h2>
           <div class="flex items-center gap-4">
-            <button id="clear-history" class="text-sm text-red-500 hover:text-red-400 transition-colors flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button id="clear-history"
+              class="text-sm text-red-500 hover:text-red-400 transition-colors flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 6h18"></path>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
               </svg>
               Clear History
             </button>
-            <button id="export-history" class="text-sm text-secondary hover:text-secondary/80 transition-colors flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button id="import-history"
+              class="text-sm text-blue-500 hover:text-blue-400 transition-colors flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              Import Data
+            </button>
+            <button id="export-history"
+              class="text-sm text-secondary hover:text-secondary/80 transition-colors flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                 <polyline points="7 10 12 15 17 10"></polyline>
                 <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -176,7 +207,7 @@
             </button>
           </div>
         </div>
-        
+
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
@@ -196,16 +227,18 @@
           </table>
         </div>
       </div>
-    
+
       <div class="flex justify-center mb-12">
         <nav class="flex items-center gap-2" id="pagination-controls">
         </nav>
       </div>
-      
+
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/class-selection" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+        <a href="/class-selection"
+          class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
           New Game
         </a>
@@ -220,12 +253,12 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const menuToggle = document.getElementById('menu-toggle');
       const mobileMenu = document.getElementById('mobile-menu');
 
       if (menuToggle && mobileMenu) {
-        menuToggle.addEventListener('click', function() {
+        menuToggle.addEventListener('click', function () {
           mobileMenu.classList.toggle('hidden');
         });
       }
@@ -254,10 +287,12 @@
             },
             "outcome": "player"
           }];
-          
+
           const savedMatches = localStorage.getItem('gameHistory');
-          allMatches = savedMatches ? JSON.parse(savedMatches).reverse() : exampleData.reverse();
-          
+          allMatches = savedMatches ? JSON.parse(savedMatches) : exampleData;
+
+          allMatches.sort((a, b) => new Date(b.startTime) - new Date(a.startTime));
+
           updateStatistics();
           renderMatches();
           renderPagination();
@@ -270,9 +305,9 @@
       function updateStatistics() {
         const totalWins = allMatches.filter(game => game.outcome === 'player').length;
         const totalLosses = allMatches.filter(game => game.outcome === 'robot').length;
-        const winRate = totalWins + totalLosses > 0 ? 
+        const winRate = totalWins + totalLosses > 0 ?
           (totalWins / (totalWins + totalLosses) * 100) : 0;
-        const highestScore = allMatches.length > 0 ? 
+        const highestScore = allMatches.length > 0 ?
           Math.max(...allMatches.map(game => game.finalScores?.playerScore || 0)) : 0;
 
         document.getElementById('total-wins').textContent = totalWins;
@@ -283,7 +318,7 @@
 
       function renderMatches() {
         const tbody = document.getElementById('match-history-body');
-        
+
         if (allMatches.length === 0) {
           tbody.innerHTML = `
             <tr>
@@ -294,15 +329,15 @@
           `;
           return;
         }
-        
+
         const startId = (currentPage - 1) * MATCHES_PER_PAGE;
         const endId = startId + MATCHES_PER_PAGE;
         const matchesToShow = allMatches.slice(startId, endId);
 
         tbody.innerHTML = matchesToShow.map(game => {
-          const duration = game.endTime ? 
+          const duration = game.endTime ?
             formatDuration(new Date(game.endTime) - new Date(game.startTime)) : 'N/A';
-          
+
           return `
             <tr class="border-t border-primary/10 hover:bg-dark/30 transition-colors ">
               <td class="p-4 text-gray-300">${formatDate(game.startTime)}</td>
@@ -337,7 +372,7 @@
       function renderPagination() {
         const paginationContainer = document.getElementById('pagination-controls');
         const totalPages = Math.ceil(allMatches.length / MATCHES_PER_PAGE);
-        
+
         if (totalPages <= 1) {
           paginationContainer.innerHTML = '';
           return;
@@ -403,7 +438,7 @@
         paginationContainer.innerHTML = paginationHTML;
       }
 
-      window.changePage = function(newPage) {
+      window.changePage = function (newPage) {
         const totalPages = Math.ceil(allMatches.length / MATCHES_PER_PAGE);
         if (newPage >= 1 && newPage <= totalPages && newPage !== currentPage) {
           currentPage = newPage;
@@ -432,7 +467,7 @@
         const seconds = Math.floor(ms / 1000);
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
-        
+
         if (minutes > 0) {
           return `${minutes}m ${remainingSeconds}s`;
         }
@@ -469,18 +504,81 @@
           }
 
           const dataStr = JSON.stringify(allMatches, "\t", 2);
-          const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-          
+          const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
           const exportFileDefaultName = `fateshaper-history-${new Date().toISOString().split('T')[0]}.json`;
-          
+
           const linkElement = document.createElement('a');
           linkElement.setAttribute('href', dataUri);
           linkElement.setAttribute('download', exportFileDefaultName);
           linkElement.click();
         });
+
+        document.getElementById('import-history')?.addEventListener('click', () => {
+          const fileInputElement = document.createElement('input');
+          fileInputElement.type = 'file';
+          fileInputElement.accept = '.json';
+
+          fileInputElement.onchange = (event) => {
+            const selectedFile = event.target.files[0];
+            if (!selectedFile) return;
+
+            const fileReader = new FileReader();
+            fileReader.onload = (fileLoadEvent) => {
+              try {
+                const importedMatchHistory = JSON.parse(fileLoadEvent.target.result);
+                if (!Array.isArray(importedMatchHistory)) {
+                  throw new Error('Invalid data format - expected array of matches');
+                }
+
+                importedMatchHistory.forEach(match => {
+                  if (!match.gameId || !match.startTime || !match.outcome) {
+                    throw new Error('Invalid game data structure - missing required fields');
+                  }
+                });
+
+                const existingMatchHistory = JSON.parse(localStorage.getItem('gameHistory') || '[]');
+
+                const combinedMatchHistory = [...existingMatchHistory, ...importedMatchHistory];
+                const deduplicatedMatchHistory = combinedMatchHistory.reduce((accumulator, currentMatch) => {
+                  if (!accumulator.some(existingMatch => existingMatch.gameId === currentMatch.gameId)) {
+                    accumulator.push(currentMatch);
+                  }
+                  return accumulator;
+                }, []);
+
+                deduplicatedMatchHistory.sort((firstMatch, secondMatch) =>
+                  new Date(secondMatch.startTime) - new Date(firstMatch.startTime)
+                );
+
+                localStorage.setItem('gameHistory', JSON.stringify(deduplicatedMatchHistory));
+
+                allMatches = deduplicatedMatchHistory;
+                currentPage = 1;
+                updateStatistics();
+                renderMatches();
+                renderPagination();
+
+                const newMatchesCount = deduplicatedMatchHistory.length - existingMatchHistory.length;
+                alert(`Successfully imported ${importedMatchHistory.length} matches. ${newMatchesCount} new matches added.`);
+              } catch (error) {
+                console.error('Import error:', error);
+                alert(`Failed to import data: ${error.message}`);
+              }
+            };
+            fileReader.onerror = () => {
+              alert('Error reading file');
+            };
+            fileReader.readAsText(selectedFile);
+          };
+
+          fileInputElement.click();
+        });
       }
+
       initHistory();
     });
   </script>
 </body>
+
 </html>
