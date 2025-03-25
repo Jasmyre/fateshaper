@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Match Details - Fateshaper</title>
+  <link rel="stylesheet" href="/utils.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Rajdhani', 'sans-serif'],
+            display: ['Orbitron', 'sans-serif'],
+          },
+          colors: {
+            primary: "#6d28d9",
+            secondary: "#10b981",
+            dark: "#0f172a",
+            light: "#f8fafc",
+          }
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    }
+    .class-badge {
+      @apply px-2 py-1 rounded-full text-xs font-medium;
+    }
+    .assassin-badge {
+      @apply bg-primary/20 text-primary;
+    }
+    .defender-badge {
+      @apply bg-secondary/20 text-secondary;
+    }
+    .healer-badge {
+      @apply bg-blue-500/20 text-blue-500;
+    }
+    .rogue-badge {
+      @apply bg-purple-500/20 text-purple-400;
+    }
+    .warrior-badge {
+      @apply bg-red-500/20 text-red-400;
+    }
+    .action-icon {
+      @apply h-5 w-5 mr-2 object-contain;
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+    .player-action {
+      @apply text-primary;
+    }
+    .robot-action {
+      @apply text-purple-400;
+    }
+    .tie-outcome {
+      @apply text-gray-400;
+    }
+    .player-outcome {
+      @apply text-green-500;
+    }
+    .robot-outcome {
+      @apply text-red-500;
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen flex flex-col">
+  <header class="bg-dark/80 backdrop-blur-sm sticky top-0 z-50 border-b border-primary/20">
+    <div class="container mx-auto px-4 max-w-screen-xl">
+      <nav class="flex justify-between items-center py-4">
+        <a href="/index.html" class="flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span class="text-2xl font-display font-bold text-white">Fateshaper</span>
+        </a>
+        
+        <ul class="hidden md:flex space-x-8 font-medium">
+          <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
+          <li><a href="information.html" class="text-white hover:text-primary transition-colors">Information</a></li>
+          <li><a href="game.html" class="text-white hover:text-primary transition-colors">Game</a></li>
+          <li><a href="gallery.html" class="text-white hover:text-primary transition-colors">Gallery</a></li>
+          <li><a href="contact.html" class="text-white hover:text-primary transition-colors">Contact</a></li>
+        </ul>
+        
+        <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </nav>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-dark/95 backdrop-blur-md">
+      <ul class="flex flex-col items-center py-4 space-y-4 font-medium">
+        <li><a href="/index.html" class="text-white hover:text-primary transition-colors">Home</a></li>
+        <li><a href="information.html" class="text-white hover:text-primary transition-colors">Information</a></li>
+        <li><a href="game.html" class="text-white hover:text-primary transition-colors">Game</a></li>
+        <li><a href="gallery.html" class="text-white hover:text-primary transition-colors">Gallery</a></li>
+        <li><a href="contact.html" class="text-white hover:text-primary transition-colors">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="flex-grow py-16">
+    <div class="container mx-auto px-4 max-w-screen-xl">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+            Match Details
+          </span>
+        </h1>
+        <a href="history.html" class="text-primary hover:text-primary/80 transition-colors inline-flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Back to History
+        </a>
+      </div>
+
+      <div id="match-loading" class="text-center py-8">
+        <p class="text-gray-400">Loading match details...</p>
+      </div>
+
+      <div id="match-details" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+          <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20">
+            <h2 class="text-2xl font-display font-bold mb-4">Match Summary</h2>
+            <div class="space-y-4">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Date:</span>
+                <span id="match-date" class="font-medium"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Duration:</span>
+                <span id="match-duration" class="font-medium"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Rounds:</span>
+                <span id="match-rounds" class="font-medium"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Result:</span>
+                <span id="match-result" class="font-bold"></span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Final Score:</span>
+                <span id="match-score" class="font-medium"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20">
+            <h2 class="text-2xl font-display font-bold mb-4">Participants</h2>
+            <div class="space-y-6">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-lg font-medium flex items-center">
+                    <span>(Player 1)-</span>
+                    <span id="player-class" class="class-badge assassin-badge mr-2"></span>
+                  </h3>
+                  <span id="player-score" class="text-xl font-bold text-primary"></span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Health:</span>
+                    <span id="player-health"></span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Strength:</span>
+                    <span id="player-strength"></span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Defense:</span>
+                    <span id="player-defense"></span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Speed:</span>
+                    <span id="player-speed"></span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-lg font-medium flex items-center">
+                      <span>(Player 2)-</span>
+                    <span id="robot-class" class="class-badge rogue-badge mr-2"></span>
+                  </h3>
+                  <span id="robot-score" class="text-xl font-bold text-purple-400"></span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Health:</span>
+                    <span id="robot-health"></span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Strength:</span>
+                    <span id="robot-strength"></span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Defense:</span>
+                    <span id="robot-defense"></span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Speed:</span>
+                    <span id="robot-speed"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-dark/50 backdrop-blur-sm rounded-xl border border-primary/20 overflow-hidden mb-12">
+          <div class="p-6 border-b border-primary/20">
+            <h2 class="text-2xl font-display font-bold">Round-by-Round Breakdown</h2>
+          </div>
+          
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="bg-primary/10 text-left">
+                  <th class="p-4 font-bold">Round</th>
+                  <th class="p-4 font-bold">Your Action</th>
+                  <th class="p-4 font-bold">Opponent Action</th>
+                  <th class="p-4 font-bold">Damage</th>
+                  <th class="p-4 font-bold">Healing</th>
+                  <th class="p-4 font-bold">Result</th>
+                  <th class="p-4 font-bold">Upgrades</th>
+                </tr>
+              </thead>
+              <tbody id="rounds-table-body">
+                <!-- Rounds will be inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex justify-center">
+          <a href="game.html" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+            Play Again
+          </a>
+        </div>
+      </div>
+
+      <div id="match-not-found" class="hidden text-center py-12">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-red-500 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+          <path d="M12 9v4"></path>
+          <path d="M12 17h.01"></path>
+        </svg>
+        <h2 class="text-2xl font-bold mb-2">Match Not Found</h2>
+        <p class="text-gray-400 mb-6">The requested match could not be found in your history.</p>
+        <a href="history.html" class="text-primary hover:text-primary/80 transition-colors inline-flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Back to History
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-violet-500/20 py-8 mt-auto">
+    <div class="container mx-auto px-4 max-w-screen-xl text-center text-gray-400">
+      <p>&copy; 2024 Fateshaper. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Mobile menu toggle
+      const menuToggle = document.getElementById('menu-toggle');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', function() {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+
+      // Load match details
+      const urlParams = new URLSearchParams(window.location.search);
+      const gameId = urlParams.get('gameId');
+      
+      if (!gameId) {
+        showNotFound();
+        return;
+      }
+
+      loadMatchDetails(gameId);
+    });
+
+    function loadMatchDetails(gameId) {
+      // Try to find the match in localStorage
+      const savedMatches = localStorage.getItem('gameHistory');
+      const allMatches = savedMatches ? JSON.parse(savedMatches) : [];
+      const match = allMatches.find(m => m.gameId === gameId);
+
+      if (!match) {
+        showNotFound();
+        return;
+      }
+
+      displayMatchDetails(match);
+    }
+
+    function displayMatchDetails(match) {
+      // Hide loading, show details
+      document.getElementById('match-loading').classList.add('hidden');
+      document.getElementById('match-details').classList.remove('hidden');
+
+      // Format dates and duration
+      const startDate = new Date(match.startTime);
+      const endDate = match.endTime ? new Date(match.endTime) : null;
+      const duration = endDate ? formatDuration(endDate - startDate) : 'N/A';
+
+      // Set match summary
+      document.getElementById('match-date').textContent = startDate.toLocaleString();
+      document.getElementById('match-duration').textContent = duration;
+      document.getElementById('match-rounds').textContent = match.rounds?.length || '0';
+      
+      // Set result and score
+      const resultElement = document.getElementById('match-result');
+      if (match.outcome === 'player') {
+        resultElement.textContent = 'Victory';
+        resultElement.classList.add('text-green-500');
+      } else if (match.outcome === 'robot') {
+        resultElement.textContent = 'Defeat';
+        resultElement.classList.add('text-red-500');
+      } else {
+        resultElement.textContent = 'Unknown';
+        resultElement.classList.add('text-gray-400');
+      }
+      
+      document.getElementById('match-score').textContent = 
+        `${match.finalScores?.playerScore || '0'} - ${match.finalScores?.robotScore || '0'}`;
+
+      // Set participant details
+      const lastRound = match.rounds?.[match.rounds.length - 1];
+      const initialRound = match.rounds?.[0];
+
+      document.getElementById('player-class').textContent = match.playerClass;
+      document.getElementById('player-class').className = `class-badge ${getClassBadgeStyle(match.playerClass)}`;
+      document.getElementById('player-score').textContent = match.finalScores?.playerScore || '0';
+      
+      document.getElementById('robot-class').textContent = match.robotClass;
+      document.getElementById('robot-class').className = `class-badge ${getClassBadgeStyle(match.robotClass)}`;
+      document.getElementById('robot-score').textContent = match.finalScores?.robotScore || '0';
+
+      // Set initial/final stats
+      if (lastRound) {
+        document.getElementById('player-health').textContent = lastRound.playerStatsBefore.health.toFixed(1);
+        document.getElementById('player-strength').textContent = lastRound.playerStatsBefore.strength.toFixed(1);
+        document.getElementById('player-defense').textContent = lastRound.playerStatsBefore.defense.toFixed(1);
+        document.getElementById('player-speed').textContent = lastRound.playerStatsBefore.speed.toFixed(1);
+        
+        document.getElementById('robot-health').textContent = lastRound.robotStatsBefore.health.toFixed(1);
+        document.getElementById('robot-strength').textContent = lastRound.robotStatsBefore.strength.toFixed(1);
+        document.getElementById('robot-defense').textContent = lastRound.robotStatsBefore.defense.toFixed(1);
+        document.getElementById('robot-speed').textContent = lastRound.robotStatsBefore.speed.toFixed(1);
+      }
+
+      // Populate rounds table
+      const roundsBody = document.getElementById('rounds-table-body');
+      if (match.rounds && match.rounds.length > 0) {
+        roundsBody.innerHTML = match.rounds.map((round, index) => {
+          const roundNumber = index + 1;
+          const playerAction = formatAction(round.playerAction, 'player');
+          const robotAction = formatAction(round.robotAction, 'robot');
+          const damage = `${round.damageDealt.player} / ${round.damageDealt.robot}`;
+          const healing = `${round.healingDone.player} / ${round.healingDone.robot}`;
+          const outcome = formatOutcome(round.roundOutcome);
+          const upgrades = formatUpgrades(round.upgrades);
+
+          return `
+            <tr class="border-t border-primary/10 hover:bg-dark/30 transition-colors">
+              <td class="p-4 font-medium">${roundNumber}</td>
+              <td class="p-4">
+                <div class="flex items-center player-action">
+                  <span>${playerAction.text}</span>
+                </div>
+              </td>
+              <td class="p-4">
+                <div class="flex items-center robot-action">
+                  <span>${robotAction.text}</span>
+                </div>
+              </td>
+              <td class="p-4">${damage}</td>
+              <td class="p-4">${healing}</td>
+              <td class="p-4 ${outcome.class}">${outcome.text}</td>
+              <td class="p-4 text-sm">${upgrades}</td>
+            </tr>
+          `;
+        }).join('');
+      } else {
+        roundsBody.innerHTML = `
+          <tr>
+            <td colspan="7" class="p-8 text-center text-gray-400">
+              No round data available for this match
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function showNotFound() {
+      document.getElementById('match-loading').classList.add('hidden');
+      document.getElementById('match-not-found').classList.remove('hidden');
+    }
+
+    // Helper functions
+    function formatDuration(ms) {
+      const seconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      
+      if (minutes > 0) {
+        return `${minutes}m ${remainingSeconds}s`;
+      }
+      return `${seconds}s`;
+    }
+
+    function getClassBadgeStyle(className) {
+      const styles = {
+        'Assassin': 'assassin-badge',
+        'Defender': 'defender-badge',
+        'Healer': 'healer-badge',
+        'Rogue': 'rogue-badge',
+        'Warrior': 'warrior-badge'
+      };
+      return styles[className] || 'bg-gray-500/20 text-gray-300';
+    }
+
+    function formatAction(action, actor) {
+      const actionMap = {
+        'attack-rock': {
+        //   icon: `<img src="/v1rock.svg" class="action-icon" alt="Rock">`,
+          text: 'Rock'
+        },
+        'attack-paper': {
+        //   icon: `<img src="/v1paper.svg" class="action-icon" alt="Paper">`,
+          text: 'Paper'
+        },
+        'attack-scissors': {
+        //   icon: `<img src="/v1scissors.svg" class="action-icon" alt="Scissors">`,
+          text: 'Scissors'
+        },
+        'heal': {
+        //   icon: `<img src="/heal.webp" class="action-icon" alt="Heal">`,
+          text: 'Heal'
+        },
+        'skip': {
+        //   icon: `<img src="/skip.png" class="action-icon" alt="Skip">`,
+          text: 'Skip'
+        },
+        'default': {
+        //   icon: `<img src="/unknown.png" class="action-icon" alt="Unknown">`,
+          text: action || 'Unknown'
+        }
+      };
+
+      return actionMap[action] || actionMap.default;
+    }
+
+    function formatOutcome(outcome) {
+      switch(outcome) {
+        case 'player':
+          return { text: 'Win', class: 'player-outcome' };
+        case 'robot':
+          return { text: 'Lose', class: 'robot-outcome' };
+        case 'tie':
+          return { text: 'Tie', class: 'tie-outcome' };
+        default:
+          return { text: 'Unknown', class: 'tie-outcome' };
+      }
+    }
+
+    function formatUpgrades(upgrades) {
+      if (!upgrades || (!upgrades.player.length && !upgrades.robot.length)) {
+        return 'None';
+      }
+
+      let result = [];
+      
+      if (upgrades.player.length > 0) {
+        const playerUpgrades = upgrades.player.map(u => 
+          `+${u.stat} (${u.newValue})`).join(', ');
+        result.push(`You: ${playerUpgrades}`);
+      }
+
+      if (upgrades.robot.length > 0) {
+        const robotUpgrades = upgrades.robot.map(u => 
+          `+${u.stat} (${u.newValue})`).join(', ');
+        result.push(`Opp: ${robotUpgrades}`);
+      }
+
+      return result.join('<br>');
+    }
+  </script>
+</body>
+</html>

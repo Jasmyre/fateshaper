@@ -43,13 +43,12 @@ import {
 	robotUpgradeSpeedDisplay,
 	robotUpgradeDefenseDisplay,
 	robotUpgradeHealingDisplay,
+	player2Name,
+	player1Name,
 } from "./elements";
 import { backgroundMusicVolume, playSoundForOutcome } from "./sound";
 
 const backgroundMusic = document.getElementById("bg-music") as HTMLAudioElement;
-
-const player1Name = document.getElementById("player-1-name") as HTMLElement;
-const player2Name = document.getElementById("player-2-name") as HTMLElement;
 
 window.addEventListener("load", () => {
 	const audioContext = new AudioContext();
@@ -143,8 +142,133 @@ let playerMomentum = 0,
 let playerUpgradePoints = 0,
 	robotUpgradePoints = 0;
 
+// Score tracking variables
+let playerTotalDamageDealt = 0;
+let playerTotalHealingDone = 0;
+let playerRoundsWon = 0;
+let playerCriticalHits = 0;
+
+let robotTotalDamageDealt = 0;
+let robotTotalHealingDone = 0;
+let robotRoundsWon = 0;
+let robotCriticalHits = 0;
+
 console.log("Player Class:", playerClass, classes[playerClass]);
 console.log("Robot Class:", robotClass, classes[robotClass]);
+
+interface GameData {
+	gameId: string;
+	startTime: string;
+	endTime?: string;
+	playerClass: string;
+	robotClass: string;
+	rounds: RoundData[];
+	finalScores?: {
+		playerScore: number;
+		robotScore: number;
+	};
+	outcome?: "player" | "robot";
+}
+
+interface RoundData {
+	roundNumber: number;
+	playerAction: Action;
+	robotAction: Action;
+	playerStatsBefore: PlayerStats;
+	robotStatsBefore: PlayerStats;
+	damageDealt: {
+		player: number;
+		robot: number;
+	};
+	healingDone: {
+		player: number;
+		robot: number;
+	};
+	roundOutcome: "player" | "robot" | "tie";
+	upgrades: {
+		player: Upgrade[];
+		robot: Upgrade[];
+	};
+}
+
+interface PlayerStats {
+	health: number;
+	strength: number;
+	precision: number;
+	crit: number;
+	speed: number;
+	defense: number;
+	healingStat: number;
+	fatigue: number;
+	momentum: number;
+	upgradePoints: number;
+}
+
+interface Upgrade {
+	stat: string;
+	newValue: number;
+}
+
+// Add these helper functions for game history management
+function saveGameHistory(game: GameData): void {
+	const history = loadGameHistory();
+	history.push(game);
+	localStorage.setItem("gameHistory", JSON.stringify(history));
+}
+
+function loadGameHistory(): GameData[] {
+	const history = localStorage.getItem("gameHistory");
+	return history ? JSON.parse(history) : [];
+}
+
+// Initialize current game at the start of the script
+let currentGame: GameData = {
+	gameId: Date.now().toString(),
+	startTime: new Date().toISOString(),
+	playerClass: playerClass,
+	robotClass: robotClass,
+	rounds: [],
+};
+
+
+function calculateFinalScores(): { playerScore: number; robotScore: number } {
+	// Player Score
+	const playerDamageScore =
+		playerTotalDamageDealt * (1 + playerCriticalHits * 0.1);
+	const playerHealingScore =
+		playerTotalHealingDone *
+		(playerHealth <= playerMaxHealth / 2 ? 1.2 : 1);
+	const playerRoundWinScore = playerRoundsWon * 100 + playerCriticalHits * 50;
+	const playerEfficiencyScore = (playerMomentum - playerFatigue) * 10;
+	const playerSurvivalBonus = (playerHealth / playerMaxHealth) * 500;
+
+	const playerScore = Math.round(
+		playerDamageScore +
+			playerHealingScore +
+			playerRoundWinScore +
+			playerEfficiencyScore +
+			playerSurvivalBonus
+	);
+
+	// Robot Score
+	const robotDamageScore =
+		robotTotalDamageDealt * (1 + robotCriticalHits * 0.1);
+	const robotHealingScore =
+		robotTotalHealingDone * (robotHealth <= robotMaxHealth / 2 ? 1.2 : 1);
+	const robotRoundWinScore = robotRoundsWon * 100 + robotCriticalHits * 50;
+	const robotEfficiencyScore = (robotMomentum - robotFatigue) * 10;
+	const robotSurvivalBonus = (robotHealth / robotMaxHealth) * 500;
+
+	const robotScore = Math.round(
+		robotDamageScore +
+			robotHealingScore +
+			robotRoundWinScore +
+			robotEfficiencyScore +
+			robotSurvivalBonus
+	);
+
+	return { playerScore, robotScore };
+}
 
 function logDamageCalculation(
 	effectiveStrength: number,
@@ -209,7 +333,8 @@ function calculateDamage(
 	defenderDefense: number,
 	attackerFatigue: number,
 	attackerMomentum: number,
-	defenderFatigue: number
+	defenderFatigue: number,
+	attacker: "player" | "robot"
 ): { damage: number; outcome: string } {
 	const effectiveStrength =
 		attackerStrength *
@@ -245,6 +370,11 @@ function calculateDamage(
 	if (critRoll < effectiveCrit / 10) {
 		critMultiplier = CRIT_MULTIPLIER;
 		outcomeText = "crit";
+		if (attacker === "player") {
+			playerCriticalHits++;
+		} else {
+			robotCriticalHits++;
+		}
 		console.log(
 			`Critical hit! Crit roll: ${critRoll.toFixed(2)} vs threshold: ${(
 				effectiveCrit / 10
@@ -269,6 +399,13 @@ function calculateDamage(
 		0
 	);
 
+	// Update damage dealt
+	if (attacker === "player") {
+		playerTotalDamageDealt += finalDamage;
+	} else {
+		robotTotalDamageDealt += finalDamage;
+	}
+
 	logDamageCalculation(
 		effectiveStrength,
 		baseDamage,
@@ -283,8 +420,18 @@ function calculateDamage(
 	return { damage: finalDamage, outcome: outcomeText };
 }
 
-function calculateHeal(base: number, healingStat: number): number {
-	return Math.round(base + healingStat * HEAL_MULTIPLIER);
+function calculateHeal(
+	base: number,
+	healingStat: number,
+	healer: "player" | "robot"
+): number {
+	const healAmount = Math.round(base + healingStat * HEAL_MULTIPLIER);
+	if (healer === "player") {
+		playerTotalHealingDone += healAmount;
+	} else {
+		robotTotalHealingDone += healAmount;
+	}
+	return healAmount;
 }
 
 function upgradePlayerStat(stat: string): void {
@@ -292,54 +439,71 @@ function upgradePlayerStat(stat: string): void {
 		alert("No upgrade points available");
 		return;
 	}
+
+	let newValue: number;
 	switch (stat) {
 		case "strength":
 			if (playerStrength - playerBaseStrength >= MAX_UPGRADE) {
 				alert("Player strength is max");
 				return;
 			}
-			playerStrength++;
+			newValue = ++playerStrength;
+			// playerStrength++;
 			break;
 		case "precision":
 			if (playerPrecision - BASE_PRECISION >= MAX_UPGRADE) {
 				alert("Player precision is max");
 				return;
 			}
-			playerPrecision++;
+			newValue = ++playerPrecision;
+			// playerPrecision++;
 			break;
 		case "crit":
 			if (playerCrit - BASE_CRIT >= MAX_UPGRADE) {
 				alert("Player crit is max");
 				return;
 			}
-			playerCrit++;
+			newValue = ++playerCrit;
+			// playerCrit++;
 			break;
 		case "speed":
 			if (playerSpeed - playerBaseSpeed >= MAX_UPGRADE) {
 				alert("Player speed is max");
 				return;
 			}
-			playerSpeed++;
+			newValue = ++playerSpeed;
+			// playerSpeed++;
 			break;
 		case "defense":
 			if (playerDefense - playerBaseDefense >= MAX_UPGRADE) {
 				alert("Player defense is max");
 				return;
 			}
-			playerDefense++;
+			newValue = ++playerDefense;
+			// playerDefense++;
 			break;
 		case "healing":
 			if (playerHealing - playerBaseHealing >= MAX_UPGRADE) {
 				alert("Player healing is max");
 				return;
 			}
-			playerHealing++;
+			newValue = ++playerHealing;
+			// playerHealing++;
 			break;
 		default:
 			console.log("Unknown stat");
 			return;
 	}
 	playerUpgradePoints--;
+
+	if (currentGame.rounds.length > 0) {
+		const currentRound = currentGame.rounds[currentGame.rounds.length - 1];
+		currentRound.upgrades.player.push({
+			stat,
+			newValue,
+		});
+	}
+
 	updateRound();
 }
 
@@ -397,6 +561,7 @@ function robotAutoUpgrade(): void {
 			else baseValue = stat === "precision" ? BASE_PRECISION : BASE_CRIT;
 			return currentValue - baseValue < MAX_UPGRADE;
 		});
+
 		if (availableStats.length === 0) {
 			robotUpgradePoints = 0;
 			break;
@@ -409,6 +574,17 @@ function robotAutoUpgrade(): void {
 				"robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
 			)}`
 		);
+
+		if (currentGame.rounds.length > 0) {
+			const currentRound =
+				currentGame.rounds[currentGame.rounds.length - 1];
+			currentRound.upgrades.robot.push({
+				stat,
+				newValue: eval(
+					"robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
+				),
+			});
+		}
 	}
 }
 
@@ -451,6 +627,41 @@ function processRound(playerAction: Action): void {
 	console.log(
 		`Player Action: ${playerAction} | Robot Action: ${robotAction}`
 	);
+	
+	console.log(currentGame)
+	
+	const playerStatsBefore: PlayerStats = {
+		health: playerHealth,
+		strength: playerStrength,
+		precision: playerPrecision,
+		crit: playerCrit,
+		speed: playerSpeed,
+		defense: playerDefense,
+		healingStat: playerHealing,
+		fatigue: playerFatigue,
+		momentum: playerMomentum,
+		upgradePoints: playerUpgradePoints,
+	};
+
+	const robotStatsBefore: PlayerStats = {
+		health: robotHealth,
+		strength: robotStrength,
+		precision: robotPrecision,
+		crit: robotCrit,
+		speed: robotSpeed,
+		defense: robotDefense,
+		healingStat: robotHealing,
+		fatigue: robotFatigue,
+		momentum: robotMomentum,
+		upgradePoints: robotUpgradePoints,
+	};
+
+	// Track previous totals for delta calculation
+	const prevPlayerDamage = playerTotalDamageDealt;
+	const prevPlayerHealing = playerTotalHealingDone;
+	const prevRobotDamage = robotTotalDamageDealt;
+	const prevRobotHealing = robotTotalHealingDone;
+
 	disableButtons(true);
 	playerHand.src = "/v1rock.svg";
 	robotHand.src = "/v1rock.svg";
@@ -460,6 +671,10 @@ function processRound(playerAction: Action): void {
 	let roundOutcome: "player" | "robot" | "tie" = "tie";
 	let damage = 0,
 		healAmount = 0;
+	const roundUpgrades = {
+		player: [] as Upgrade[],
+		robot: [] as Upgrade[],
+	};
 
 	setTimeout(() => {
 		playerHand.classList.remove("toss");
@@ -490,11 +705,11 @@ function processRound(playerAction: Action): void {
 					robotDefense,
 					playerFatigue,
 					playerMomentum,
-					robotFatigue
+					robotFatigue,
+					"player"
 				);
 				damage = result.damage;
 				console.log("Damage dealt to robot:", damage);
-				// robotHPLoss += damage;
 				robotHealth = Math.max(robotHealth - damage, 0);
 				roundOutcome = "player";
 				if (result.outcome === "crit")
@@ -521,11 +736,11 @@ function processRound(playerAction: Action): void {
 					playerDefense,
 					robotFatigue,
 					robotMomentum,
-					playerFatigue
+					playerFatigue,
+					"robot"
 				);
 				damage = result.damage;
 				console.log("Damage dealt to player:", damage);
-				// playerHPLoss += damage;
 				playerHealth = Math.max(playerHealth - damage, 0);
 				roundOutcome = "robot";
 				if (result.outcome === "crit")
@@ -561,11 +776,11 @@ function processRound(playerAction: Action): void {
 				robotDefense,
 				playerFatigue,
 				playerMomentum,
-				robotFatigue
+				robotFatigue,
+				"player"
 			);
 			damage = result.damage;
 			console.log("Damage dealt to robot:", damage);
-			// robotHPLoss += damage;
 			robotHealth = Math.max(robotHealth - damage, 0);
 			roundOutcome = "player";
 			let outcomeMsg = "skipped, ";
@@ -590,8 +805,7 @@ function processRound(playerAction: Action): void {
 			playerHand.src = `/v1${playerMove}.svg`;
 			robotHand.src = "/heal.webp";
 			console.log("Robot heals!");
-			healAmount = calculateHeal(HEAL_BASE, robotHealing);
-			// robotHPLoss = Math.max(robotHPLoss - healAmount, 0);
+			healAmount = calculateHeal(HEAL_BASE, robotHealing, "robot");
 			robotHealth = Math.min(robotHealth + healAmount, robotMaxHealth);
 			console.log(`Robot healed for ${healAmount} HP.`);
 			const result = calculateDamage(
@@ -602,11 +816,11 @@ function processRound(playerAction: Action): void {
 				robotDefense,
 				playerFatigue,
 				playerMomentum,
-				robotFatigue
+				robotFatigue,
+				"player"
 			);
 			damage = result.damage;
 			console.log("Damage dealt to robot:", damage);
-			// robotHPLoss += damage;
 			robotHealth = Math.max(robotHealth - damage, 0);
 			roundOutcome = "player";
 			showOutcomeDirect(
@@ -641,11 +855,11 @@ function processRound(playerAction: Action): void {
 				playerDefense,
 				robotFatigue,
 				robotMomentum,
-				playerFatigue
+				playerFatigue,
+				"robot"
 			);
 			damage = result.damage;
 			console.log("Damage dealt to player:", damage);
-			// playerHPLoss += damage;
 			playerHealth = Math.max(playerHealth - damage, 0);
 			roundOutcome = "robot";
 			let outcomeMsg = "skipped, ";
@@ -671,8 +885,7 @@ function processRound(playerAction: Action): void {
 			robotHand.src = `/v1${robotMove}.svg`;
 			console.log("Player heals!");
 
-			healAmount = calculateHeal(HEAL_BASE, playerHealing);
-			// playerHPLoss = Math.max(playerHPLoss - healAmount, 0);
+			healAmount = calculateHeal(HEAL_BASE, playerHealing, "player");
 			playerHealth = Math.min(playerHealth + healAmount, playerMaxHealth);
 			console.log(`Player healed for ${healAmount} HP.`);
 			playerMomentum = Math.max(playerMomentum - 5, 0);
@@ -685,11 +898,11 @@ function processRound(playerAction: Action): void {
 				playerDefense,
 				robotFatigue,
 				robotMomentum,
-				playerFatigue
+				playerFatigue,
+				"robot"
 			);
 			damage = result.damage;
 			console.log("Damage dealt to player:", damage);
-			// playerHPLoss += damage;
 			playerHealth = Math.max(playerHealth - damage, 0);
 			roundOutcome = "robot";
 			showOutcomeDirect(
@@ -719,14 +932,22 @@ function processRound(playerAction: Action): void {
 			showOutcomeDirect(robotOutcomeDisplay, "skipped", "skip");
 		} else if (playerAction === "heal" && robotAction === "heal") {
 			console.log("Both heal.");
-			const healAmountPlayer = calculateHeal(HEAL_BASE, playerHealing);
+			const healAmountPlayer = calculateHeal(
+				HEAL_BASE,
+				playerHealing,
+				"player"
+			);
 			playerHealth = Math.min(
 				playerHealth + healAmountPlayer,
 				playerMaxHealth
 			);
 			playerMomentum = Math.max(playerMomentum - 5, 0);
 			playerFatigue += FATIGUE_INCREASE_ON_HEAL;
-			const healAmountRobot = calculateHeal(HEAL_BASE, robotHealing);
+			const healAmountRobot = calculateHeal(
+				HEAL_BASE,
+				robotHealing,
+				"robot"
+			);
 			robotHealth = Math.min(
 				robotHealth + healAmountRobot,
 				robotMaxHealth
@@ -757,7 +978,11 @@ function processRound(playerAction: Action): void {
 			if (playerAction === "skip") {
 				playerFatigue = Math.max(playerFatigue - 10, 0);
 				playerMomentum = Math.max(playerMomentum - 5, 0);
-				const healAmountRobot = calculateHeal(HEAL_BASE, robotHealing);
+				const healAmountRobot = calculateHeal(
+					HEAL_BASE,
+					robotHealing,
+					"robot"
+				);
 				robotHealth = Math.min(
 					robotHealth + healAmountRobot,
 					robotMaxHealth
@@ -779,7 +1004,8 @@ function processRound(playerAction: Action): void {
 				robotMomentum = Math.max(robotMomentum - 5, 0);
 				const healAmountPlayer = calculateHeal(
 					HEAL_BASE,
-					playerHealing
+					playerHealing,
+					"player"
 				);
 				playerHealth = Math.min(
 					playerHealth + healAmountPlayer,
@@ -800,6 +1026,13 @@ function processRound(playerAction: Action): void {
 			}
 		}
 
+		// Update rounds won
+		if (roundOutcome === "player") {
+			playerRoundsWon++;
+		} else if (roundOutcome === "robot") {
+			robotRoundsWon++;
+		}
+
 		playerUpgradePoints++;
 		robotUpgradePoints++;
 		robotAutoUpgrade();
@@ -807,6 +1040,27 @@ function processRound(playerAction: Action): void {
 		checkWin();
 		roundNum++;
 		updateRound();
+
+		const roundData: RoundData = {
+			roundNumber: roundNum,
+			playerAction,
+			robotAction,
+			playerStatsBefore,
+			robotStatsBefore,
+			damageDealt: {
+				player: playerTotalDamageDealt - prevPlayerDamage,
+				robot: robotTotalDamageDealt - prevRobotDamage,
+			},
+			healingDone: {
+				player: playerTotalHealingDone - prevPlayerHealing,
+				robot: robotTotalHealingDone - prevRobotHealing,
+			},
+			roundOutcome,
+			upgrades: roundUpgrades,
+		};
+
+		currentGame.rounds.push(roundData);
+
 
 		setTimeout(() => {
 			disableButtons(false);
@@ -872,10 +1126,17 @@ function showOutcomeDirect(
 }
 
 function checkWin(): void {
-	if (robotHealth <= 0) {
-		window.location.href = "/winning.html?playerWon=true";
-	} else if (playerHealth <= 0) {
-		window.location.href = "/winning.html?playerWon=false";
+	if (robotHealth <= 0 || playerHealth <= 0) {
+		const { playerScore, robotScore } = calculateFinalScores();
+		currentGame.endTime = new Date().toISOString();
+		currentGame.finalScores = { playerScore, robotScore };
+		currentGame.outcome = playerHealth > 0 ? "player" : "robot";
+
+		saveGameHistory(currentGame);
+
+		window.location.href = `/winning.html?playerWon=${
+			playerHealth > 0
+		}&playerScore=${playerScore}&robotScore=${robotScore}`;
 	}
 }
 
@@ -907,6 +1168,16 @@ function logStats(): void {
 		Fatigue: robotFatigue,
 		Momentum: robotMomentum,
 		Class: robotClass,
+	});
+	console.log("Score Stats:", {
+		PlayerDamage: playerTotalDamageDealt,
+		PlayerHealing: playerTotalHealingDone,
+		PlayerRoundsWon: playerRoundsWon,
+		PlayerCrits: playerCriticalHits,
+		RobotDamage: robotTotalDamageDealt,
+		RobotHealing: robotTotalHealingDone,
+		RobotRoundsWon: robotRoundsWon,
+		RobotCrits: robotCriticalHits,
 	});
 }
 
@@ -995,3 +1266,50 @@ function updateStatsAfterRound(result: "player" | "robot" | "tie"): void {
 	playerMomentum = Math.min(Math.max(playerMomentum, 0), 100);
 	robotMomentum = Math.min(Math.max(robotMomentum, 0), 100);
 }
+
+// Add this function to display history (to be called from a history page)
+// function displayGameHistory(): void {
+//   const history = loadGameHistory();
+//   const historyContainer = document.getElementById('history-container');
+  
+//   if (!historyContainer || history.length === 0) return;
+
+//   historyContainer.innerHTML = history.map(game => `
+//     <div class="game-history">
+//       <h3>Game ${new Date(game.startTime).toLocaleString()}</h3>
+//       <p>Player: ${game.playerClass} vs Robot: ${game.robotClass}</p>
+//       <p>Outcome: ${game.outcome === 'player' ? 'Player Won' : 'Robot Won'}</p>
+//       <p>Score: Player ${game.finalScores?.playerScore} - ${game.finalScores?.robotScore}</p>
+//       <div class="rounds">
+//         ${game.rounds.map(round => `
+//           <div class="round">
+//             <h4>Round ${round.roundNumber}</h4>
+//             <p>Player: ${round.playerAction} | Robot: ${round.robotAction}</p>
+//             <p>Outcome: ${round.roundOutcome}</p>
+//             <p>Damage: Player ${round.damageDealt.player} | Robot ${round.damageDealt.robot}</p>
+//             <p>Healing: Player ${round.healingDone.player} | Robot ${round.healingDone.robot}</p>
+//           </div>
+//         `).join('')}
+//       </div>
+//     </div>
+//   `).join('');
+// }
+
+// Add this to your winning.html page script to show the last game
+// function displayLastGame(): void {
+//   const history = loadGameHistory();
+//   if (history.length === 0) return;
+
+//   const lastGame = history[history.length - 1];
+//   const gameSummary = document.getElementById('game-summary');
+  
+//   if (gameSummary) {
+//     gameSummary.innerHTML = `
+//       <h2>Game Summary</h2>
+//       <p>Player: ${lastGame.playerClass} vs Robot: ${lastGame.robotClass}</p>
+//       <p>Rounds played: ${lastGame.rounds.length}</p>
+//       <p>Final score: Player ${lastGame.finalScores?.playerScore} - ${lastGame.finalScores?.robotScore}</p>
+//       <p>Outcome: ${lastGame.outcome === 'player' ? 'You Won!' : 'Robot Won'}</p>
+//     `;
+//   }
+// }

@@ -1,11 +1,19 @@
 export const buttons = document.querySelectorAll(
 	".button"
 ) as NodeListOf<HTMLButtonElement>;
-export const playerHand = document.getElementById("player-hand") as HTMLImageElement;
-export const robotHand = document.getElementById("robot-hand") as HTMLImageElement;
+export const playerHand = document.getElementById(
+	"player-hand"
+) as HTMLImageElement;
+export const robotHand = document.getElementById(
+	"robot-hand"
+) as HTMLImageElement;
 export const rockButton = document.getElementById("rock") as HTMLButtonElement;
-export const paperButton = document.getElementById("paper") as HTMLButtonElement;
-export const scissorsButton = document.getElementById("scissors") as HTMLButtonElement;
+export const paperButton = document.getElementById(
+	"paper"
+) as HTMLButtonElement;
+export const scissorsButton = document.getElementById(
+	"scissors"
+) as HTMLButtonElement;
 export const skipButton = document.getElementById("skip") as HTMLButtonElement;
 export const healButton = document.getElementById("heal") as HTMLButtonElement;
 export const upgradeStrengthButton = document.getElementById(
@@ -111,4 +119,10 @@ export const playerOutcomeDisplay = document.getElementById(
 ) as HTMLElement;
 export const robotOutcomeDisplay = document.getElementById(
 	"robot-outcome"
+) as HTMLElement;
+export const player1Name = document.getElementById(
+	"player-1-name"
+) as HTMLElement;
+export const player2Name = document.getElementById(
+	"player-2-name"
 ) as HTMLElement;

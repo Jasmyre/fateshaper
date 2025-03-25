@@ -6,6 +6,7 @@
   <title>Match History - Fateshaper</title>
   <link rel="stylesheet" href="/utils.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/utils.css">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -25,12 +26,31 @@
       },
     };
   </script>
+  <script src="ts/scroll_animation.ts" type="module"></script>
   <style>
     body {
       background-color: #0f172a;
       background-image: 
         radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
         radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    }
+    .class-badge {
+      @apply px-2 py-1 rounded-full text-xs font-medium;
+    }
+    .assassin-badge {
+      @apply bg-primary/20 text-primary;
+    }
+    .defender-badge {
+      @apply bg-secondary/20 text-secondary;
+    }
+    .healer-badge {
+      @apply bg-blue-500/20 text-blue-500;
+    }
+    .rogue-badge {
+      @apply bg-purple-500/20 text-purple-400;
+    }
+    .warrior-badge {
+      @apply bg-red-500/20 text-red-400;
     }
   </style>
 </head>
@@ -72,7 +92,7 @@
     </div>
   </header>
 
-  <main class="flex-grow py-16">
+  <main class="flex-grow py-16 min-h-svh">
     <div class="container mx-auto px-4 max-w-screen-xl">
       <div class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">
@@ -86,7 +106,7 @@
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20">
+        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in scale-in">
           <div class="flex items-center gap-3 mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
@@ -98,10 +118,10 @@
             </svg>
             <h2 class="text-xl font-bold">Total Wins</h2>
           </div>
-          <p class="text-3xl font-bold text-primary">24</p>
+          <p class="text-3xl font-bold text-primary" id="total-wins">0</p>
         </div>
         
-        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20">
+        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in scale-in">
           <div class="flex items-center gap-3 mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
@@ -110,20 +130,20 @@
             </svg>
             <h2 class="text-xl font-bold">Total Losses</h2>
           </div>
-          <p class="text-3xl font-bold text-red-500">8</p>
+          <p class="text-3xl font-bold text-red-500" id="total-losses">0</p>
         </div>
         
-        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20">
+        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 scale-in">
           <div class="flex items-center gap-3 mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
             <h2 class="text-xl font-bold">Win Rate</h2>
           </div>
-          <p class="text-3xl font-bold text-secondary">75%</p>
+          <p class="text-3xl font-bold text-secondary" id="win-rate">0%</p>
         </div>
         
-        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20">
+        <div class="bg-dark/50 backdrop-blur-sm p-6 rounded-xl border border-primary/20 fade-in scale-in">
           <div class="flex items-center gap-3 mb-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2v20"></path>
@@ -131,13 +151,30 @@
             </svg>
             <h2 class="text-xl font-bold">Highest Score</h2>
           </div>
-          <p class="text-3xl font-bold text-amber-500">1850</p>
+          <p class="text-3xl font-bold text-amber-500" id="highest-score">0</p>
         </div>
       </div>
       
-      <div class="bg-dark/50 backdrop-blur-sm rounded-xl border border-primary/20 overflow-hidden mb-12">
-        <div class="p-6 border-b border-primary/20">
+      <div class="bg-dark/50 backdrop-blur-sm rounded-xl border border-primary/20 overflow-hidden mb-12 fade-in">
+        <div class="p-6 border-b border-primary/20 flex justify-between items-center">
           <h2 class="text-2xl font-display font-bold">Recent Matches</h2>
+          <div class="flex items-center gap-4">
+            <button id="clear-history" class="text-sm text-red-500 hover:text-red-400 transition-colors flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              Clear History
+            </button>
+            <button id="export-history" class="text-sm text-secondary hover:text-secondary/80 transition-colors flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Export Data
+            </button>
+          </div>
         </div>
         
         <div class="overflow-x-auto">
@@ -150,136 +187,27 @@
                 <th class="p-4 font-bold">Result</th>
                 <th class="p-4 font-bold">Score</th>
                 <th class="p-4 font-bold">Rounds</th>
+                <th class="p-4 font-bold">Duration</th>
                 <th class="p-4 font-bold">Details</th>
               </tr>
             </thead>
-            <tbody>
-              <tr class="border-t border-primary/10">
-                <td class="p-4 text-gray-300">2024-03-20</td>
-                <td class="p-4">
-                  <span class="px-2 py-1 rounded-full bg-primary/20 text-primary">Assassin</span>
-                </td>
-                <td class="p-4 text-gray-300">Elite Bot</td>
-                <td class="p-4">
-                  <span class="text-green-500 font-bold">Victory</span>
-                </td>
-                <td class="p-4 text-gray-300">1250</td>
-                <td class="p-4 text-gray-300">15</td>
-                <td class="p-4">
-                  <a href="#" class="text-primary hover:text-primary/80 transition-colors">
-                    View
-                  </a>
-                </td>
-              </tr>
-              
-              <tr class="border-t border-primary/10">
-                <td class="p-4 text-gray-300">2024-03-19</td>
-                <td class="p-4">
-                  <span class="px-2 py-1 rounded-full bg-secondary/20 text-secondary">Defender</span>
-                </td>
-                <td class="p-4 text-gray-300">Advanced Bot</td>
-                <td class="p-4">
-                  <span class="text-green-500 font-bold">Victory</span>
-                </td>
-                <td class="p-4 text-gray-300">980</td>
-                <td class="p-4 text-gray-300">12</td>
-                <td class="p-4">
-                  <a href="#" class="text-primary hover:text-primary/80 transition-colors">
-                    View
-                  </a>
-                </td>
-              </tr>
-              
-              <tr class="border-t border-primary/10">
-                <td class="p-4 text-gray-300">2024-03-18</td>
-                <td class="p-4">
-                  <span class="px-2 py-1 rounded-full bg-blue-500/20 text-blue-500">Healer</span>
-                </td>
-                <td class="p-4 text-gray-300">Standard Bot</td>
-                <td class="p-4">
-                  <span class="text-red-500 font-bold">Defeat</span>
-                </td>
-                <td class="p-4 text-gray-300">650</td>
-                <td class="p-4 text-gray-300">8</td>
-                <td class="p-4">
-                  <a href="#" class="text-primary hover:text-primary/80 transition-colors">
-                    View
-                  </a>
-                </td>
-              </tr>
-              
-              <tr class="border-t border-primary/10">
-                <td class="p-4 text-gray-300">2024-03-17</td>
-                <td class="p-4">
-                  <span class="px-2 py-1 rounded-full bg-primary/20 text-primary">Assassin</span>
-                </td>
-                <td class="p-4 text-gray-300">Elite Bot</td>
-                <td class="p-4">
-                  <span class="text-green-500 font-bold">Victory</span>
-                </td>
-                <td class="p-4 text-gray-300">1420</td>
-                <td class="p-4 text-gray-300">18</td>
-                <td class="p-4">
-                  <a href="#" class="text-primary hover:text-primary/80 transition-colors">
-                    View
-                  </a>
-                </td>
-              </tr>
-
-              <tr class="border-t border-primary/10">
-                <td class="p-4 text-gray-300">2024-03-16</td>
-                <td class="p-4">
-                  <span class="px-2 py-1 rounded-full bg-secondary/20 text-secondary">Defender</span>
-                </td>
-                <td class="p-4 text-gray-300">Advanced Bot</td>
-                <td class="p-4">
-                  <span class="text-green-500 font-bold">Victory</span>
-                </td>
-                <td class="p-4 text-gray-300">1050</td>
-                <td class="p-4 text-gray-300">14</td>
-                <td class="p-4">
-                  <a href="#" class="text-primary hover:text-primary/80 transition-colors">
-                    View
-                  </a>
-                </td>
-              </tr>
+            <tbody id="match-history-body">
             </tbody>
           </table>
         </div>
       </div>
     
       <div class="flex justify-center mb-12">
-        <nav class="flex items-center gap-2">
-          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg border border-primary/30 text-gray-400 hover:border-primary hover:text-primary transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m15 18-6-6 6-6"/>
-            </svg>
-          </a>
-          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white">1</a>
-          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg border border-primary/30 text-gray-400 hover:border-primary hover:text-primary transition-colors">2</a>
-          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg border border-primary/30 text-gray-400 hover:border-primary hover:text-primary transition-colors">3</a>
-          <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
-          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg border border-primary/30 text-gray-400 hover:border-primary hover:text-primary transition-colors">10</a>
-          <a href="#" class="w-10 h-10 flex items-center justify-center rounded-lg border border-primary/30 text-gray-400 hover:border-primary hover:text-primary transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m9 18 6-6-6-6"/>
-            </svg>
-          </a>
+        <nav class="flex items-center gap-2" id="pagination-controls">
         </nav>
       </div>
       
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="game.html" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
+        <a href="/class-selection" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
           </svg>
           New Game
-        </a>
-        <a href="class-selection.html" class="bg-secondary hover:bg-secondary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"/>
-          </svg>
-          Change Class
         </a>
       </div>
     </div>
@@ -293,7 +221,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Mobile menu toggle
       const menuToggle = document.getElementById('menu-toggle');
       const mobileMenu = document.getElementById('mobile-menu');
 
@@ -302,8 +229,258 @@
           mobileMenu.classList.toggle('hidden');
         });
       }
+
+      const MATCHES_PER_PAGE = 10;
+      let currentPage = 1;
+      let allMatches = [];
+
+      function initHistory() {
+        loadMatches();
+        setupEventListeners();
+      }
+
+      function loadMatches() {
+        try {
+          const exampleData = [{
+            "gameId": "1742822648983",
+            "startTime": "2025-03-24T13:24:08.983Z",
+            "playerClass": "Assassin",
+            "robotClass": "Rogue",
+            "rounds": [],
+            "endTime": "2025-03-24T13:34:02.316Z",
+            "finalScores": {
+              "playerScore": 3509,
+              "robotScore": 1661
+            },
+            "outcome": "player"
+          }];
+          
+          const savedMatches = localStorage.getItem('gameHistory');
+          allMatches = savedMatches ? JSON.parse(savedMatches).reverse() : exampleData.reverse();
+          
+          updateStatistics();
+          renderMatches();
+          renderPagination();
+        } catch (error) {
+          console.error('Error loading match history:', error);
+          alert('Error loading match history. See console for details.');
+        }
+      }
+
+      function updateStatistics() {
+        const totalWins = allMatches.filter(game => game.outcome === 'player').length;
+        const totalLosses = allMatches.filter(game => game.outcome === 'robot').length;
+        const winRate = totalWins + totalLosses > 0 ? 
+          (totalWins / (totalWins + totalLosses) * 100) : 0;
+        const highestScore = allMatches.length > 0 ? 
+          Math.max(...allMatches.map(game => game.finalScores?.playerScore || 0)) : 0;
+
+        document.getElementById('total-wins').textContent = totalWins;
+        document.getElementById('total-losses').textContent = totalLosses;
+        document.getElementById('win-rate').textContent = `${winRate.toFixed(1)}%`;
+        document.getElementById('highest-score').textContent = highestScore;
+      }
+
+      function renderMatches() {
+        const tbody = document.getElementById('match-history-body');
+        
+        if (allMatches.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" class="p-8 text-center text-gray-400">
+                No match history found. Play some games to see your stats here!
+              </td>
+            </tr>
+          `;
+          return;
+        }
+        
+        const startId = (currentPage - 1) * MATCHES_PER_PAGE;
+        const endId = startId + MATCHES_PER_PAGE;
+        const matchesToShow = allMatches.slice(startId, endId);
+
+        tbody.innerHTML = matchesToShow.map(game => {
+          const duration = game.endTime ? 
+            formatDuration(new Date(game.endTime) - new Date(game.startTime)) : 'N/A';
+          
+          return `
+            <tr class="border-t border-primary/10 hover:bg-dark/30 transition-colors ">
+              <td class="p-4 text-gray-300">${formatDate(game.startTime)}</td>
+              <td class="p-4">
+                <span class="class-badge ${getClassBadgeStyle(game.playerClass)}">
+                  ${game.playerClass}
+                </span>
+              </td>
+              <td class="p-4">
+                <span class="class-badge ${getClassBadgeStyle(game.robotClass)}">
+                  ${game.robotClass}
+                </span>
+              </td>
+              <td class="p-4">
+                <span class="${game.outcome === 'player' ? 'text-green-500' : 'text-red-500'} font-bold">
+                  ${game.outcome === 'player' ? 'Victory' : 'Defeat'}
+                </span>
+              </td>
+              <td class="p-4 text-gray-300">${game.finalScores?.playerScore || 'N/A'}</td>
+              <td class="p-4 text-gray-300">${game.rounds?.length || 'N/A'}</td>
+              <td class="p-4 text-gray-300">${duration}</td>
+              <td class="p-4">
+                <a href="details.html?gameId=${game.gameId}" class="text-primary hover:text-primary/80 transition-colors">
+                  View
+                </a>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function renderPagination() {
+        const paginationContainer = document.getElementById('pagination-controls');
+        const totalPages = Math.ceil(allMatches.length / MATCHES_PER_PAGE);
+        
+        if (totalPages <= 1) {
+          paginationContainer.innerHTML = '';
+          return;
+        }
+
+        let paginationHTML = `
+          <button onclick="changePage(${currentPage - 1})" 
+            class="w-10 h-10 flex items-center justify-center rounded-lg border border-primary/30 text-gray-400 hover:border-primary hover:text-primary transition-colors ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </button>
+        `;
+
+        if (currentPage > 2) {
+          paginationHTML += `
+            <button onclick="changePage(1)" 
+              class="w-10 h-10 flex items-center justify-center rounded-lg border border-primary/30 text-gray-400 hover:border-primary hover:text-primary transition-colors">
+              1
+            </button>
+          `;
+        }
+
+        if (currentPage > 3) {
+          paginationHTML += `
+            <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+          `;
+        }
+
+        for (let i = Math.max(1, currentPage - 1); i <= Math.min(totalPages, currentPage + 1); i++) {
+          paginationHTML += `
+            <button onclick="changePage(${i})" 
+              class="w-10 h-10 flex items-center justify-center rounded-lg ${currentPage === i ? 'bg-primary text-white' : 'border border-primary/30 text-gray-400 hover:border-primary hover:text-primary'} transition-colors">
+              ${i}
+            </button>
+          `;
+        }
+
+        if (currentPage < totalPages - 2) {
+          paginationHTML += `
+            <span class="w-10 h-10 flex items-center justify-center text-gray-400">...</span>
+          `;
+        }
+
+        if (totalPages > 1 && currentPage < totalPages - 1) {
+          paginationHTML += `
+            <button onclick="changePage(${totalPages})" 
+              class="w-10 h-10 flex items-center justify-center rounded-lg border border-primary/30 text-gray-400 hover:border-primary hover:text-primary transition-colors">
+              ${totalPages}
+            </button>
+          `;
+        }
+
+        paginationHTML += `
+          <button onclick="changePage(${currentPage + 1})" 
+            class="w-10 h-10 flex items-center justify-center rounded-lg border border-primary/30 text-gray-400 hover:border-primary hover:text-primary transition-colors ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          </button>
+        `;
+
+        paginationContainer.innerHTML = paginationHTML;
+      }
+
+      window.changePage = function(newPage) {
+        const totalPages = Math.ceil(allMatches.length / MATCHES_PER_PAGE);
+        if (newPage >= 1 && newPage <= totalPages && newPage !== currentPage) {
+          currentPage = newPage;
+          renderMatches();
+          renderPagination();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      };
+
+      function formatDate(dateString) {
+        try {
+          const date = new Date(dateString);
+          return date.toLocaleDateString('tl-PH', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        } catch (e) {
+          return dateString.split('T')[0];
+        }
+      }
+
+      function formatDuration(ms) {
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        
+        if (minutes > 0) {
+          return `${minutes}m ${remainingSeconds}s`;
+        }
+        return `${seconds}s`;
+      }
+
+      function getClassBadgeStyle(className) {
+        const styles = {
+          'Assassin': 'assassin-badge',
+          'Defender': 'defender-badge',
+          'Healer': 'healer-badge',
+          'Rogue': 'rogue-badge',
+          'Warrior': 'warrior-badge'
+        };
+        return styles[className] || 'bg-gray-500/20 text-gray-300';
+      }
+
+      function setupEventListeners() {
+        document.getElementById('clear-history')?.addEventListener('click', () => {
+          if (confirm('Are you sure you want to clear your match history? This cannot be undone.')) {
+            localStorage.removeItem('gameHistory');
+            allMatches = [];
+            currentPage = 1;
+            updateStatistics();
+            renderMatches();
+            renderPagination();
+          }
+        });
+
+        document.getElementById('export-history')?.addEventListener('click', () => {
+          if (allMatches.length === 0) {
+            alert('No match history to export.');
+            return;
+          }
+
+          const dataStr = JSON.stringify(allMatches, "\t", 2);
+          const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+          
+          const exportFileDefaultName = `fateshaper-history-${new Date().toISOString().split('T')[0]}.json`;
+          
+          const linkElement = document.createElement('a');
+          linkElement.setAttribute('href', dataUri);
+          linkElement.setAttribute('download', exportFileDefaultName);
+          linkElement.click();
+        });
+      }
+      initHistory();
     });
   </script>
 </body>
 </html>
-
