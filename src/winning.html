@@ -6,6 +6,7 @@
   <title>Victory! - Fateshaper</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/utils.css">
   <script>
     tailwind.config = {
       theme: {
@@ -128,7 +129,7 @@
     </div>
   </header>
 
-  <main class="flex-grow flex items-center justify-center py-16">
+  <main class="flex-grow flex items-center justify-center py-16 min-h-svh">
     <div class="container mx-auto px-4 max-w-screen-xl">
       <div class="max-w-3xl mx-auto text-center">
         <div class="mb-8 relative">
@@ -145,32 +146,24 @@
         </div>
         
         <h1 class="text-5xl md:text-7xl font-display font-bold mb-6">
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary" id="outcome">
             VICTORY!
           </span>
         </h1>
         
         <div class="bg-dark/50 backdrop-blur-sm p-8 rounded-3xl border border-primary/30 mb-8">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div class="text-left">
+            <div class="text-center">
               <p class="text-gray-400 mb-1">Final Score</p>
               <p class="text-3xl font-bold text-primary" id="final-score">1250</p>
             </div>
-            <div class="text-left">
+            <div class="text-center">
               <p class="text-gray-400 mb-1">Rounds Played</p>
               <p class="text-3xl font-bold text-secondary" id="rounds-played">15</p>
             </div>
-            <div class="text-left">
-              <p class="text-gray-400 mb-1">Critical Hits</p>
-              <p class="text-3xl font-bold text-amber-500" id="critical-hits">7</p>
-            </div>
-            <div class="text-left">
-              <p class="text-gray-400 mb-1">Max Momentum</p>
-              <p class="text-3xl font-bold text-blue-500" id="max-momentum">85</p>
-            </div>
           </div>
           
-          <div class="text-left mb-6">
+          <!-- <div class="text-left mb-6">
             <p class="text-gray-400 mb-1">Performance Rating</p>
             <div class="flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" viewBox="0 0 24 24" fill="currentColor" stroke="none">
@@ -188,7 +181,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" viewBox="0 0 24 24" fill="currentColor" stroke="none">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
-            </div>
+            </div> -->
           </div>
           
           <p class="text-xl text-gray-300 mb-6" id="victory-message">
@@ -228,7 +221,7 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded',async  function() {
       const menuToggle = document.getElementById('menu-toggle');
       const mobileMenu = document.getElementById('mobile-menu');
 
@@ -237,17 +230,25 @@
           mobileMenu.classList.toggle('hidden');
         });
       }
+
+      new Audio("/win.mp3").play();
+      const idleBGM = new Audio("/bg.mp3")
+      idleBGM.play();
+      idleBGM.volume = 0.30
       
       const urlParams = new URLSearchParams(window.location.search);
-      const score = urlParams.get('score');
+      const playerScore = urlParams.get('playerScore');
       const rounds = urlParams.get('rounds');
-      const crits = urlParams.get('crits');
-      const momentum = urlParams.get('momentum');
+      const outcome = urlParams.get("playerWon")
+      console.log(playerScore, rounds, outcome)
+      // const crits = urlParams.get('crits');
+      // const momentum = urlParams.get('momentum');
       
-      if (score) document.getElementById('final-score').textContent = score;
+      if (playerScore) document.getElementById('final-score').textContent = playerScore;
       if (rounds) document.getElementById('rounds-played').textContent = rounds;
-      if (crits) document.getElementById('critical-hits').textContent = crits;
-      if (momentum) document.getElementById('max-momentum').textContent = momentum;
+      if (outcome) document.getElementById("outcome").textContent = outcome === "true" ? "Victory" : "Defeat"
+      // if (crits) document.getElementById('critical-hits').textContent = crits;
+      // if (momentum) document.getElementById('max-momentum').textContent = momentum;
       
       const victoryMessages = [
         "Impressive strategy! Your masterful balance of momentum and fatigue management led to a decisive victory.",

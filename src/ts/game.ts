@@ -1122,7 +1122,7 @@ function checkWin(): void {
 
 		window.location.href = `/winning.html?playerWon=${
 			playerHealth > 0
-		}&playerScore=${playerScore}&robotScore=${robotScore}`;
+		}&playerScore=${playerScore}&robotScore=${robotScore}&rounds=${roundNum}&maxmomentum=${currentGame.rounds[currentGame.rounds.length - 1].playerStatsBefore.momentum}`;
 	}
 }
 
