@@ -95,6 +95,10 @@ const BASE_SPEED = 1;
 const BASE_DEFENSE = 1;
 const BASE_HEALING = 2;
 
+const urlParams = new URLSearchParams(window.location.search);
+const robotDifficulty = urlParams.get("difficulty") as "easy" | "medium" | "hard" || "medium";
+let playerMoveHistory: ('rock' | 'paper' | 'scissors')[] = [];
+
 const urlClass = new URLSearchParams(window.location.search).get("class") as
 	| "Warrior"
 	| "Mage"
@@ -154,6 +158,7 @@ let robotCriticalHits = 0;
 
 console.log("Player Class:", playerClass, classes[playerClass]);
 console.log("Robot Class:", robotClass, classes[robotClass]);
+console.log("Robot Difficulty:", robotDifficulty);
 
 interface GameData {
 	gameId: string;
@@ -207,6 +212,59 @@ interface Upgrade {
 	stat: string;
 	newValue: number;
 }
+
+interface MoveHistory {
+  moves: Record<string, number>;
+  wins: Record<string, number>;
+  losses: Record<string, number>;
+  byClass: Record<string, {
+    moves: Record<string, number>;
+    wins: Record<string, number>;
+    losses: Record<string, number>;
+  }>;
+}
+
+function initMoveHistory(): MoveHistory {
+  return {
+    moves: { rock: 0, paper: 0, scissors: 0 },
+    wins: { rock: 0, paper: 0, scissors: 0 },
+    losses: { rock: 0, paper: 0, scissors: 0 },
+    byClass: {}
+  };
+}
+
+function loadMoveHistory(): MoveHistory {
+  const history = localStorage.getItem('playerMoveHistory');
+  if (history) return JSON.parse(history);
+  return initMoveHistory();
+}
+
+function saveMoveHistory(move: 'rock' | 'paper' | 'scissors', playerClass: string, won?: boolean | undefined) {
+  const history = loadMoveHistory();
+  
+  history.moves[move]++;
+  if (!history.byClass[playerClass]) {
+    history.byClass[playerClass] = {
+      moves: { rock: 0, paper: 0, scissors: 0 },
+      wins: { rock: 0, paper: 0, scissors: 0 },
+      losses: { rock: 0, paper: 0, scissors: 0 }
+    };
+  }
+  history.byClass[playerClass].moves[move]++;
+  
+  if (won !== undefined) {
+    if (won) {
+      history.wins[move]++;
+      history.byClass[playerClass].wins[move]++;
+    } else {
+      history.losses[move]++;
+      history.byClass[playerClass].losses[move]++;
+    }
+  }
+  
+  localStorage.setItem('playerMoveHistory', JSON.stringify(history));
+}
+
 
 function saveGameHistory(game: GameData): void {
 	const history = loadGameHistory();
@@ -528,52 +586,57 @@ function upgradeRobotStat(stat: string): void {
 }
 
 function robotAutoUpgrade(): void {
-	const stats = [
-		"strength",
-		"precision",
-		"crit",
-		"speed",
-		"defense",
-		"healing",
-	];
-	while (robotUpgradePoints > 0) {
-		const availableStats = stats.filter((stat) => {
-			const currentValue = eval(
-				"robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
-			);
-			let baseValue: number;
-			if (stat === "strength") baseValue = robotBaseStrength;
-			else if (stat === "defense") baseValue = robotBaseDefense;
-			else if (stat === "speed") baseValue = robotBaseSpeed;
-			else if (stat === "healing") baseValue = robotBaseHealing;
-			else baseValue = stat === "precision" ? BASE_PRECISION : BASE_CRIT;
-			return currentValue - baseValue < MAX_UPGRADE;
-		});
+  const stats = [
+    "strength",
+    "precision",
+    "crit",
+    "speed",
+    "defense",
+    "healing",
+  ];
+  
+  const preferredStats = robotDifficulty === 'hard' 
+    ? ['strength', 'crit', 'precision'] 
+    : stats;
 
-		if (availableStats.length === 0) {
-			robotUpgradePoints = 0;
-			break;
-		}
-		const stat =
-			availableStats[Math.floor(Math.random() * availableStats.length)];
-		upgradeRobotStat(stat);
-		console.log(
-			`Robot upgraded ${stat} to ${eval(
-				"robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
-			)}`
-		);
+  while (robotUpgradePoints > 0) {
+    const availableStats = preferredStats.filter((stat) => {
+      const currentValue = eval(
+        "robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
+      );
+      let baseValue: number;
+      if (stat === "strength") baseValue = robotBaseStrength;
+      else if (stat === "defense") baseValue = robotBaseDefense;
+      else if (stat === "speed") baseValue = robotBaseSpeed;
+      else if (stat === "healing") baseValue = robotBaseHealing;
+      else baseValue = stat === "precision" ? BASE_PRECISION : BASE_CRIT;
+      return currentValue - baseValue < MAX_UPGRADE;
+    });
 
-		if (currentGame.rounds.length > 0) {
-			const currentRound =
-				currentGame.rounds[currentGame.rounds.length - 1];
-			currentRound.upgrades.robot.push({
-				stat,
-				newValue: eval(
-					"robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
-				),
-			});
-		}
-	}
+    if (availableStats.length === 0) {
+      robotUpgradePoints = 0;
+      break;
+    }
+    
+    const stat = availableStats[Math.floor(Math.random() * availableStats.length)];
+    upgradeRobotStat(stat);
+    console.log(
+      `Robot upgraded ${stat} to ${eval(
+        "robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
+      )}`
+    );
+
+    if (currentGame.rounds.length > 0) {
+      const currentRound =
+        currentGame.rounds[currentGame.rounds.length - 1];
+      currentRound.upgrades.robot.push({
+        stat,
+        newValue: eval(
+          "robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
+        ),
+      });
+    }
+  }
 }
 
 type Action =
@@ -584,14 +647,94 @@ type Action =
 	| "heal";
 
 function getRobotAction(): Action {
-	const actions: Action[] = [
-		"attack-rock",
-		"attack-paper",
-		"attack-scissors",
-		"skip",
-		"heal",
-	];
-	return actions[Math.floor(Math.random() * actions.length)];
+  switch (robotDifficulty) {
+    case 'easy':
+      return getRandomAction();
+    case 'medium':
+      return getMediumDifficultyAction();
+    case 'hard':
+      return getHardDifficultyAction();
+    default:
+      return getRandomAction();
+  }
+}
+
+function getRandomAction(): Action {
+  const actions: Action[] = [
+    'attack-rock',
+    'attack-paper',
+    'attack-scissors',
+    'skip',
+    'heal',
+  ];
+  return actions[Math.floor(Math.random() * actions.length)];
+}
+
+function getMediumDifficultyAction(): Action {
+  const hpRatio = robotHealth / robotMaxHealth;
+  const fatigueRatio = robotFatigue / 100;
+
+  const actionWeights = {
+    heal: hpRatio < 0.3 ? 5 : 1,
+    skip: fatigueRatio > 0.5 ? 5 : 1,
+    attack: 1
+  };
+
+  if (hpRatio > 0.6 && fatigueRatio < 0.3) {
+    actionWeights.attack = 5;
+  }
+
+  const weightedActions: Action[] = [];
+  for (let i = 0; i < actionWeights.heal; i++) weightedActions.push('heal');
+  for (let i = 0; i < actionWeights.skip; i++) weightedActions.push('skip');
+  for (let i = 0; i < actionWeights.attack; i++) {
+    weightedActions.push(
+      ['attack-rock', 'attack-paper', 'attack-scissors'][Math.floor(Math.random() * 3)] as Action
+    );
+  }
+
+  return weightedActions[Math.floor(Math.random() * weightedActions.length)];
+}
+
+function getHardDifficultyAction(): Action {
+  const hpRatio = robotHealth / robotMaxHealth;
+  const fatigueRatio = robotFatigue / 100;
+
+  if (hpRatio < 0.25) return 'heal';
+  if (fatigueRatio > 0.6) return 'skip';
+
+  const history = loadMoveHistory();
+  let classHistory = history.byClass[playerClass];
+	if (!classHistory) {
+		classHistory = {
+			moves: { rock: 0, paper: 0, scissors: 0 },
+			wins: { rock: 0, paper: 0, scissors: 0 },
+			losses: { rock: 0, paper: 0, scissors: 0 }
+		};
+	}
+
+  const getMoveWeight = (move: string) => {
+    const globalWeight = 0.4 * (history.moves[move] || 0);
+    const classWeight = 0.5 * (classHistory.moves[move] || 0);
+    const winRate = (classHistory.wins[move] || 0) / ((classHistory.moves[move] || 0) + 1);
+    const lossRate = (classHistory.losses[move] || 0) / ((classHistory.moves[move] || 0) + 1);
+    
+    return (globalWeight + classWeight) * (1 + winRate - lossRate);
+  };
+
+  const rockWeight = getMoveWeight('rock');
+  const paperWeight = getMoveWeight('paper');
+  const scissorsWeight = getMoveWeight('scissors');
+  const totalWeight = rockWeight + paperWeight + scissorsWeight;
+
+  if (totalWeight <= 0) {
+    return ['attack-rock', 'attack-paper', 'attack-scissors'][Math.floor(Math.random() * 3)] as Action;
+  }
+
+  const random = Math.random() * totalWeight;
+  if (random < rockWeight) return 'attack-paper';
+  if (random < rockWeight + paperWeight) return 'attack-scissors';
+  return 'attack-rock';
 }
 
 function rpsWinner(
@@ -611,12 +754,19 @@ function rpsWinner(
 
 function processRound(playerAction: Action): void {
 	console.clear();
+  
+	if (playerAction.startsWith("attack")) {
+		const move = playerAction.split("-")[1] as 'rock' | 'paper' | 'scissors';
+		playerMoveHistory.push(move);
+		if (playerMoveHistory.length > 5) playerMoveHistory.shift();
+	}
+
 	const robotAction = getRobotAction();
 	console.log(
-		`Player Action: ${playerAction} | Robot Action: ${robotAction}`
+		`Player Action: ${playerAction} | Robot Action: ${robotAction} | Difficulty: ${robotDifficulty}`
 	);
 	
-	console.log(currentGame)
+	console.log(currentGame);
 	
 	const playerStatsBefore: PlayerStats = {
 		health: playerHealth,
@@ -1047,11 +1197,16 @@ function processRound(playerAction: Action): void {
 
 		currentGame.rounds.push(roundData);
 
-
 		setTimeout(() => {
 			disableButtons(false);
 		}, OUTCOME_DISPLAY_DURATION);
+
+		if (playerAction.startsWith("attack")) {
+			const move = playerAction.split("-")[1] as 'rock' | 'paper' | 'scissors';
+			saveMoveHistory(move, playerClass, roundOutcome === "player");
+		}
 	}, ROUND_DELAY);
+
 }
 
 rockButton.addEventListener("click", () => processRound("attack-rock"));
@@ -1087,19 +1242,19 @@ function showOutcomeDirect(
 	container.classList.add("text-xl", "outcome", "block");
 	switch (outcomeType) {
 		case "damage":
-			container.classList.add("outcome-damage");
+			container.classList.add("text-black");
 			break;
 		case "heal":
-			container.classList.add("outcome-heal");
+			container.classList.add("text-black");
 			break;
 		case "miss":
-			container.classList.add("outcome-miss");
+			container.classList.add("text-black");
 			break;
 		case "skip":
-			container.classList.add("outcome-skip");
+			container.classList.add("text-black");
 			break;
 		case "crit":
-			container.classList.add("outcome-crit");
+			container.classList.add("text-black");
 			break;
 		default:
 			break;
@@ -1120,9 +1275,12 @@ function checkWin(): void {
 
 		saveGameHistory(currentGame);
 
-		window.location.href = `/winning.html?playerWon=${
-			playerHealth > 0
-		}&playerScore=${playerScore}&robotScore=${robotScore}&rounds=${roundNum}&maxmomentum=${currentGame.rounds[currentGame.rounds.length - 1].playerStatsBefore.momentum}`;
+		setTimeout(() => {
+			window.location.href = `/winning.html?playerWon=${
+				playerHealth > 0
+			}&playerScore=${playerScore}&robotScore=${robotScore}&rounds=${roundNum}&maxmomentum=${currentGame.rounds[currentGame.rounds.length - 1].playerStatsBefore.momentum}`;
+		}, 2500)
+
 	}
 }
 

@@ -241,14 +241,10 @@
       const rounds = urlParams.get('rounds');
       const outcome = urlParams.get("playerWon")
       console.log(playerScore, rounds, outcome)
-      // const crits = urlParams.get('crits');
-      // const momentum = urlParams.get('momentum');
       
       if (playerScore) document.getElementById('final-score').textContent = playerScore;
       if (rounds) document.getElementById('rounds-played').textContent = rounds;
       if (outcome) document.getElementById("outcome").textContent = outcome === "true" ? "Victory" : "Defeat"
-      // if (crits) document.getElementById('critical-hits').textContent = crits;
-      // if (momentum) document.getElementById('max-momentum').textContent = momentum;
       
       const victoryMessages = [
         "Impressive strategy! Your masterful balance of momentum and fatigue management led to a decisive victory.",

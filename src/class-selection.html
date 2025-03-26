@@ -590,12 +590,12 @@
         </p>
         
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a id="start-game-btn" href="game.html?class=Warrior" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
+          <button id="start-game-btn" href="game.html?class=Warrior" class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed" disabled>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
             Start Game
-          </a>
+          </button>
           <button id="change-class-btn" class="border-2 border-primary/50 hover:border-primary text-white font-bold py-3 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3Z"/>
@@ -603,6 +603,16 @@
             Change Class
           </button>
         </div>
+
+        <div class="difficulty-selection mb-6">
+          <h3 class="text-lg font-display font-bold mb-4">Select Difficulty</h3>
+          <div class="flex gap-4 justify-center">
+            <button class="difficulty-btn px-6 py-2 rounded-lg border border-gray-600 hover:bg-gray-700" data-difficulty="easy">Easy</button>
+            <button class="difficulty-btn px-6 py-2 rounded-lg border border-gray-600 hover:bg-gray-700" data-difficulty="medium">Medium</button>
+            <button class="difficulty-btn px-6 py-2 rounded-lg border border-gray-600 hover:bg-gray-700" data-difficulty="hard">Hard</button>
+          </div>
+        </div>
+
       </div>
     </div>
   </main>
@@ -623,6 +633,20 @@
           mobileMenu.classList.toggle('hidden');
         });
       }
+
+      let selectedClass = null;
+      let selectedDifficulty = null;
+
+      document.querySelectorAll('.difficulty-btn').forEach(button => {
+        button.addEventListener('click', function () {
+          document.querySelectorAll('.difficulty-btn').forEach(btn => {
+            btn.classList.remove('bg-primary/50', 'border-primary');
+          });
+          this.classList.add('bg-primary/50', 'border-primary');
+          selectedDifficulty = this.dataset.difficulty;
+          checkAndEnableStartButton();
+        });
+      });
       
       const selectButtons = document.querySelectorAll('.select-class');
       const selectedClassInfo = document.getElementById('selected-class-info');
@@ -641,7 +665,7 @@
       
       selectButtons.forEach(button => {
         button.addEventListener('click', function() {
-          const selectedClass = this.getAttribute('data-class');
+          selectedClass = this.getAttribute('data-class');
           
           document.querySelectorAll('.class-card').forEach(card => {
             card.classList.remove('selected');
@@ -661,8 +685,22 @@
           
           selectedClassInfo.classList.remove('hidden');
           
-          selectedClassInfo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          selectedClassInfo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+          if (selectedDifficulty) {
+            document.querySelector(`.difficulty-btn[data-difficulty="${selectedDifficulty}"]`)?.classList.add('bg-primary/50', 'border-primary');
+          }
+          checkAndEnableStartButton();
         });
+      });
+
+      function checkAndEnableStartButton() {
+        startGameBtn.disabled = !(selectedClass && selectedDifficulty);
+      }
+
+      startGameBtn.addEventListener('click', () => {
+        const capitalizedClass = selectedClass.charAt(0).toUpperCase() + selectedClass.slice(1);
+        window.location.href = `game.html?class=${capitalizedClass}&difficulty=${selectedDifficulty}`;
       });
       
       changeClassBtn.addEventListener('click', function() {
@@ -678,6 +716,13 @@
       
       const urlParams = new URLSearchParams(window.location.search);
       const preSelectedClass = urlParams.get('class')?.toLowerCase();
+      const preSelectedDifficulty = urlParams.get('difficulty');
+
+      if (preSelectedDifficulty) {
+        setTimeout(() => {
+          document.querySelector(`.difficulty-btn[data-difficulty="${preSelectedDifficulty}"]`)?.click();
+        }, 0);
+      }
       
       if (preSelectedClass && ['warrior', 'mage', 'rogue', 'guardian', 'assassin'].includes(preSelectedClass)) {
         document.querySelector(`.select-class[data-class="${preSelectedClass}"]`).click();
