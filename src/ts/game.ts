@@ -600,7 +600,7 @@ function robotAutoUpgrade(): void {
     : stats;
 
   while (robotUpgradePoints > 0) {
-    const availableStats = preferredStats.filter((stat) => {
+    let availableStats = preferredStats.filter((stat) => {
       const currentValue = eval(
         "robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
       );
@@ -612,6 +612,21 @@ function robotAutoUpgrade(): void {
       else baseValue = stat === "precision" ? BASE_PRECISION : BASE_CRIT;
       return currentValue - baseValue < MAX_UPGRADE;
     });
+
+    if (availableStats.length === 0) {
+      availableStats = stats.filter((stat) => {
+        const currentValue = eval(
+          "robot" + stat.charAt(0).toUpperCase() + stat.slice(1)
+        );
+        let baseValue: number;
+        if (stat === "strength") baseValue = robotBaseStrength;
+        else if (stat === "defense") baseValue = robotBaseDefense;
+        else if (stat === "speed") baseValue = robotBaseSpeed;
+        else if (stat === "healing") baseValue = robotBaseHealing;
+        else baseValue = stat === "precision" ? BASE_PRECISION : BASE_CRIT;
+        return currentValue - baseValue < MAX_UPGRADE;
+      });
+    }
 
     if (availableStats.length === 0) {
       robotUpgradePoints = 0;
